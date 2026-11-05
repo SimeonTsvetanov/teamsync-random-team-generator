@@ -1,0 +1,59 @@
+/* public/error-page.css — shared by 404.html and the in-app error screen. Tokens only. */
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--color-bg); color: var(--color-text); font-family: var(--font-sans); -webkit-text-size-adjust: 100%; }
+body { margin: 0; min-height: 100dvh; display: flex; flex-direction: column; }
+
+.ep-header {
+  position: sticky; top: 0; padding: calc(var(--space-3) + var(--safe-top)) var(--space-5) var(--space-3);
+  background: var(--header-bg); -webkit-backdrop-filter: var(--header-blur); backdrop-filter: var(--header-blur);
+}
+.ep-brand { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--color-text); text-decoration: none; font-weight: var(--weight-semibold); font-size: var(--text-md); }
+
+.ep, .es {
+  flex: 1; display: grid; place-content: center; justify-items: center; text-align: center;
+  gap: var(--space-4); padding: var(--space-12) var(--space-5) calc(var(--space-12) + var(--safe-bottom));
+  max-width: var(--content-narrow); margin-inline: auto;
+}
+/* The one memorable element: a big, soft, accent-tinted code. */
+.ep-code {
+  margin: 0; font-size: clamp(5rem, 3rem + 12vw, 9rem); font-weight: var(--weight-bold); line-height: 1;
+  letter-spacing: -0.05em; font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, var(--color-accent-text), color-mix(in oklch, var(--color-accent-text) 35%, transparent));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+@media (forced-colors: active) { .ep-code { color: CanvasText; background: none; } }
+.ep-title, .es-title { margin: 0; font-size: var(--text-2xl); font-weight: var(--weight-bold); letter-spacing: var(--tracking-tight); text-wrap: balance; }
+.ep-text, .es-text { margin: 0; color: var(--color-text-secondary); font-size: var(--text-base); line-height: var(--leading-normal); max-width: 46ch; text-wrap: pretty; }
+.ep-path { font-family: var(--font-mono); font-size: 0.9em; padding: 0.1em 0.4em; border-radius: var(--radius-sm); background: var(--color-fill); color: var(--color-text); overflow-wrap: anywhere; }
+
+.ep-actions, .es-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-2); }
+.ep-button {
+  display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap-target);
+  padding: 0 var(--space-5); border: 0; border-radius: var(--radius-md); font: inherit; font-weight: var(--weight-semibold);
+  text-decoration: none; cursor: pointer; background: var(--color-fill); color: var(--color-text);
+  transition: box-shadow var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
+}
+.ep-button--primary { background: var(--color-accent); color: var(--color-on-accent); }
+.ep-button--primary:active { background: var(--color-accent-pressed); }
+.ep-button:active { transform: scale(0.98); }
+@media (hover: hover) { .ep-button:hover { box-shadow: var(--shadow-2); transform: var(--lift); } }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.ep-support { margin: var(--space-8) 0 0; padding: var(--space-3) var(--space-5); border-radius: var(--radius-lg); text-wrap: balance; background: var(--color-surface); box-shadow: var(--shadow-1); font-size: var(--text-md); color: var(--color-text-secondary); }
+.ep-support a { color: var(--color-accent-text); font-weight: var(--weight-semibold); text-decoration: none; }
+@media (hover: hover) { .ep-support a:hover { text-decoration: underline; } }
+.ep-meta { margin: var(--space-4) 0 0; font-size: var(--text-sm); color: var(--color-text-tertiary); }
+.ep-meta a { color: var(--color-accent-text); }
+@media (forced-colors: active) { .ep-button { border: 1px solid CanvasText; } }
+
+/* In-app error screen (error-screen.ts) */
+.es { position: fixed; inset: 0; z-index: 100; max-width: none; background: var(--color-bg); overflow-y: auto; }
+.es-icon { width: 56px; height: 56px; border-radius: var(--radius-full); display: grid; place-items: center; background: color-mix(in oklch, var(--color-danger-text) 14%, transparent); color: var(--color-danger-text); }
+.es-chip { font-family: var(--font-mono); font-size: var(--text-sm); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-fill); color: var(--color-text-secondary); }
+.es-details { width: min(100%, var(--content-narrow)); text-align: start; background: var(--color-surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-1); }
+.es-details summary { cursor: pointer; padding: var(--space-3) var(--space-4); font-weight: var(--weight-medium); min-height: var(--tap-target); display: flex; align-items: center; }
+.es-details pre { margin: 0; padding: var(--space-3) var(--space-4) var(--space-4); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-secondary); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 40dvh; overflow: auto; }
+.es-status { min-height: 1.5em; font-size: var(--text-sm); color: var(--color-text-secondary); }
+@media (max-width: 600px) {
+  .ep-actions, .es-actions { flex-direction: column; align-self: stretch; }
+  .ep-button { width: 100%; }
+}

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- TeamSync logo — vectorized from the original TeamSyncIcon.png (old TeamSync repo), same shapes and color. -->
+  <defs>
+    <mask id="gap">
+      <rect width="512" height="512" fill="#fff"/>
+      <circle cx="256" cy="252" r="69" fill="#000"/>
+      <path d="M158 404V388C158 353 186 327 220 327H292C326 327 354 353 354 388V404Q354 414 344 414H168Q158 414 158 404Z" fill="#000" stroke="#000" stroke-width="28" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+  <g fill="#FFBF92">
+    <g mask="url(#gap)">
+      <circle cx="133" cy="180" r="45"/>
+      <circle cx="379" cy="180" r="45"/>
+      <path d="M53 303C53 268 81 243 116 243H210V313H63Q53 313 53 303Z"/>
+      <path d="M459 303C459 268 431 243 396 243H302V313H449Q459 313 459 303Z"/>
+    </g>
+    <circle cx="256" cy="252" r="55"/>
+    <path d="M158 404V388C158 353 186 327 220 327H292C326 327 354 353 354 388V404Q354 414 344 414H168Q158 414 158 404Z"/>
+  </g>
+</svg>

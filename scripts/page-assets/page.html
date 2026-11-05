@@ -1,0 +1,34 @@
+<!doctype html>
+<!-- Standalone policy page shell (terms/, privacy/, ai-notice/, legal-notice/, support/ …).
+     The build renders each legal/*.md (filled from app.config.ts) into PAGE_BODY and writes
+     public/<slug>/index.html → pretty URL {base}<slug>/. Real HTML: readable without JS, indexable,
+     same text as the in-app dialog. Template: forge-app-shell 0.2.0 (2026-11-05). -->
+<html lang="APP_LANG">
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'self'; object-src 'none'; form-action 'self'" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PAGE_TITLE · APP_NAME</title>
+    <meta name="description" content="PAGE_DESCRIPTION" />
+    <link rel="canonical" href="APP_URLPAGE_SLUG/" />
+    <link rel="icon" href="/APP_BASE/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/APP_BASE/tokens.css" />
+    <link rel="stylesheet" href="/APP_BASE/page.css" />
+    <script src="/APP_BASE/theme-init.js"></script>
+    <script src="/APP_BASE/year.js" defer></script>
+  </head>
+  <body>
+    <header class="ep-header">
+      <a class="ep-brand" href="/APP_BASE/"><img src="/APP_BASE/logo.svg" alt="" width="28" height="28" /><span>APP_NAME</span></a>
+    </header>
+    <main class="page">
+      <article class="page-body">PAGE_BODY</article>
+      <nav class="page-nav" aria-label="Policies">
+        <a href="/APP_BASE/terms/">Terms</a> · <a href="/APP_BASE/privacy/">Privacy</a> ·
+        <a href="/APP_BASE/ai-notice/">AI notice</a> · <a href="/APP_BASE/legal-notice/">Legal notice</a> ·
+        <a href="/APP_BASE/support/">Support</a>
+      </nav>
+      <p class="page-foot">© <span data-year>BUILD_YEAR</span> Simeon Tsvetanov · <a href="/APP_BASE/">Back to APP_NAME</a></p>
+    </main>
+  </body>
+</html>

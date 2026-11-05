@@ -1,0 +1,47 @@
+# CI — every push and PR (forge-engineering → testing). Actions pinned to full SHAs (tag in comment).
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify
+      - run: pnpm audit --prod --audit-level high
+      - run: pnpm licenses list --prod --json > licenses.json
+      - name: Licence allowlist (forge-engineering → security §4)
+        run: node -e "const l=require('./licenses.json');const ok=/^(MIT|Apache-2\.0|BSD-2-Clause|BSD-3-Clause|ISC|0BSD|Unlicense|CC0-1\.0|OFL-1\.1)$/;const bad=Object.keys(l).filter(k=>!ok.test(k));if(bad.length){console.error('Licences needing a decision:',bad);process.exit(1)}"
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: verify
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps
+      - run: pnpm build
+      - run: pnpm e2e
+      # Lighthouse budgets (lighthouserc.json). Moni's decision 2026-11-05: run the pinned CLI in CI only,
+      # outside the project lockfile (its chromium-bidi dep fails our trustPolicy; it never ships to users).
+      - name: Lighthouse budgets (LCP < 2.5 s, CLS < 0.1, scores ≥ 0.9/0.95)
+        run: npx --yes @lhci/cli@0.16.0 autorun

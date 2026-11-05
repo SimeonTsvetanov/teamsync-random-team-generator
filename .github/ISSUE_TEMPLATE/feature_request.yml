@@ -1,0 +1,17 @@
+name: Idea
+description: Suggest an improvement or a new feature.
+title: "[Idea] "
+labels: ["idea", "needs-triage"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: "Your idea"
+      description: "What would you like the app to do?"
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: "Why would it help?"
+      description: "The problem it solves, or an example."

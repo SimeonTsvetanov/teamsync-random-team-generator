@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Help & FAQ
+    url: "<app url>#help"
+    about: Read the in-app Help first — most questions are answered there.
+  - name: Report from the app (no GitHub account needed)
+    url: "<app url>#report"
+    about: Use "Report a problem" in the app's menu.

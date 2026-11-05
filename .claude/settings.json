@@ -1,0 +1,13 @@
+{
+  "enabledPlugins": {
+    "forge-workflow@microapp-forge": true
+  },
+  "extraKnownMarketplaces": {
+    "microapp-forge": {
+      "source": {
+        "source": "github",
+        "repo": "SimeonTsvetanov/simeonts-microapp-forge"
+      }
+    }
+  }
+}

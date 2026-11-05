@@ -1,0 +1,19 @@
+# Supply chain policy — forge-engineering templates/pnpm-workspace.yaml (APP-STANDARD §8).
+packages:
+  - packages/*
+  - app
+
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude: []
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  # Moni's decision 2026-11-05 (DECISIONS): Google's workbox-build 7.4.1 (via vite-plugin-pwa 2.0.0)
+  # depends on this single-maintainer fork published without provenance. Exact version only;
+  # /stack-check removes it once workbox stops depending on it.
+  - '@trickfilm400/rollup-plugin-off-main-thread@3.0.0-pre1'
+blockExoticSubdeps: true
+
+# Only these packages may run install scripts.
+allowBuilds:
+  esbuild: true
+  sharp: true

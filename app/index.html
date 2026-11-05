@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="%APP_LANG%">
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title>%APP_NAME% — %APP_TAGLINE%</title>
+    <meta name="description" content="%APP_DESCRIPTION%" />
+    <link rel="canonical" href="%APP_URL%" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F5F5F7" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+    <meta name="apple-mobile-web-app-title" content="%APP_NAME%" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="%APP_NAME% — %APP_TAGLINE%" />
+    <meta property="og:description" content="%APP_DESCRIPTION%" />
+    <meta property="og:url" content="%APP_URL%" />
+    <meta property="og:image" content="%APP_URL%og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">%APP_JSONLD%</script>
+    <script src="./theme-init.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="app-header" data-header>
+      <a class="brand" href="./" aria-label="%APP_NAME% — home">
+        <img src="./logo.svg" alt="" width="28" height="28" />
+        <span>%APP_NAME%</span>
+      </a>
+      <div class="header-actions">
+        <button class="icon-button" type="button" data-action="share" data-icon="share" aria-label="Share app"></button>
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Theme"></button>
+        <button class="icon-button" type="button" data-menu-open data-icon="menu" aria-haspopup="dialog" aria-label="Open menu"></button>
+      </div>
+    </header>
+    <main id="main" class="main">
+      <span class="scroll-sentinel" data-sentinel aria-hidden="true"></span>
+      <section class="hero">
+        <h1>%APP_NAME%</h1>
+        <p class="lead">%APP_TAGLINE%</p>
+        <p>%APP_DESCRIPTION%</p>
+      </section>
+      <section class="empty-state" data-empty>
+        <p>This is a fresh micro-app. The tool UI is built in Phase 3 (/build).</p>
+      </section>
+      <section class="steps">
+        <h2>How it works</h2>
+        <ol>%APP_STEPS%</ol>
+      </section>
+      <section class="faq-list">
+        <h2>FAQ</h2>
+        %APP_FAQ%
+      </section>
+      <section class="for-agents">
+        <h2>For AI agents</h2>
+        <p>To use this app from an agent: docs at <a href="./llms.txt">llms.txt</a> (full reference: <a href="./llms-full.txt">llms-full.txt</a>), local MCP: <code>npx -y @simeonts/teamsync-random-team-generator-mcp</code>.</p>
+      </section>
+      <noscript><p>The tool needs JavaScript. The policies and docs above work without it.</p></noscript>
+    </main>
+    <footer class="app-footer">
+      <p>© <span data-year>%BUILD_YEAR%</span> Simeon Tsvetanov. All rights reserved.</p>
+      <nav aria-label="Policies">
+        <a href="./terms/">Terms</a> · <a href="./privacy/">Privacy</a> · <a href="./ai-notice/">AI notice</a> ·
+        <a href="./legal-notice/">Legal notice</a> · <a href="./support/">Support</a> ·
+        <a href="https://buymeacoffee.com/simeontsvetanov" target="_blank" rel="noopener">Support ☕</a>
+      </nav>
+      <p class="version"><a href="#whats-new" data-action="whats-new">v<span data-version></span></a> · <a href="https://simeontsvetanov.github.io/">More free tools</a></p>
+    </footer>
+    <dialog class="menu" data-menu aria-label="Menu">
+      <nav>
+        <h2>Use</h2>
+        <a href="#help" data-action="help" data-icon="help"><span data-label>Help</span></a>
+        <a href="#settings" data-action="settings" data-icon="settings"><span data-label>Settings</span></a>
+        <a href="#whats-new" data-action="whats-new" data-icon="sparkles"><span data-label>What's new</span></a>
+        <h2>App</h2>
+        <button type="button" data-action="share" data-icon="share"><span data-label>Share app</span></button>
+        <button type="button" data-action="install" data-icon="download"><span data-label>Install app</span></button>
+        <a href="#report" data-action="report" data-icon="bug"><span data-label>Report a problem</span></a>
+        <h2>About</h2>
+        <a href="#about" data-action="about" data-icon="info"><span data-label>About</span></a>
+        <a href="./terms/" data-icon="doc"><span data-label>Terms</span></a>
+        <a href="./privacy/" data-icon="doc"><span data-label>Privacy</span></a>
+        <a href="./ai-notice/" data-icon="doc"><span data-label>AI notice</span></a>
+        <a href="./legal-notice/" data-icon="doc"><span data-label>Legal notice</span></a>
+        <a href="./support/" data-icon="mail"><span data-label>Contact</span></a>
+        <h2>Support</h2>
+        <a href="https://buymeacoffee.com/simeontsvetanov" target="_blank" rel="noopener" data-icon="coffee"><span data-label>Support ☕</span></a>
+        <a href="https://github.com/SimeonTsvetanov/teamsync-random-team-generator" target="_blank" rel="noopener" data-icon="code"><span data-label>GitHub</span></a>
+      </nav>
+      <button class="close" type="button" data-menu-close>Close</button>
+    </dialog>
+    <div class="toast-region" role="status" aria-live="polite" data-toasts></div>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

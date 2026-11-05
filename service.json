@@ -1,0 +1,14 @@
+{
+  "name": "teamsync-random-team-generator",
+  "summary": "Create fair, random teams in seconds",
+  "inputs": [],
+  "outputs": [],
+  "core": "@simeonts/teamsync-random-team-generator-core",
+  "mcpLocal": "npx @simeonts/teamsync-random-team-generator-mcp",
+  "app": "https://simeontsvetanov.github.io/teamsync-random-team-generator/",
+  "api": null,
+  "mcp": null,
+  "llms": "https://simeontsvetanov.github.io/teamsync-random-team-generator/llms.txt",
+  "status": "draft",
+  "version": "0.1.0"
+}

@@ -1,0 +1,27 @@
+# robots.txt — AI crawlers and agents are welcome (Moni's decision 2026-11-05, APP-STANDARD §10).
+# Re-check the AI user-agent list in /stack-check. Replace <app-id>.
+User-agent: *
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://simeontsvetanov.github.io/<app-id>/sitemap.xml

@@ -1,0 +1,43 @@
+<!doctype html>
+<!-- public/404.html — GitHub Pages serves it for ANY unknown path, so every asset URL is absolute
+     (/APP_BASE/…). No inline JS/CSS (meta CSP). Generated from app.config.ts: replace APP_* tokens.
+     tokens.css is copied to public/ by the build. Template: forge-app-shell 0.2.0 (2026-11-05). -->
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'self'; object-src 'none'; form-action 'self'" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F5F5F7" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+    <title>Page not found · APP_NAME</title>
+    <link rel="icon" href="/APP_BASE/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/APP_BASE/tokens.css" />
+    <link rel="stylesheet" href="/APP_BASE/error-page.css" />
+    <script src="/APP_BASE/theme-init.js"></script>
+    <script src="/APP_BASE/error-page.js" defer></script>
+  </head>
+  <body>
+    <header class="ep-header">
+      <a class="ep-brand" href="/APP_BASE/">
+        <img src="/APP_BASE/logo.svg" alt="" width="28" height="28" />
+        <span>APP_NAME</span>
+      </a>
+    </header>
+    <main class="ep" aria-labelledby="ep-title">
+      <p class="ep-code" aria-hidden="true">404</p>
+      <h1 id="ep-title" class="ep-title">This page doesn’t exist</h1>
+      <p class="ep-text">
+        The address <code class="ep-path" data-ep-path>you opened</code> isn’t part of APP_NAME.
+        It may be an old or mistyped link.
+      </p>
+      <div class="ep-actions">
+        <a class="ep-button ep-button--primary" href="/APP_BASE/">Open APP_NAME</a>
+        <a class="ep-button" data-ep-report href="https://github.com/SimeonTsvetanov/APP_REPO/issues/new?template=bug_report.yml&title=%5BProblem%5D%20Broken%20link">Report a broken link</a>
+      </div>
+      <p class="ep-support">While you’re here, you can support my work —
+        <a href="https://buymeacoffee.com/simeontsvetanov" target="_blank" rel="noopener">Buy me a coffee ☕</a></p>
+      <p class="ep-meta">Error 404 · <a href="https://simeontsvetanov.github.io/">More free tools</a></p>
+    </main>
+  </body>
+</html>

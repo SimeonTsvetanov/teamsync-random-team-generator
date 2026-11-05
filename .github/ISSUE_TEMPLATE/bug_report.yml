@@ -1,0 +1,30 @@
+name: Problem report
+description: Something doesn't work as expected.
+title: "[Problem] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for reporting! This repository is public — don't include personal data or private files."
+  - type: textarea
+    id: what
+    attributes:
+      label: "What happened?"
+      description: "What did you do, and what went wrong?"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Steps to reproduce (optional)"
+      placeholder: "1. Open the app…\n2. …"
+  - type: textarea
+    id: expected
+    attributes:
+      label: "What did you expect?"
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: "Diagnostics"
+      description: "App version, browser, OS, screen size, display mode, language — filled in automatically by the app's Report a problem link."
+      render: text

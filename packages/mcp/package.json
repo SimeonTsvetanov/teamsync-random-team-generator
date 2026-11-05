@@ -1,0 +1,28 @@
+{
+  "name": "@simeonts/teamsync-random-team-generator-mcp",
+  "version": "0.1.0",
+  "description": "TeamSync as a local MCP server (stdio) \u2014 run with npx.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "teamsync-random-team-generator-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SimeonTsvetanov/teamsync-random-team-generator"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@simeonts/teamsync-random-team-generator-core": "workspace:^",
+    "@modelcontextprotocol/server": "^2.4.0",
+    "zod": "^4.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.0"
+  }
+}

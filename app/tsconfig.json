@@ -1,0 +1,31 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "outDir": "../.tsbuild/app",
+    "lib": [
+      "ES2024",
+      "DOM",
+      "DOM.Iterable",
+      "DOM.AsyncIterable"
+    ],
+    "types": [
+      "node"
+    ],
+    "allowImportingTsExtensions": true,
+    "rootDir": ".."
+  },
+  "include": [
+    "src",
+    "src/generated/*.json",
+    "vite.config.ts",
+    "pwa-assets.config.ts",
+    "../app.config.ts"
+  ],
+  "references": [
+    {
+      "path": "../packages/core"
+    }
+  ]
+}

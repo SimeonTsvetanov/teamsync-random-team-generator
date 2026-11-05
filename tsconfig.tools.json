@@ -1,0 +1,32 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "outDir": ".tsbuild/tools",
+    "types": [
+      "node"
+    ],
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": false,
+    "lib": [
+      "ES2024",
+      "DOM",
+      "DOM.Iterable"
+    ]
+  },
+  "include": [
+    "app.config.ts",
+    "scripts/**/*.ts",
+    "vitest.config.ts",
+    "playwright.config.ts",
+    "tests/**/*.ts",
+    "packages/*/test/**/*.ts"
+  ],
+  "references": [
+    {
+      "path": "./packages/core"
+    }
+  ]
+}

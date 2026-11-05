@@ -1,0 +1,13 @@
+/* public/page.css — standalone policy pages. Reuses the error-page header styles; tokens only. */
+@import url("./error-page.css");
+.page { width: min(100% - 2 * var(--space-5), var(--measure)); margin: var(--space-10) auto calc(var(--space-12) + var(--safe-bottom)); }
+.page-body { background: var(--color-surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-1); padding: clamp(var(--space-5), 4vw, var(--space-10)); line-height: var(--leading-normal); }
+.page-body h1, .page-body h2 { letter-spacing: var(--tracking-tight); text-wrap: balance; }
+.page-body h1 { font-size: var(--text-2xl); margin-top: 0; }
+.page-body h2 { font-size: var(--text-lg); margin-top: var(--space-8); }
+.page-body a, .page-nav a, .page-foot a { color: var(--color-accent-text); }
+.page-body table { width: 100%; border-collapse: collapse; font-size: var(--text-md); }
+.page-body th, .page-body td { text-align: start; padding: var(--space-2); border-bottom: 1px solid var(--color-separator); }
+.page-nav { margin-top: var(--space-6); text-align: center; font-size: var(--text-sm); color: var(--color-text-secondary); }
+.page-foot { text-align: center; font-size: var(--text-sm); color: var(--color-text-tertiary); }
+@media print { .ep-header, .page-nav { display: none; } .page-body { box-shadow: none; } }

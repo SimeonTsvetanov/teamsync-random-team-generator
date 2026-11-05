@@ -1,0 +1,17 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/core"
+    },
+    {
+      "path": "./packages/mcp"
+    },
+    {
+      "path": "./app"
+    },
+    {
+      "path": "./tsconfig.tools.json"
+    }
+  ]
+}
