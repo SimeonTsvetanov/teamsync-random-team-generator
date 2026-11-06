@@ -54,6 +54,8 @@ test("storage is namespaced and Clear my data keeps other apps' data", async ({ 
   const alert = page.getByRole("alertdialog");
   await expect(alert).toBeVisible();
   await expect(alert.getByRole("button", { name: "Cancel" })).toBeFocused();
+  // Let the entry animation finish (axe mis-measures contrast while opacity < 1, seen in Firefox).
+  await alert.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
   // Only the alert is perceivable now (the page behind a modal is inert and dimmed).
   expect((await new AxeBuilder({ page }).include('[role="alertdialog"]').withTags(["wcag2a", "wcag2aa", "wcag22aa"]).analyze()).violations
     .filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => v.id)).toEqual([]);
