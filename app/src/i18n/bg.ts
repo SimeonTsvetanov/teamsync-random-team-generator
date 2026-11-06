@@ -24,8 +24,6 @@ export const bg: Messages = {
     noscript: "Инструментът изисква JavaScript. Правилата и документацията по-горе работят и без него.",
     howItWorks: "Как работи",
     faq: "Често задавани въпроси",
-    forAgents: "За AI агенти",
-    forAgentsText: "Използвайте приложението от AI агент:",
     menu: {
       open: "Отвори менюто",
       title: "Меню",

@@ -19,8 +19,7 @@ a { color: var(--color-accent-text); }
 .scroll-sentinel { display: block; height: 1px; }
 .hero h1 { font-size: var(--text-3xl); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-2); text-wrap: balance; }
 .lead { font-size: var(--text-lg); color: var(--color-text-secondary); margin: 0 0 var(--space-4); }
-.empty-state, .for-agents { margin-top: var(--space-8); padding: var(--space-6); background: var(--color-surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-1); }
-.for-agents h2 { font-size: var(--text-lg); margin: 0 0 var(--space-2); }
+.empty-state { margin-top: var(--space-8); padding: var(--space-6); background: var(--color-surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-1); }
 code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-fill); padding: 0.1em 0.35em; border-radius: var(--radius-sm); }
 
 .app-footer { padding: var(--space-8) var(--space-5) calc(var(--space-8) + var(--safe-bottom)); text-align: center; font-size: var(--text-sm); color: var(--color-text-secondary); }
@@ -40,7 +39,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 @media (max-width: 600px) { .toast-region { top: calc(var(--header-height) + var(--safe-top) + var(--space-2)); bottom: auto; width: calc(100% - 2 * var(--space-4)); display: grid; justify-items: center; } }
 .toast { display: flex; align-items: center; gap: var(--space-3); white-space: nowrap; max-width: calc(100vw - 2 * var(--space-4)); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4); background: var(--color-surface-raised); border-radius: var(--radius-full); box-shadow: var(--shadow-3); }
 .toast button { color: var(--color-accent-text); font-weight: var(--weight-semibold); }
-@media (forced-colors: active) { .empty-state, .for-agents, .menu, .toast { border: 1px solid CanvasText; } }
+@media (forced-colors: active) { .empty-state, .menu, .toast { border: 1px solid CanvasText; } }
 
 /* ---------- Buttons ---------- */
 .button { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: var(--tap-target); padding: 0 var(--space-4); border: 0; border-radius: var(--radius-md); background: var(--color-fill); color: var(--color-text); font: inherit; font-weight: var(--weight-semibold); text-decoration: none; cursor: pointer; transition: box-shadow var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard); }
@@ -154,7 +153,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .progress-text { margin: 0; font-size: var(--text-sm); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
 
 /* ---------- Embed mode ---------- */
-.is-embed [data-action="install"], .is-embed .app-footer, .is-embed .for-agents, .is-embed .steps, .is-embed .faq-list { display: none; }
+.is-embed [data-action="install"], .is-embed .app-footer, .is-embed .steps, .is-embed .faq-list { display: none; }
 .is-embed .app-header { position: static; box-shadow: none; }
 
 /* ---------- App feel (web.dev "The app experience", 2026-11-06) ---------- */
@@ -172,7 +171,7 @@ html { -webkit-tap-highlight-color: transparent; }
 
 /* ---------- Print: content only (APP-STANDARD §15 #14) ---------- */
 @media print {
-  .app-header, .app-footer, .menu, .toast-region, .skip-link, .offline-pill, .for-agents, .actions, .button-stack, .alert, .sheet-head button { display: none !important; }
+  .app-header, .app-footer, .menu, .toast-region, .skip-link, .offline-pill, .actions, .button-stack, .alert, .sheet-head button { display: none !important; }
   :root { color-scheme: light; }
   body { background: Canvas; color: CanvasText; } /* system colors, no hard-coded hex */
   .panel, .group-card, .sheet { box-shadow: none; }
@@ -207,8 +206,8 @@ html { -webkit-tap-highlight-color: transparent; }
 .sheet::backdrop, .menu::backdrop, .alert::backdrop { transition: opacity var(--duration-sheet) var(--ease-out), overlay var(--duration-sheet) allow-discrete, display var(--duration-sheet) allow-discrete; }
 @starting-style { .sheet[open]::backdrop, .menu[open]::backdrop, .alert[open]::backdrop { opacity: 0; } }
 .toast { animation: toast-in var(--duration-alert) var(--ease-spring); }
-@keyframes toast-in { from { opacity: 0; transform: translateY(12px) scale(0.98); } }
-@media (max-width: 600px) { @keyframes toast-in { from { opacity: 0; transform: translateY(-12px) scale(0.98); } } }
+@keyframes toast-in { from { transform: translateY(16px) scale(0.98); } } /* no opacity: text keeps full contrast at every frame */
+@media (max-width: 600px) { @keyframes toast-in { from { transform: translateY(-16px) scale(0.98); } } }
 .button, .icon-button, .stepper-button { transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard); }
 .button:active, .icon-button:active { transform: scale(0.97); }
 
@@ -236,6 +235,6 @@ html { -webkit-tap-highlight-color: transparent; }
    and the menu on phones and in the installed app. Desktop browsers still show them below. */
 .hero { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 600px), (display-mode: standalone) {
-  .steps, .faq-list, .for-agents, .app-footer { display: none; }
+  .steps, .faq-list, .app-footer { display: none; }
   .main { padding-block: var(--space-4) var(--space-8); }
 }

@@ -2,10 +2,12 @@ import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 // App-shell e2e (APP-STANDARD §14): dialogs, theme, storage namespacing, offline, policy + error pages.
-const serious = async (page: Page): Promise<string[]> =>
-  (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze()).violations
+const serious = async (page: Page): Promise<string[]> => {
+  await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished.catch(() => undefined)))); // axe mis-measures contrast while anything fades in
+  return (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze()).violations
     .filter((v) => v.impact === "serious" || v.impact === "critical")
     .map((v) => v.id);
+};
 
 for (const dialog of ["help", "settings", "about", "whats-new", "report"]) {
   test(`deep link #${dialog} opens one accessible dialog`, async ({ page }) => {

@@ -22,8 +22,6 @@ export const en = {
     noscript: "The tool needs JavaScript. The policies and docs above work without it.",
     howItWorks: "How it works",
     faq: "FAQ",
-    forAgents: "For AI agents",
-    forAgentsText: "Use this app from an AI agent:",
     menu: {
       open: "Open menu",
       title: "Menu",
