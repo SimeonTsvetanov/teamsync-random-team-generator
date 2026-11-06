@@ -38,9 +38,21 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps
+      # Browsers cached per Playwright version; the apt step (system libraries) is time-boxed so a
+      # stuck runner mirror fails in minutes instead of hanging the job (TeamSync 2026-11-06).
+      - id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - run: pnpm exec playwright install chromium webkit firefox
+        timeout-minutes: 10
+      - run: pnpm exec playwright install-deps chromium webkit firefox
+        timeout-minutes: 10
       - run: pnpm build
       - run: pnpm e2e
+        timeout-minutes: 15
       # Lighthouse budgets (lighthouserc.json). Moni's decision 2026-11-05: run the pinned CLI in CI only,
       # outside the project lockfile (its chromium-bidi dep fails our trustPolicy; it never ships to users).
       - name: Lighthouse budgets (LCP < 2.5 s, CLS < 0.1, scores ≥ 0.9/0.95)
