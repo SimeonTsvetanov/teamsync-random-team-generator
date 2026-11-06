@@ -40,3 +40,13 @@ Format: `date · decision · reason`. Newest last.
   "Clear my data", launch splash with the tagline (once per session), Apple-like motion, toasts
   from the top on phones, Keti added to the followers after Dinkata. All generic parts are in the
   forge template 0.6.0.
+- **2026-11-06 · T-11 reviews.** Security: ship (0 Critical/High); fixed both Medium (licence
+  gate now `pnpm -r`, hardened import: 50 MB cap, ZIP magic bytes, zip-bomb limits, typed pref
+  checks) and the Lows (deploy only after CI, job timeouts, JSON-LD `<` escape, `Object.hasOwn`).
+  Compliance: no AI system → Art. 50 n/a (sources: ai-act-service-desk.ec.europa.eu Art. 3/50/113,
+  Commission Art. 50 FAQ, accessed 2026-11-06); fixed both Medium (no email field while reports go
+  through GitHub; "never in TeamSync links" + sharing bullet) and the Lows (full stored-data list,
+  third-party names note, no "API" in Terms, Dexie NOTICE in Credits, LICENSE in npm packages,
+  logo marked AI-assisted). Dev-only tools under MPL-2.0/LGPL-3.0/BlueOak/CC-BY (axe-core,
+  lightningcss, sharp-libvips, glob, caniuse-lite) are exempt: never shipped to users. Lawyer
+  questions (BG consumer law on "as is", Terms §8 acceptance, Legal notice address) recorded, not blocking.

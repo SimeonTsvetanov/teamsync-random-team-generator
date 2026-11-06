@@ -40,9 +40,9 @@ export function openReport(): void {
   const send = h("button", { class: "button button--primary", type: "submit" }, t("shell.report.send"));
   if (!app.feedback.webhook) send.hidden = true;
   const form = h("form", { class: "form" },
-    h("p", { class: "hint" }, t("shell.report.public")),
+    h("p", { class: "hint" }, t("shell.report.public"), ...(app.feedback.webhook ? [] : [" ", t("shell.report.githubOnly")])),
     h("label", {}, t("shell.report.type"), type), h("label", {}, t("shell.report.shortTitle"), title), h("label", {}, t("shell.report.text"), text),
-    h("label", {}, t("shell.report.email"), email), trap,
+    ...(app.feedback.webhook ? [h("label", {}, t("shell.report.email"), email)] : []), trap, // email only when it can really be sent
     h("details", { class: "diag" }, h("summary", {}, t("shell.report.diagnosticsSummary", { count: checks.length })),
       h("fieldset", {}, h("legend", { class: "hint" }, t("shell.report.diagnostics")), ...checks.map((c) => c.row))),
     h("div", { class: "actions" }, send, github), status);

@@ -10,14 +10,14 @@
    important results yourself before relying on them.
 3. **No liability.** To the maximum extent permitted by applicable law, the author is not liable
    for any direct or indirect loss or damage arising from the use of, or inability to use, the
-   app, its API, or its outputs, including data loss.
+   app, its MCP tool, or its outputs, including data loss.
 4. **Your content and your data.** You keep all rights to the names and data you use with the
    app. You confirm you have the right to process them. Everything the app saves is stored **only
    in your browser on this device** — the author cannot see, access, back up or recover it.
    Clearing your browser data, uninstalling the app, or the browser freeing up space can delete it
    permanently; use **Export my data** to keep a copy. Anyone with access to this device and
    browser may be able to see it. TeamSync has no server: nothing you type is sent to the author.
-5. **Acceptable use.** Don't use the app or API for unlawful purposes, to infringe others' rights,
+5. **Acceptable use.** Don't use the app or its MCP tool for unlawful purposes, to infringe others' rights,
    or in a way that overloads or disrupts the service. The app may be changed or discontinued at any time without notice.
 6. **AI.** See the AI notice. The app itself does not use AI.
 7. **Open source.** The source code is available under the MIT License; third-party components

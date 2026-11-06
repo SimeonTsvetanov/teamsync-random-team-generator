@@ -13,5 +13,7 @@ export function openAbout(): void {
     h("p", {}, t("shell.about.version", { version: app.version }), h("a", { href: "#whats-new" }, t("shell.menu.whatsNew"))),
     h("h3", {}, t("shell.about.credits")),
     h("ul", { class: "credits" }, ...credits.map((c) => h("li", {}, `${c.name} — ${c.license}`))),
+    ...credits.filter((c): c is typeof c & { notice: string } => "notice" in c && typeof c.notice === "string")
+      .map((c) => h("details", { class: "notice" }, h("summary", {}, `${c.name} NOTICE`), h("pre", { class: "code", tabindex: "0" }, c.notice))),
   ]);
 }

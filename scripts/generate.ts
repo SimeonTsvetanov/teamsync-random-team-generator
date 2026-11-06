@@ -141,7 +141,12 @@ for (const pkg of ["app", "packages/core", "packages/mcp"]) {
 const credits = [...depNames].sort().map((name) => {
   for (const pkg of ["app", "packages/core", "packages/mcp", "."]) {
     const f = join(root, pkg, "node_modules", name, "package.json");
-    if (existsSync(f)) return { name, license: (JSON.parse(readFileSync(f, "utf8")) as { license?: string }).license ?? "see package" };
+    if (existsSync(f)) {
+      const license = (JSON.parse(readFileSync(f, "utf8")) as { license?: string }).license ?? "see package";
+      // Apache-2.0 §4(d): a NOTICE file shipped by the dependency must be reproduced (About → Credits).
+      const noticeFile = ["NOTICE", "NOTICE.md", "NOTICE.txt"].map((n) => join(dirname(f), n)).find((n) => existsSync(n));
+      return noticeFile ? { name, license, notice: readFileSync(noticeFile, "utf8").trim().slice(0, 2000) } : { name, license };
+    }
   }
   return { name, license: "see package" };
 });

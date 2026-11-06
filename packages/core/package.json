@@ -15,10 +15,12 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "prepack": "node -e \"require('node:fs').copyFileSync('../../LICENSE','LICENSE')\""
   },
   "dependencies": {
     "zod": "^4.6.0"

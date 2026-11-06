@@ -56,14 +56,14 @@ const actions: Record<string, () => void> = {
 document.addEventListener("click", (e) => {
   const target = e.target instanceof Element ? e.target.closest<HTMLElement>("[data-action]") : null;
   const name = target?.dataset["action"];
-  if (!name || !(name in actions)) return;
+  if (!name || !Object.hasOwn(actions, name)) return;
   e.preventDefault();
   menu?.close();
   actions[name]?.();
 });
 const openFromHash = (): void => {
   const name = location.hash.slice(1);
-  if (name !== "share" && name in actions) actions[name]?.();
+  if (name !== "share" && Object.hasOwn(actions, name)) actions[name]?.();
 };
 window.addEventListener("hashchange", openFromHash);
 openFromHash();

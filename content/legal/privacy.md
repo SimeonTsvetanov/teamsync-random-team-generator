@@ -3,9 +3,14 @@
 **Privacy** — Last updated: 6 November 2026
 
 - **In the browser:** the names you type are split into teams entirely on your device. They are
-  not uploaded anywhere. Names are never put in links (only the number of teams, e.g. `?teams=3`).
-- **Stored on your device only:** your settings (theme, language, number of teams) and your last
-  names list (so it is still there next time) are kept in your browser's own storage on this
+  not uploaded anywhere. Names are never put in TeamSync links (only the number of teams, e.g.
+  `?teams=3`). Please only enter names of people who are fine with it — they stay on this device.
+- **Sharing:** when you tap Share, WhatsApp or Copy, the teams text goes to the app you choose
+  and is then covered by that app's own privacy terms. On Android, a list you share *into*
+  TeamSync arrives in the address and is removed from it right away.
+- **Stored on your device only:** your settings (theme, language, number of teams), your last
+  names list (so it is still there next time), which tips you already dismissed, and an unsent
+  problem report draft (its text) are kept in your browser's own storage on this
   device (local storage). They never leave your device and are not
   synced anywhere. You can see the space used, export, or delete them in **Settings → Storage**,
   or by clearing this site's data in your browser.
@@ -13,8 +18,8 @@
 - **Local AI-agent tool (MCP):** if you run `npx -y @simeonts/teamsync-random-team-generator-mcp`,
   it runs on your own computer; the names your agent sends to it are not sent to us.
 - **Problem reports:** if you send a report, its text and the diagnostics you leave ticked are
-  posted as a **public** GitHub issue. An optional reply email is sent only to the author and is
-  never published.
+  posted as a **public** GitHub issue through GitHub (you need a free GitHub account); GitHub's
+  privacy statement applies. TeamSync does not ask for or send your email.
 - **Hosting:** the site is hosted on GitHub Pages; GitHub may process technical data (e.g. IP
   address) to deliver the site — see GitHub's privacy statement.
 - **Contact:** {email}

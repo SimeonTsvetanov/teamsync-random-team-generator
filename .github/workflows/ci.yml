@@ -23,7 +23,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm verify
       - run: pnpm audit --prod --audit-level high
-      - run: pnpm licenses list --prod --json > licenses.json
+      - run: pnpm -r licenses list --prod --json > licenses.json # -r: every workspace package (the root has only dev deps)
       - name: Licence allowlist (forge-engineering → security §4)
         run: node -e "const l=require('./licenses.json');const ok=/^(MIT|Apache-2\.0|BSD-2-Clause|BSD-3-Clause|ISC|0BSD|Unlicense|CC0-1\.0|OFL-1\.1)$/;const bad=Object.keys(l).filter(k=>!ok.test(k));if(bad.length){console.error('Licences needing a decision:',bad);process.exit(1)}"
   e2e:

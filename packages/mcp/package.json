@@ -8,14 +8,16 @@
     "teamsync-random-team-generator-mcp": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/SimeonTsvetanov/teamsync-random-team-generator"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "prepack": "node -e \"require('node:fs').copyFileSync('../../LICENSE','LICENSE')\""
   },
   "dependencies": {
     "@simeonts/teamsync-random-team-generator-core": "workspace:^",

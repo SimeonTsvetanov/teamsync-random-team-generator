@@ -67,7 +67,8 @@ export function openSettings(): void {
     }).then((yes) => {
       if (!yes) return;
       importAll(f).then((n) => { showToast({ message: t("shell.settings.imported", { count: n }) }); }, (e: unknown) => {
-        showToast({ message: e instanceof Error && e.message === "NOT_THIS_APP" ? t("shell.settings.importWrongApp", { name: app.name }) : t("shell.settings.importFailed") });
+        const code = e instanceof Error ? e.message : "";
+        showToast({ message: code === "NOT_THIS_APP" ? t("shell.settings.importWrongApp", { name: app.name }) : code === "IMPORT_TOO_BIG" ? t("shell.settings.importTooBig") : t("shell.settings.importFailed") });
       });
     });
   });

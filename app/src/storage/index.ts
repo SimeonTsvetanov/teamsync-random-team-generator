@@ -77,23 +77,68 @@ export async function exportAll(): Promise<Blob> {
   return new Blob([new Uint8Array(zipSync(entries))], { type: "application/zip" });
 }
 
-/** Import a JSON or ZIP made by exportAll(); returns how many items were restored. */
+/** Import limits (security review 2026-11-06): checked before anything is parsed or written. */
+const MAX_IMPORT_BYTES = 50 * 1024 * 1024;
+const MAX_UNZIPPED_BYTES = 200 * 1024 * 1024;
+const MAX_ZIP_ENTRIES = 5000;
+const MAX_PREF_BYTES = 1024 * 1024;
+
+/** Value checks per pref key; keys without a check are accepted if they are small JSON. Apps add
+ *  their own with registerPrefCheck() so a hand-edited export can't break the app. */
+const prefChecks = new Map<string, (v: unknown) => boolean>([
+  ["theme", (v) => v === "light" || v === "dark"],
+  ["lang", (v) => typeof v === "string" && v.length <= 8],
+  ["last-seen-version", (v) => typeof v === "string"],
+  ["install-dismissed-at", (v) => typeof v === "number"],
+  ["report-queue", (v) => Array.isArray(v)],
+]);
+export function registerPrefCheck(key: string, check: (v: unknown) => boolean): void { prefChecks.set(key, check); }
+
+const isZip = (b: Uint8Array): boolean => b[0] === 0x50 && b[1] === 0x4b && b[2] === 0x03 && b[3] === 0x04;
+const safeName = (n: string): boolean => /^[^/\\]{1,200}$/.test(n) && n !== "." && n !== "..";
+const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+
+/**
+ * Import a JSON or ZIP made by exportAll(); returns how many items were restored.
+ * Errors (codes, translated by the UI): IMPORT_TOO_BIG, IMPORT_INVALID, NOT_THIS_APP.
+ */
 export async function importAll(file: File): Promise<number> {
-  let data: Partial<ExportData>;
+  if (file.size > MAX_IMPORT_BYTES) throw new Error("IMPORT_TOO_BIG");
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  let raw: unknown;
   const restored: [string, Uint8Array][] = [];
-  if (file.name.endsWith(".zip")) {
-    const { unzipSync, strFromU8 } = await import("fflate");
-    const zip = unzipSync(new Uint8Array(await file.arrayBuffer()));
-    data = JSON.parse(strFromU8(zip["data.json"] ?? new Uint8Array())) as Partial<ExportData>;
-    for (const [path, bytes] of Object.entries(zip)) if (path.startsWith("files/")) restored.push([path.slice(6), bytes]);
-  } else {
-    data = JSON.parse(await file.text()) as Partial<ExportData>;
+  try {
+    if (isZip(bytes)) {
+      const { unzipSync, strFromU8 } = await import("fflate");
+      let count = 0, total = 0;
+      const zip = unzipSync(bytes, {
+        filter: (f) => {
+          count += 1; total += f.originalSize;
+          if (count > MAX_ZIP_ENTRIES || total > MAX_UNZIPPED_BYTES) throw new Error("IMPORT_TOO_BIG"); // zip bomb guard
+          return f.name === "data.json" || (f.name.startsWith("files/") && safeName(f.name.slice(6)));
+        },
+      });
+      raw = JSON.parse(strFromU8(zip["data.json"] ?? new Uint8Array()));
+      for (const [path, b] of Object.entries(zip)) if (path.startsWith("files/")) restored.push([path.slice(6), b]);
+    } else {
+      raw = JSON.parse(new TextDecoder().decode(bytes));
+    }
+  } catch (e) {
+    throw new Error(e instanceof Error && e.message === "IMPORT_TOO_BIG" ? "IMPORT_TOO_BIG" : "IMPORT_INVALID", { cause: e });
   }
-  if (data.app !== app.id) throw new Error("NOT_THIS_APP"); // code; the UI shows a translated message
+  if (!isRecord(raw)) throw new Error("IMPORT_INVALID");
+  if (raw["app"] !== app.id) throw new Error("NOT_THIS_APP");
+  const prefsIn = raw["prefs"] ?? {};
+  const tablesIn = raw["tables"] ?? {};
+  if (!isRecord(prefsIn) || !isRecord(tablesIn) || !Object.values(tablesIn).every(Array.isArray)) throw new Error("IMPORT_INVALID");
   let n = 0;
-  for (const [k, v] of Object.entries(data.prefs ?? {})) { prefs.set(k, v); n++; }
-  if (data.tables && Object.keys(data.tables).length) n += await (await import("./db.ts")).restoreTables(data.tables);
-  for (const [name, bytes] of restored) { await files.write(name, new Blob([new Uint8Array(bytes)])); n++; }
+  for (const [k, v] of Object.entries(prefsIn)) {
+    const check = prefChecks.get(k) ?? (k.startsWith("draft:") ? isRecord : undefined);
+    if (k.length > 100 || JSON.stringify(v).length > MAX_PREF_BYTES || (check && !check(v))) continue; // skip, never break the app
+    prefs.set(k, v); n++;
+  }
+  if (Object.keys(tablesIn).length) n += await (await import("./db.ts")).restoreTables(tablesIn as Record<string, unknown[]>);
+  for (const [name, b] of restored) { await files.write(name, new Blob([new Uint8Array(b)])); n++; }
   return n;
 }
 

@@ -1,9 +1,13 @@
 import { MAX_TEAMS, MIN_TEAMS } from "@simeonts/teamsync-random-team-generator-core";
-import { prefs } from "../storage/index.ts";
+import { prefs, registerPrefCheck } from "../storage/index.ts";
+
+// Imported data must have the right types (a broken export can never break the app).
+registerPrefCheck("names", (v) => typeof v === "string" && v.length <= 110_000);
+registerPrefCheck("teams", (v) => Number.isInteger(v));
 
 /** What TeamSync remembers on this device (SPEC F7): the last names list and team count. */
 export const saved = {
-  names: (): string => prefs.get<string>("names", ""),
+  names: (): string => { const v = prefs.get<unknown>("names", ""); return typeof v === "string" ? v : ""; },
   setNames: (text: string): void => { if (text.trim()) prefs.set("names", text); else prefs.remove("names"); },
   teams: (): number => clampTeams(prefs.get<number>("teams", MIN_TEAMS)),
   setTeams: (n: number): void => { prefs.set("teams", n); },

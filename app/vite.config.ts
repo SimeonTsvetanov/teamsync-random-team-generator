@@ -52,7 +52,7 @@ function appHtml(): Plugin {
         .replaceAll("%APP_URL%", app.url)
         .replaceAll("%APP_LANG%", app.languages[0] ?? "en")
         .replaceAll("%BUILD_YEAR%", String(new Date().getFullYear()))
-        .replace("%APP_JSONLD%", JSON.stringify(jsonLd))
+        .replace("%APP_JSONLD%", JSON.stringify(jsonLd).replace(/</g, "\\u003c")) // never "</script>" inside the block
         .replace("connect-src 'self'", `connect-src ${connect}`)
         .replace("%APP_HREFLANG%", hreflang)
         .replace("%APP_STEPS%", app.help.steps.map((t) => `<li>${esc(t)}</li>`).join(""))
