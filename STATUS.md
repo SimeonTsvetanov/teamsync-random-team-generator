@@ -11,5 +11,5 @@
 
 ## Blockers / open
 - T-10 needs Moni: GitHub Pages source = GitHub Actions + repo security settings (UI steps in the report).
-- Share target from WhatsApp (Android): proposed, waiting for Moni.
+- WhatsApp sharing in + out done (Moni 2026-11-06).
 - GitHub issues for the tasks: only after Moni's OK (public action).

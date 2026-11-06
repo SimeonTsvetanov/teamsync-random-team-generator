@@ -24,3 +24,10 @@ Format: `date · decision · reason`. Newest last.
 - **2026-11-06 · Forge template 0.5.0 merged (offline page, app feel, light dismiss, undo, drafts,
   view transitions, manifest screenshots/shortcuts, optional share target, perf helpers, print).** ·
   Share target stays off until Moni decides (proposed for T-07: share a names list from WhatsApp).
+- **2026-11-06 · Moni: WhatsApp sharing "as much as possible".** · In: paste cleanup of chat lists
+  (`namesFromSharedText`: numbers, bullets, emoji, "[time] Name:" prefixes, comma lists, shared
+  TeamSync results) and Android Share → TeamSync (`modes.shareTarget`). Out: a WhatsApp button
+  (`https://wa.me/?text=` — app on phones, WhatsApp Web on computers) next to Copy/Share. Text
+  label "WhatsApp" only, no WhatsApp logo (trademark).
+- **2026-11-06 · `*.tsbuildinfo` untracked + gitignored.** · A committed buildinfo made CI skip
+  building packages/mcp (TS6305 on a clean runner); forge template .gitignore fixed too.

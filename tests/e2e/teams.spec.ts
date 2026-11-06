@@ -70,7 +70,7 @@ test("AC6: the list survives a reload; Clear has Undo; Clear my data removes it"
   await page.goto("./");
   const area = page.locator("#names");
   await area.fill("Ana\nBoris");
-  await page.waitForTimeout(500);
+  await expect.poll(() => page.evaluate(() => Object.keys(localStorage).some((k) => k.endsWith(":v1:names")))).toBe(true); // debounced save done
   await page.reload();
   await expect(area).toHaveValue("Ana\nBoris");
   await page.getByRole("button", { name: "Clear", exact: true }).click();
@@ -80,6 +80,7 @@ test("AC6: the list survives a reload; Clear has Undo; Clear my data removes it"
   await page.goto("./#settings");
   await page.getByRole("button", { name: "Clear my data" }).click();
   await page.getByRole("alertdialog").getByRole("button", { name: "Delete" }).click();
+  await expect(page.getByText("Your data was cleared ✓")).toBeVisible(); // clearing finished
   await page.goto("./");
   await expect(page.locator("#names")).toHaveValue("");
 });
@@ -113,4 +114,26 @@ test("dark mode: results and errors keep WCAG AA contrast", async ({ browser }) 
   await expect(page.getByRole("alert")).toBeVisible();
   expect(await serious(page)).toEqual([]);
   await context.close();
+});
+
+test("WhatsApp: pasting a chat list keeps only the names; shared text arrives via Share → TeamSync; WhatsApp button carries the teams", async ({ page }) => {
+  await page.goto("./");
+  const area = page.locator("#names");
+  await area.focus();
+  await page.evaluate(() => {
+    const dt = new DataTransfer();
+    dt.setData("text/plain", "[06.11.26, 18:03] Moni: 1. Ana\n[06.11.26, 18:03] Moni: 2. Boris\n⚽ Vesko");
+    document.querySelector("#names")?.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
+  });
+  await expect(area).toHaveValue("Ana\nBoris\nVesko");
+
+  await page.goto("./?share-target=1&title=&text=" + encodeURIComponent("- Gergana\n- Dimitar\n- Elena\n- Fani") + "&url=");
+  await expect(area).toHaveValue("Gergana\nDimitar\nElena\nFani");
+  await expect(page.getByText("4 names added from the shared text")).toBeVisible();
+  await expect.poll(() => page.evaluate(() => location.search)).not.toContain("share-target");
+
+  await generate(page);
+  const href = await page.locator("[data-whatsapp]").getAttribute("href");
+  expect(href?.startsWith("https://wa.me/?text=")).toBe(true);
+  expect(decodeURIComponent(href ?? "")).toContain("🏆 Team 1 | Members - 2");
 });

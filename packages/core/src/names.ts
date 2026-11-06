@@ -43,3 +43,30 @@ export function parseNames(text: string): Result<string[], NamesErrorCode> {
   if (long !== undefined) return fail("NAME_TOO_LONG", `A name can have at most ${String(MAX_NAME_LENGTH)} characters.`);
   return ok(names);
 }
+
+/**
+ * Turns text shared from a chat (WhatsApp, Viber, Messenger, notes…) into one name per line:
+ * - drops chat prefixes like "[06.11.26, 18:03] Moni: " or "06/11/2026, 18:03 - Moni: ";
+ * - drops list markers: "1.", "2)", "3 -", "-", "*", "•", "·", "–", "[x]", leading emoji;
+ * - one line with commas or semicolons ("Ana, Boris; Vesko") becomes one name per item;
+ * - a shared TeamSync result ("🏆 Team 1 … 👤 Ana") gives back just the names;
+ * - links and empty lines are dropped. The "the followers" line is kept (it expands later).
+ */
+export function namesFromSharedText(text: string): string {
+  const lines = text.replace(/\r\n?/g, "\n").split("\n");
+  const teamSyncResult = lines.some((l) => l.includes("👤"));
+  const chatPrefix = /^\s*\[?\d{1,4}[./-]\d{1,2}[./-]\d{1,4},?\s+\d{1,2}:\d{2}(?::\d{2})?(?:\s?[AaPp]\.?[Mm]\.?)?\]?\s*(?:-\s*)?[^:]{1,40}:\s*/;
+  const marker = /^\s*(?:\[[ xX✓]\]\s*|\d{1,3}\s*[.)\-:]\s*|[-*•·–—+>]\s*|(?:\p{Extended_Pictographic}|\p{Emoji_Modifier}|️|‍)+\s*)+/u;
+  const out: string[] = [];
+  for (const raw of lines) {
+    if (teamSyncResult && !raw.includes("👤")) continue;
+    let line = raw.replace(chatPrefix, "").replace(marker, "").trim();
+    if (!line || /^https?:\/\//i.test(line) || /^[—–-]\s*(made with|направено с)/i.test(line)) continue;
+    const parts = lines.filter((l) => l.trim()).length === 1 && /[,;]/.test(line) ? line.split(/[,;]/) : [line];
+    for (const p of parts) {
+      line = p.replace(marker, "").trim();
+      if (line) out.push(line);
+    }
+  }
+  return out.join("\n");
+}

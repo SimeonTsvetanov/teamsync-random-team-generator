@@ -200,6 +200,8 @@ export const bg: Messages = {
     namesCount_other: "{{count}} имена",
     clear: "Изчисти",
     cleared: "Списъкът с имена е изчистен",
+    sharedIn_one: "Добавено е {{count}} име от споделения текст",
+    sharedIn_other: "Добавени са {{count}} имена от споделения текст",
     teamsLabel: "Отбори",
     fewerTeams: "По-малко отбори",
     moreTeams: "Повече отбори",

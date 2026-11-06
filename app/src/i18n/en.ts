@@ -198,6 +198,8 @@ export const en = {
     namesCount_other: "{{count}} names",
     clear: "Clear",
     cleared: "Names list cleared",
+    sharedIn_one: "{{count}} name added from the shared text",
+    sharedIn_other: "{{count}} names added from the shared text",
     teamsLabel: "Teams",
     fewerTeams: "Fewer teams",
     moreTeams: "More teams",

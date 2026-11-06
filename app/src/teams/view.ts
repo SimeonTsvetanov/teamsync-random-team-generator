@@ -1,4 +1,5 @@
-import { MAX_TEAMS, MIN_TEAMS, expandFollowers, formatTeams, makeTeams, parseNames, type FormatLabels } from "@simeonts/teamsync-random-team-generator-core";
+import { MAX_TEAMS, MIN_TEAMS, expandFollowers, formatTeams, makeTeams, namesFromSharedText, parseNames, type FormatLabels } from "@simeonts/teamsync-random-team-generator-core";
+import { onShared } from "../ui/share-target.ts";
 import { app } from "../config.ts";
 import { t } from "../i18n/index.ts";
 import { h } from "../ui/dom.ts";
@@ -58,6 +59,9 @@ export function initTeams(): void {
   };
   const renderResults = (value: string[][], announce: boolean): void => {
     last = value;
+    // WhatsApp: opens the app on phones and WhatsApp Web on computers with the teams text ready.
+    const wa = document.querySelector<HTMLAnchorElement>("[data-whatsapp]");
+    if (wa) wa.href = `https://wa.me/?text=${encodeURIComponent(formatTeams(value, labels()))}`;
     withTransition(() => {
       grid.replaceChildren(...value.map((members, i) =>
         h("article", { class: "team-card", "aria-labelledby": `team-${String(i + 1)}` },
@@ -100,6 +104,27 @@ export function initTeams(): void {
     area.focus();
     // Clearing one field is reversible → Undo, not a confirmation (forge-design ui-patterns §4).
     showUndo(t("app.cleared"), () => { area.value = before; saved.setNames(before); renderCount(); });
+  });
+  // Pasting a chat list (numbers, bullets, emoji, "[date] Name:" prefixes) keeps just the names.
+  area.addEventListener("paste", (e) => {
+    const pasted = e.clipboardData?.getData("text/plain") ?? "";
+    const cleaned = namesFromSharedText(pasted);
+    if (!cleaned || cleaned === pasted.trim()) return;
+    e.preventDefault();
+    area.setRangeText(cleaned, area.selectionStart, area.selectionEnd, "end");
+    area.dispatchEvent(new Event("input"));
+  });
+  // Android "Share → TeamSync" (manifest share_target): the shared list becomes the names.
+  onShared((c) => {
+    const incoming = expandFollowers(namesFromSharedText(c.text || c.title));
+    if (!incoming) return;
+    const before = area.value;
+    area.value = incoming;
+    saved.setNames(incoming);
+    renderCount();
+    const message = t("app.sharedIn", { count: nameCount() });
+    if (before.trim() && before !== incoming) showUndo(message, () => { area.value = before; saved.setNames(before); renderCount(); });
+    else showToast({ message });
   });
   dec.addEventListener("click", () => { setTeams(teams - 1); });
   inc.addEventListener("click", () => { setTeams(teams + 1); });
