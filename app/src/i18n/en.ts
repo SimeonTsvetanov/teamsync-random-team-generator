@@ -124,7 +124,7 @@ export const en = {
     about: {
       title: "About {{name}}",
       builtBy: "Made by {{author}} · ",
-      source: "Source on GitHub",
+      source: "Source code",
       version: "Version {{version}} · free and open source (MIT) · ",
       credits: "Made with these open-source projects",
       notice: "{{name}} licence notice",

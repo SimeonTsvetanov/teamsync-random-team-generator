@@ -28,6 +28,7 @@ const write = (rel: string, text: string): void => {
 const fill = (text: string): string =>
   text
     .replace(/<!--[\s\S]*?-->\s*/g, "") // internal template notes never ship
+    .replaceAll("APP_MORE_TOOLS", app.moreTools.replaceAll("&", "&amp;"))
     .replaceAll("APP_BASE/", `${app.id}/`)
     .replaceAll("APP_NAME", app.name)
     .replaceAll("APP_REPO", app.id)

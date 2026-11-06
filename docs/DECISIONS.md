@@ -62,3 +62,6 @@ Format: `date · decision · reason`. Newest last.
   asks first, then empties names + teams and returns to the first screen.** · Explicit wish for a
   confirmation here (not Undo). Hover on quiet red buttons/links no longer fades or fills (axe:
   3.18–3.72:1); they keep full contrast.
+- **2026-11-06 · Moni: no visible "Your teams" title (results start level with the names card);
+  "More free tools" → GitHub list of simeonts-microapp repos (hub site simeontsvetanov.github.io
+  does not exist yet → was 404); About: "GitHub" = Moni's profile, the app's code is "Source code".**

@@ -126,7 +126,7 @@ export const bg: Messages = {
     about: {
       title: "За {{name}}",
       builtBy: "Създадено от {{author}} · ",
-      source: "Код в GitHub",
+      source: "Изходен код",
       version: "Версия {{version}} · безплатно и с отворен код (MIT) · ",
       credits: "Направено с тези проекти с отворен код",
       notice: "Лицензна бележка на {{name}}",

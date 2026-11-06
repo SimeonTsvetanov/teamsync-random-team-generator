@@ -81,3 +81,8 @@
 /* "Clear and start over": always the last row, full width, quiet (red text, no fill). */
 .results-actions > .results-clear { grid-column: 1 / -1; }
 @media (min-width: 900px) { .button-stack.results-actions { grid-template-columns: repeat(3, 1fr); } .button-stack.results-actions > .results-clear { grid-column: 1 / -1; } }
+
+/* Results start level with the names card (no "Your teams" title shown — Moni 2026-11-06);
+   phones keep only the "‹ Names" back link in this row. */
+.results-head { margin-bottom: 0; }
+@media (max-width: 600px) { .results-head { margin-bottom: var(--space-3); } }

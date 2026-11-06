@@ -56,6 +56,8 @@ export interface AppConfig {
     readonly steps: readonly string[]; // Quick start, 3–5 steps with the exact UI labels
     readonly features: readonly { readonly name: string; readonly text: string }[]; // every option explained
   };
+  /** "More free tools" link (footer, 404). Until the hub site simeontsvetanov.github.io exists: the GitHub list. */
+  readonly moreTools: string;
   readonly author: { readonly name: string; readonly country: string; readonly linkedin?: string; readonly github?: string }; // Legal notice, About, Support, JSON-LD
   readonly faq: readonly { readonly q: string; readonly a: string }[]; // 5–10, also FAQPage JSON-LD
   readonly shortcuts?: readonly { readonly name: string; readonly url: string }[];
@@ -137,6 +139,7 @@ export const app = {
       ],
     },
   },
+  moreTools: "https://github.com/SimeonTsvetanov?tab=repositories&q=simeonts-microapp",
   author: { name: "Simeon Tsvetanov", country: "Bulgaria", linkedin: "https://www.linkedin.com/in/simeon-tsvetanov-a00963159", github: "https://github.com/SimeonTsvetanov" },
   faq: [
     { q: "Is TeamSync free?", a: "Yes. It is free and open source (MIT licence), with no ads and no sign-up." },
