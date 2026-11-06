@@ -56,7 +56,7 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Reading list: forge-engineering → typescript, testing
 - Acceptance: AC5 unit tests (any case, surrounding spaces, in place among other names, twice → twice); limits and error codes; coverage ≥ 90 %
 - Depends on: —
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-02 · Fair shuffle and team split (core)
 - Goal: `shuffle` (Fisher–Yates, `crypto.getRandomValues` with rejection sampling — no modulo bias) and `makeTeams`
@@ -64,7 +64,7 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Reading list: forge-engineering → typescript, testing (fast-check)
 - Acceptance: AC1 sizes (10/2 → 5/5, 11/3 → 4/4/3); fast-check: every name exactly once, sizes differ ≤ 1; AC2 fairness 30,000 runs ±2 %; errors per SPEC
 - Depends on: T-01
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-03 · Result text format (core)
 - Goal: `formatTeams` — old copy format, labels injected (EN/BG), attribution line last
@@ -72,7 +72,7 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Reading list: forge-app-shell → app-shell §8 (attribution)
 - Acceptance: snapshot tests EN + BG labels; ends with `— Made with TeamSync · <url>`
 - Depends on: T-02
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-04 · MCP tool `make_teams`
 - Goal: replace `make_slug` with `make_teams` (Zod schema shared with core)
@@ -80,7 +80,7 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Reading list: forge-engineering → mcp
 - Acceptance: in-memory client test: valid call → teams; cheat via string input; error codes as `isError`
 - Depends on: T-02, T-03
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-05 · Main screen: input and team count (app)
 - Goal: textarea with live count, segmented 2–10 (disabled above the name count), Generate button; EN + BG strings

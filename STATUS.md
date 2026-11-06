@@ -7,7 +7,7 @@
 - Forge template 0.5.0 merged (i18n EN default + BG; confirm modal, equal buttons, grouped Settings); `pnpm verify` + e2e (38) green.
 
 ## Next
-- Build T-01 → T-04 (core + MCP), then app UI T-05 → T-07.
+- T-01–T-04 done (core: names + cheat, fair teams, format; MCP make_teams) — 39 tests, core coverage 100 % lines. Next: app UI T-05 → T-07.
 
 ## Blockers / open
 - GitHub issues for the tasks: only after Moni's OK (public action).
