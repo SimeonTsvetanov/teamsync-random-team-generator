@@ -34,7 +34,7 @@
     "@vitest/coverage-v8": "^5.1.0",
     "fast-check": "^4.10.0",
     "@types/node": "^24.19.0",
-    "@playwright/test": "^1.64.0",
+    "@playwright/test": "^1.65.0",
     "@axe-core/playwright": "^4.14.0",
     "marked": "^18.0.0",
     "sharp": "^0.35.4"
