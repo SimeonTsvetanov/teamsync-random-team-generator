@@ -3,6 +3,7 @@ import "../../design/tokens.css";
 import "./generated/accent.css"; // per-app accent from app.config (empty = default)
 import "./styles/app.css";
 import "./styles/teams.css";
+import { config as zodConfig } from "zod";
 import { app } from "./config.ts";
 import { hydrateIcons } from "./ui/icons.ts";
 import { applyTheme, getTheme, initTheme } from "./ui/theme.ts";
@@ -21,6 +22,7 @@ import { initPwa } from "./pwa.ts";
 import { initShareTarget } from "./ui/share-target.ts";
 import { initTeams } from "./teams/view.ts";
 
+zodConfig({ jitless: true }); // CSP: no new Function (forge-engineering frontend-level1 §5)
 initI18n(); // first: every later module (incl. the error screen) uses t()
 installErrorScreen();
 // Embed mode (iframe or ?embed=1): no install prompt, no support line, compact chrome (APP-STANDARD §1).

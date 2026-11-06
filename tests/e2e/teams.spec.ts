@@ -116,9 +116,11 @@ test("dark mode: results and errors keep WCAG AA contrast", async ({ browser }) 
   await context.close();
 });
 
-test("WhatsApp: pasting a chat list keeps only the names; shared text arrives via Share → TeamSync; WhatsApp button carries the teams", async ({ page }) => {
+test("WhatsApp: pasting a chat list keeps only the names; shared text arrives via Share → TeamSync; WhatsApp button carries the teams", async ({ page, browserName }) => {
   await page.goto("./");
   const area = page.locator("#names");
+  // Firefox ignores clipboardData on synthetic paste events, so the paste part runs elsewhere.
+  if (browserName !== "firefox") {
   await area.focus();
   await page.evaluate(() => {
     const dt = new DataTransfer();
@@ -126,6 +128,7 @@ test("WhatsApp: pasting a chat list keeps only the names; shared text arrives vi
     document.querySelector("#names")?.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
   });
   await expect(area).toHaveValue("Ana\nBoris\nVesko");
+  }
 
   await page.goto("./?share-target=1&title=&text=" + encodeURIComponent("- Gergana\n- Dimitar\n- Elena\n- Fani") + "&url=");
   await expect(area).toHaveValue("Gergana\nDimitar\nElena\nFani");

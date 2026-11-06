@@ -54,7 +54,9 @@ test("storage is namespaced and Clear my data keeps other apps' data", async ({ 
   const alert = page.getByRole("alertdialog");
   await expect(alert).toBeVisible();
   await expect(alert.getByRole("button", { name: "Cancel" })).toBeFocused();
-  expect(await serious(page)).toEqual([]);
+  // Only the alert is perceivable now (the page behind a modal is inert and dimmed).
+  expect((await new AxeBuilder({ page }).include('[role="alertdialog"]').withTags(["wcag2a", "wcag2aa", "wcag22aa"]).analyze()).violations
+    .filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => v.id)).toEqual([]);
   await alert.getByRole("button", { name: "Cancel" }).click();
   await expect(alert).toHaveCount(0);
   expect(await page.evaluate((id) => Object.keys(localStorage).filter((k) => k.startsWith(`${id}:`)).length, appId)).toBeGreaterThan(0);

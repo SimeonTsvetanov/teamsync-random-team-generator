@@ -31,3 +31,6 @@ Format: `date · decision · reason`. Newest last.
   label "WhatsApp" only, no WhatsApp logo (trademark).
 - **2026-11-06 · `*.tsbuildinfo` untracked + gitignored.** · A committed buildinfo made CI skip
   building packages/mcp (TS6305 on a clean runner); forge template .gitignore fixed too.
+- **2026-11-06 · CSP without `upgrade-insecure-requests`; Zod `jitless` in the browser.** · CI on
+  WebKit: the directive upgraded `http://localhost` and nothing loaded (57 e2e failures); Pages
+  already forces HTTPS. Firefox logged a CSP eval violation from Zod's JIT. Both fixed in the forge too.
