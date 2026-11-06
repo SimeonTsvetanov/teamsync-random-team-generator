@@ -41,6 +41,11 @@ document.addEventListener("i18n:change", () => { applyTheme(getTheme()); updateM
 document.querySelectorAll("[data-year]").forEach((el) => { el.textContent = String(new Date().getFullYear()); });
 document.querySelectorAll("[data-version]").forEach((el) => { el.textContent = app.version; });
 
+// LinkedIn from app.config (the static link is the default; hidden if the app has none).
+document.querySelectorAll<HTMLAnchorElement>("[data-author-linkedin]").forEach((a) => {
+  if (app.author.linkedin) a.href = app.author.linkedin; else a.remove();
+});
+
 // Contact email rendered by JS only (anti-scraping, APP-STANDARD §7).
 document.querySelectorAll<HTMLAnchorElement>("[data-contact]").forEach((a) => {
   a.href = `mailto:${app.contact.email}`;

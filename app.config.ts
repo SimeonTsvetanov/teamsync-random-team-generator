@@ -56,7 +56,7 @@ export interface AppConfig {
     readonly steps: readonly string[]; // Quick start, 3–5 steps with the exact UI labels
     readonly features: readonly { readonly name: string; readonly text: string }[]; // every option explained
   };
-  readonly author: { readonly name: string; readonly country: string }; // Legal notice + About
+  readonly author: { readonly name: string; readonly country: string; readonly linkedin?: string; readonly github?: string }; // Legal notice, About, Support, JSON-LD
   readonly faq: readonly { readonly q: string; readonly a: string }[]; // 5–10, also FAQPage JSON-LD
   readonly shortcuts?: readonly { readonly name: string; readonly url: string }[];
 }
@@ -137,7 +137,7 @@ export const app = {
       ],
     },
   },
-  author: { name: "Simeon Tsvetanov", country: "Bulgaria" },
+  author: { name: "Simeon Tsvetanov", country: "Bulgaria", linkedin: "https://www.linkedin.com/in/simeon-tsvetanov-a00963159", github: "https://github.com/SimeonTsvetanov" },
   faq: [
     { q: "Is TeamSync free?", a: "Yes. It is free and open source (MIT licence), with no ads and no sign-up." },
     { q: "Are the teams really fair?", a: "Yes. TeamSync uses the Fisher–Yates shuffle with your device's secure random numbers, so every split is equally likely. Team sizes differ by at most one." },

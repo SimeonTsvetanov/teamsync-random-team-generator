@@ -55,3 +55,6 @@ Format: `date · decision · reason`. Newest last.
   menu), compact Share sheet, menu safe-area padding, 44 px touch targets, result bar fades the
   list instead of covering it, wider list numbers, shorter BG hint. Alert "Delete" stays solid red
   (red text on the dark alert surface would be 4.09:1).
+- **2026-11-06 · Moni: LinkedIn (https://www.linkedin.com/in/simeon-tsvetanov-a00963159) in
+  About, menu (Support group), Support page, Legal notice and JSON-LD `sameAs`** — from
+  `app.config.author.linkedin` (forge template 0.6.5).

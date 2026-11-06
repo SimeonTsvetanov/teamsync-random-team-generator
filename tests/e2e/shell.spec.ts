@@ -29,7 +29,7 @@ test("menu opens and every item is reachable", async ({ page }) => {
   await page.goto("./");
   await page.click("[data-menu-open]");
   await expect(page.locator("dialog[data-menu][open]")).toBeVisible();
-  await expect(page.locator("dialog[data-menu] a, dialog[data-menu] nav button")).toHaveCount(14);
+  await expect(page.locator("dialog[data-menu] a, dialog[data-menu] nav button")).toHaveCount(15); // incl. LinkedIn
 });
 
 test("regression: saved dark theme is applied by theme-init.js before the app JS runs", async ({ browser }) => {

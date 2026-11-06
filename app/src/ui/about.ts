@@ -9,7 +9,7 @@ export function openAbout(): void {
   openDialog("about", t("shell.about.title", { name: app.name }), [
     h("p", {}, text().description),
     h("p", {}, t("shell.about.how")),
-    h("p", {}, t("shell.about.builtBy", { author: app.author.name }), link(app.repo, t("shell.about.source")), " · ", link(app.support.buyMeACoffee, t("shell.menu.supportMe"))),
+    h("p", {}, t("shell.about.builtBy", { author: app.author.name }), link(app.repo, t("shell.about.source")), " · ", ...(app.author.linkedin ? [link(app.author.linkedin, "LinkedIn"), " · "] : []), link(app.support.buyMeACoffee, t("shell.menu.supportMe"))),
     h("p", {}, t("shell.about.version", { version: app.version }), h("a", { href: "#whats-new" }, t("shell.menu.whatsNew"))),
     h("h3", {}, t("shell.about.credits")),
     h("ul", { class: "credits" }, ...credits.map((c) => h("li", {}, `${c.name} — ${c.license}`))),

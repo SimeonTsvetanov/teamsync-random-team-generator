@@ -80,6 +80,7 @@ const titles: Record<string, string> = {
 };
 const replacements: Record<string, string> = {
   "{App}": app.name, "{app url}": app.url, "{repo}": app.repo, "{base}": base, "{country}": app.author.country,
+  "{linkedin}": app.author.linkedin ?? "https://www.linkedin.com/",
   // Email is rendered by year.js from data attributes, never as plain text in HTML (anti-scraping).
   "{email}": `<a data-email-user="${app.contact.email.split("@")[0] ?? ""}" data-email-domain="${app.contact.email.split("@")[1] ?? ""}">email (needs JavaScript)</a>`,
 };

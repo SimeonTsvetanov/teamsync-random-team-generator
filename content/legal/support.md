@@ -6,5 +6,6 @@
 - **Report a problem or suggest an idea:** {app url}#report (opens GitHub — a free account is needed) or
   [GitHub issues]({repo}/issues).
 - **Email:** {email}
+- **LinkedIn:** [Simeon Tsvetanov]({linkedin})
 - **Limits:** up to 1,000 names and 2–10 teams; everything runs in your browser (no server, no status page).
 - **Support the project:** [Buy me a coffee ☕](https://buymeacoffee.com/simeontsvetanov)

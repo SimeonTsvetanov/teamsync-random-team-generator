@@ -3,7 +3,7 @@
 **Legal notice** — Last updated: 6 November 2026
 
 - **Provider:** Simeon Tsvetanov, {country}.
-- **Contact:** {email} · Report a problem: {app url}#report
+- **Contact:** {email} · [LinkedIn]({linkedin}) · Report a problem: {app url}#report
 - **What this is:** {App} is a free, open-source tool provided "as is" (see Terms).
 - **Licence:** MIT — source code: {repo}.
 - **Policies:** [Terms]({base}terms/) · [Privacy]({base}privacy/) · [AI notice]({base}ai-notice/)

@@ -23,7 +23,7 @@ function appHtml(): Plugin {
       "@context": "https://schema.org", "@type": "WebApplication", name: app.name, url: app.url,
       description: app.description, applicationCategory: "UtilitiesApplication",
       operatingSystem: "Any — runs in the browser", offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-      author: { "@type": "Person", name: "Simeon Tsvetanov", url: "https://github.com/SimeonTsvetanov" },
+      author: { "@type": "Person", name: app.author.name, url: app.author.github ?? "https://github.com/SimeonTsvetanov", sameAs: [app.author.linkedin, app.author.github].filter(Boolean) },
       softwareVersion: app.version, sameAs: [app.repo],
     },
     {
