@@ -9,3 +9,10 @@ Corrections captured for `/learn` (format: forge-flow → learn §1). Newest las
 - **Fix (forge):** `confirmAction()` alert, dialog `beforeClose` guard, `.button-stack`, grouped
   Settings, `--backdrop-blur`, dark fill fix; rules in forge-design ui-patterns §1/§4/§12 and
   moni-taste; eval `design-confirm-destructive` 0.83 → 1.00. Central log: forge `docs/LEARNINGS-LOG.md`.
+
+## L-2026-11-06-02 · template · applied in forge 0.5.1
+- **What happened (found by our own e2e/axe/screenshots while building):** the install dialog
+  covered the first teams; Clear my data left the names on screen; chip text on the grey fill was
+  4.15:1; the three result buttons were 2+1 on desktop.
+- **Fix:** install toast, `app:data-cleared` event, only `--color-text` on fill, 3-button row —
+  in the forge template; TeamSync tests: AC6 and a dark-mode axe test.

@@ -2,6 +2,7 @@ import "@fontsource-variable/inter";
 import "../../design/tokens.css";
 import "./generated/accent.css"; // per-app accent from app.config (empty = default)
 import "./styles/app.css";
+import "./styles/teams.css";
 import { app } from "./config.ts";
 import { hydrateIcons } from "./ui/icons.ts";
 import { applyTheme, getTheme, initTheme } from "./ui/theme.ts";
@@ -18,6 +19,7 @@ import { flushReportQueue, openReport } from "./ui/report.ts";
 import { initInstall, openInstall, updateMenuLabel } from "./ui/install.ts";
 import { initPwa } from "./pwa.ts";
 import { initShareTarget } from "./ui/share-target.ts";
+import { initTeams } from "./teams/view.ts";
 
 initI18n(); // first: every later module (incl. the error screen) uses t()
 installErrorScreen();
@@ -86,5 +88,6 @@ if (header && sentinel) {
 
 window.addEventListener("online", flushReportQueue);
 flushReportQueue();
+initTeams();
 maybeShowWhatsNew();
 initPwa();

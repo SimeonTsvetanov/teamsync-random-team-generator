@@ -77,7 +77,8 @@ export function openSettings(): void {
       title: t("shell.settings.clearTitle"), message: t("shell.settings.clearMessage", { name: app.name, stores: app.storage.stores.join(", ") }),
       confirm: t("shell.settings.clearConfirm"),
     }).then((yes) => {
-      if (yes) void clearAll().then(() => { showToast({ message: t("shell.settings.cleared") }); });
+      // App code listens for "app:data-cleared" to reset what is on screen (else it could be saved again).
+      if (yes) void clearAll().then(() => { document.dispatchEvent(new Event("app:data-cleared")); showToast({ message: t("shell.settings.cleared") }); });
     });
   });
 

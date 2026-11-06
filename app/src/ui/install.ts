@@ -1,6 +1,8 @@
 import { prefs } from "../storage/index.ts";
 import { h } from "./dom.ts";
 import { openDialog } from "./dialog.ts";
+import { showToast } from "./toast.ts";
+import { app } from "../config.ts";
 import { t } from "../i18n/index.ts";
 
 interface InstallEvent extends Event { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> }
@@ -40,10 +42,15 @@ export function openInstall(): void {
   ]);
 }
 
-/** Call after the first successful use. Shows the prompt only if not installed and not dismissed in 30 days. */
+/**
+ * Call after the first successful use. Never covers the result: a gentle toast with an Install
+ * button, only where installing is possible (Chromium prompt ready, or iOS Safari), not installed,
+ * not in an iframe, at most once per 30 days. (Moni 2026-11-06: the dialog hid TeamSync's teams.)
+ */
 export function maybeOfferInstall(): void {
-  const dismissed = prefs.get<number>("install-dismissed-at", 0);
-  if (isInstalled() || Date.now() - dismissed < 30 * DAY || window.self !== window.top) return;
+  const offered = prefs.get<number>("install-dismissed-at", 0);
+  if (isInstalled() || Date.now() - offered < 30 * DAY || window.self !== window.top) return;
+  if (!deferred && !isIOS()) return; // nothing the user could do right now
   prefs.set("install-dismissed-at", Date.now());
-  openInstall();
+  showToast({ message: t("shell.install.offer", { name: app.name }), duration: 10_000, action: { label: t("shell.install.action"), run: openInstall } });
 }

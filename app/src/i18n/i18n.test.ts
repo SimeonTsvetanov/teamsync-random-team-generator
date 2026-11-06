@@ -24,7 +24,7 @@ describe("i18n dictionaries", () => {
     for (const [k, v] of base) expect(v.trim(), k).not.toBe("");
   });
   it.each(langs)("%s has the same keys and {{placeholders}} as English", async (lang) => {
-    const mod = (await import(`./${lang}.ts`)) as Record<string, Tree>;
+    const mod = (await import(/* @vite-ignore */ `./${lang}.ts`)) as Record<string, Tree>;
     const other = flat(mod[lang] ?? {});
     expect([...other.keys()].sort()).toEqual([...base.keys()].sort());
     for (const [k, v] of base) {

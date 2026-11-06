@@ -88,7 +88,7 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Reading list: forge-design → ui-patterns, design-system; forge-app-shell → i18n §2
 - Acceptance: keyboard + screen reader usable; thumb-zone button on phones; no string literals; axe 0 serious
 - Depends on: T-02
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-06 · Results: cards, Regenerate, Copy, Share (app)
 - Goal: team cards + actions; Share via `navigator.share`, fallback copy + toast; `maybeOfferInstall()` after the first result
@@ -96,15 +96,15 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Reading list: forge-app-shell → app-shell §8; forge-design → ux-principles
 - Acceptance: AC1, AC3 in the browser; result announced politely (aria-live); works offline; Regenerate · Copy · Share are an equal-width `.button-stack` (forge-design ui-patterns §1)
 - Depends on: T-03, T-05
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-07 · Remember list, Clear, `?teams=`, embed events (app)
-- Goal: prefs `names` / `teams` (+ `storage.stores` in app.config), Clear button (asks first with `confirmAction()` — "Clear the names list?"), deep link `?teams=N` (names never in the URL), postMessage `teamsync:ready|result|error`
+- Goal: prefs `names` / `teams` (+ `storage.stores` in app.config), Clear button (instant + Undo toast — forge rule since 2026-11-06: clearing one field is reversible), deep link `?teams=N` (names never in the URL), postMessage `teamsync:ready|result|error`
 - Files: app/src/teams/state.ts, app/src/teams/embed.ts, app.config.ts (urlParams, storage)
 - Reading list: forge-engineering → browser-storage §1, frontend-level1 §6
 - Acceptance: AC4, AC6; Settings → Clear my data removes the list; embed test page receives events
 - Depends on: T-06
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-08 · App texts: Help, FAQ, description, legal placeholders (EN + BG)
 - Goal: real `help.steps`, `help.features`, 6–8 FAQ, limits (maxItems 1000) in English and `l10n.bg`; fill `content/legal` placeholders
@@ -112,7 +112,7 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Reading list: forge-app-shell → help-docs, legal-pages, i18n §5; forge-growth → seo-geo
 - Acceptance: `pnpm generate` without warnings; llms.txt describes `make_teams`; BG reviewed on screenshots
 - Depends on: T-07
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-09 · e2e for app flows + translation review pass
 - Goal: Playwright tests for AC1, AC3–AC7 (both languages) next to the template suite; screenshot review of every screen in BG at 390 px and 1280 px
@@ -120,7 +120,7 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Reading list: forge-engineering → testing §e2e
 - Acceptance: whole e2e suite green on 5 projects; axe 0 serious; review fixes applied
 - Depends on: T-08
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-10 · Repo, CI and Pages deploy
 - Goal: GitHub repo settings (Pages = GitHub Actions, topic `simeonts-microapp`, labels, Dependabot, secret scanning, CodeQL, ruleset) — exact UI steps for Moni; CI green; first deploy

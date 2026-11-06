@@ -79,6 +79,8 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .button-stack { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
 .button-stack .button { width: 100%; text-align: center; padding-block: var(--space-2); }
 @media (min-width: 480px) { .button-stack:has(> :nth-child(2)) { grid-template-columns: repeat(2, 1fr); } .button-stack > :last-child:nth-child(odd):not(:first-child) { grid-column: 1 / -1; } }
+/* Exactly three buttons on a wide screen: one row of three equal buttons. */
+@media (min-width: 900px) { .button-stack:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3, 1fr); } .button-stack:has(> :nth-child(3):last-child) > :last-child:nth-child(odd):not(:first-child) { grid-column: auto; } }
 
 /* Settings: iOS-style grouped sections — small title above a card, label/value rows inside. */
 .group { margin-block: var(--space-5); }
@@ -115,7 +117,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .diag[open] summary { margin-bottom: var(--space-2); }
 
 /* ---------- Offline pill, steps, FAQ ---------- */
-.offline-pill { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-fill); color: var(--color-warning-text); font-size: var(--text-sm); }
+.offline-pill { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-surface); box-shadow: var(--shadow-1); color: var(--color-warning-text); font-size: var(--text-sm); } /* status text only on surface — on --color-fill it fails 4.5:1 */
 .offline-pill[hidden] { display: none; }
 .steps, .faq-list { margin-top: var(--space-8); }
 .steps h2, .faq-list h2 { font-size: var(--text-xl); }

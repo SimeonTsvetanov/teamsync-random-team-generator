@@ -41,8 +41,40 @@
         <p class="lead" data-text="tagline">%APP_TAGLINE%</p>
         <p data-text="description">%APP_DESCRIPTION%</p>
       </section>
-      <section class="empty-state" data-empty>
-        <p data-i18n="app.emptyState">This is a fresh micro-app. The tool UI is built in Phase 3 (/build).</p>
+      <section class="tool">
+        <form class="tool-form" data-teams-form novalidate>
+          <div class="field">
+            <div class="field-head">
+              <label id="names-label" for="names" data-i18n="app.namesLabel">Names</label>
+              <span class="field-meta"><span class="hint" data-names-count></span>
+                <button type="button" class="link-button" data-names-clear hidden data-i18n="app.clear">Clear</button></span>
+            </div>
+            <textarea id="names" name="names" rows="8" spellcheck="false" autocomplete="off" autocapitalize="words" aria-describedby="names-hint" placeholder="One name per line…"></textarea>
+            <p id="names-hint" class="hint" data-i18n="app.namesHint">One name per line. Blank lines are ignored.</p>
+          </div>
+          <div class="field field--row">
+            <span id="teams-label" class="field-label" data-i18n="app.teamsLabel">Teams</span>
+            <div class="stepper" role="group" aria-labelledby="teams-label">
+              <button type="button" class="stepper-button" data-teams-dec aria-label="Fewer teams" data-i18n-aria-label="app.fewerTeams"></button>
+              <output class="stepper-value" data-teams-value aria-live="polite">2</output>
+              <button type="button" class="stepper-button" data-teams-inc aria-label="More teams" data-i18n-aria-label="app.moreTeams"></button>
+            </div>
+          </div>
+          <p class="form-error" data-teams-error role="alert" hidden></p>
+          <div class="cta-bar">
+            <button type="submit" class="button button--primary button--large" data-icon="users"><span data-i18n="app.generate">Generate teams</span></button>
+          </div>
+        </form>
+      </section>
+      <section class="results" data-results hidden aria-labelledby="results-title">
+        <h2 id="results-title" data-i18n="app.yourTeams">Your teams</h2>
+        <p class="visually-hidden" role="status" data-results-status></p>
+        <div class="teams-grid" data-teams-grid></div>
+        <div class="button-stack results-actions">
+          <button type="button" class="button button--primary" data-regenerate data-icon="shuffle"><span data-i18n="app.regenerate">Shuffle again</span></button>
+          <button type="button" class="button" data-copy data-icon="copy"><span data-i18n="app.copy">Copy</span></button>
+          <button type="button" class="button" data-share data-icon="share"><span data-i18n="app.share">Share</span></button>
+        </div>
       </section>
       <section class="steps">
         <h2 data-i18n="shell.howItWorks">How it works</h2>
