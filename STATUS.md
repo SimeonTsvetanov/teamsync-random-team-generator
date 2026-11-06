@@ -1,6 +1,6 @@
 # STATUS — TeamSync
 
-**Updated:** 2026-11-06 · **Phase:** 3 · Build — T-01–T-10 done; LIVE at https://simeontsvetanov.github.io/teamsync-random-team-generator/ ; next T-11 reviews, T-12 release
+**Updated:** 2026-11-06 · **Phase:** 3 · T-01–T-11 done (reviews fixed); next T-12 release v1.0.0 — needs Moni "release approved"
 
 ## Done
 - Intake (DECISIONS 2026-11-05) · SPEC approved 2026-11-06 · accent + logo approved.

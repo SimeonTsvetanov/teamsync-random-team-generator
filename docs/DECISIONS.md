@@ -50,3 +50,8 @@ Format: `date · decision · reason`. Newest last.
   logo marked AI-assisted). Dev-only tools under MPL-2.0/LGPL-3.0/BlueOak/CC-BY (axe-core,
   lightningcss, sharp-libvips, glob, caniuse-lite) are exempt: never shipped to users. Lawyer
   questions (BG consumer law on "as is", Terms §8 acceptance, Legal notice address) recorded, not blocking.
+- **2026-11-06 · UX review fixes:** equal-width report buttons, static pages (404, policies) use
+  the app accent, menu headings 4.5:1, phone header = logo + name + menu (Share app/theme in the
+  menu), compact Share sheet, menu safe-area padding, 44 px touch targets, result bar fades the
+  list instead of covering it, wider list numbers, shorter BG hint. Alert "Delete" stays solid red
+  (red text on the dark alert surface would be 4.09:1).

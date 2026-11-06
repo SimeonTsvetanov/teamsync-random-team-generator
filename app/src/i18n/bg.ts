@@ -196,7 +196,7 @@ export const bg: Messages = {
   app: {
     namesLabel: "Имена",
     namesPlaceholder: "По едно име на ред…",
-    namesHint: "По едно име на ред. Празните редове не се броят.",
+    namesHint: "По едно име на ред.",
     namesCount_one: "{{count}} име",
     namesCount_other: "{{count}} имена",
     clear: "Изчисти",

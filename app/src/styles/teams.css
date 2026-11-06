@@ -43,7 +43,7 @@
 .team-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-2); }
 .team-head h3 { margin: 0; font-size: var(--text-md); color: var(--color-accent-text); }
 .chip { padding: 2px var(--space-2); border-radius: var(--radius-full); background: var(--color-fill); color: var(--color-text); /* only --color-text on fill (contrast) */ font-size: var(--text-sm); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.team-list { margin: 0; padding-inline-start: var(--space-5); display: grid; gap: var(--space-1); overflow-wrap: anywhere; }
+.team-list { margin: 0; padding-inline-start: 2.6ch; font-variant-numeric: tabular-nums; display: grid; gap: var(--space-1); overflow-wrap: anywhere; }
 .results-actions { margin-top: var(--space-4); }
 
 @media print { .tool, .results-actions { display: none !important; } .team-card { break-inside: avoid; box-shadow: none; } }
@@ -53,7 +53,7 @@
    are the next screen with "‹ Names" back. Desktop: tool and results side by side. */
 .workspace { display: grid; gap: var(--space-6); }
 .tool, .results { margin-top: 0; }
-.results-head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
+.results-head { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-4); }
 .results-head h2 { margin: 0; }
 .results-back { display: none; }
 @media (min-width: 900px) {
@@ -71,7 +71,9 @@
 .results-actions .button { white-space: nowrap; padding-inline: var(--space-3); }
 /* Phones: the result actions stay in the thumb zone while scrolling long teams. */
 @media (max-width: 600px) {
-  .results-actions { position: sticky; bottom: calc(var(--space-3) + var(--safe-bottom)); z-index: 1; padding: var(--space-2); margin-inline: calc(-1 * var(--space-2)); border-radius: var(--radius-lg); background: var(--header-bg); -webkit-backdrop-filter: var(--header-blur); backdrop-filter: var(--header-blur); grid-template-columns: 1fr 1fr; }
+  .results { padding-bottom: var(--space-4); }
+  .results-actions { position: sticky; bottom: 0; z-index: 1; padding: var(--space-6) var(--space-2) calc(var(--space-3) + var(--safe-bottom)); margin-inline: calc(-1 * var(--space-2)); border-radius: 0;
+    background: linear-gradient(to top, var(--color-bg) 70%, color-mix(in oklch, var(--color-bg) 0%, transparent)); /* content fades out under the bar, no hard block */ grid-template-columns: 1fr 1fr; }
   .results-actions > :first-child { grid-column: 1 / -1; } /* primary on its own row, then Share | Copy */
   .results-actions > :last-child:nth-child(odd):not(:first-child) { grid-column: auto; }
 }

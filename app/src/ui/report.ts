@@ -45,7 +45,7 @@ export function openReport(): void {
     ...(app.feedback.webhook ? [h("label", {}, t("shell.report.email"), email)] : []), trap, // email only when it can really be sent
     h("details", { class: "diag" }, h("summary", {}, t("shell.report.diagnosticsSummary", { count: checks.length })),
       h("fieldset", {}, h("legend", { class: "hint" }, t("shell.report.diagnostics")), ...checks.map((c) => c.row))),
-    h("div", { class: "actions" }, send, github), status);
+    h("div", { class: "button-stack" }, ...(app.feedback.webhook ? [send] : []), github), status); // equal-width group
   let sent = false; // queued or delivered → closing needs no confirmation
   form.addEventListener("submit", (e) => {
     e.preventDefault();

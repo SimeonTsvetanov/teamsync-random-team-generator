@@ -22,7 +22,7 @@ export async function shareText(message: string, title = app.name): Promise<void
     const wa = h("a", { class: "button button--primary", href: `https://wa.me/?text=${encodeURIComponent(message)}`, target: "_blank", rel: "noopener" }, icon("message"), "WhatsApp");
     const cp = h("button", { class: "button", type: "button" }, icon("copy"), t("shell.copy"));
     cp.addEventListener("click", () => { copy(message); });
-    openDialog("share", t("shell.shareTitle"), [h("div", { class: "button-stack" }, wa, cp)]);
+    openDialog("share", t("shell.shareTitle"), [h("div", { class: "button-stack" }, wa, cp)], { compact: true });
   };
   if (typeof navigator.share !== "function") { fallback(); return; }
   try {

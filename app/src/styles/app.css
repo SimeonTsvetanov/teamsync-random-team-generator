@@ -28,10 +28,10 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .menu { border: 0; padding: var(--space-5); border-radius: var(--radius-xl); background: var(--color-surface-raised); color: var(--color-text); box-shadow: var(--shadow-3); width: min(100% - 2 * var(--space-4), 360px); max-height: 85dvh; overscroll-behavior: contain; }
 .menu::backdrop, .sheet::backdrop, .alert::backdrop { background: var(--backdrop); -webkit-backdrop-filter: var(--backdrop-blur); backdrop-filter: var(--backdrop-blur); }
 .menu nav { display: flex; flex-direction: column; }
-.menu h2 { font-size: var(--text-xs); text-transform: none; color: var(--color-text-tertiary); margin: var(--space-4) 0 var(--space-1); font-weight: var(--weight-semibold); }
-.menu a, .menu nav button { display: flex; align-items: center; min-height: var(--tap-target); padding: 0 var(--space-2); border-radius: var(--radius-md); color: var(--color-text); text-decoration: none; text-align: start; }
+.menu h2 { font-size: var(--text-sm); text-transform: none; color: var(--color-text-secondary); margin: var(--space-4) 0 var(--space-1); font-weight: var(--weight-semibold); }
+.menu a, .menu nav button { display: flex; align-items: center; width: 100%; min-height: var(--tap-target); padding: 0 var(--space-2); border-radius: var(--radius-md); color: var(--color-text); font: inherit; font-size: var(--text-md); text-decoration: none; text-align: start; } /* links and buttons look identical */
 @media (hover: hover) { .menu a:hover, .menu nav button:hover { background: var(--color-fill); } }
-.menu .close { margin-top: var(--space-4); width: 100%; background: var(--color-fill); }
+.menu .close { margin-top: var(--space-4); margin-bottom: max(var(--space-2), var(--safe-bottom)); width: 100%; background: var(--color-fill); }
 @media (max-width: 600px) { .menu { margin: 0 0 0 auto; height: 100dvh; max-height: 100dvh; border-radius: var(--radius-xl) 0 0 var(--radius-xl); padding-top: calc(var(--space-5) + var(--safe-top)); padding-bottom: calc(var(--space-5) + var(--safe-bottom)); } }
 
 .toast-region { position: fixed; left: 50%; bottom: calc(var(--space-4) + var(--safe-bottom)); transform: translateX(-50%); z-index: var(--z-toast); }
@@ -70,7 +70,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 /* ---------- Settings / forms ---------- */
 .segmented { display: flex; gap: var(--space-1); padding: var(--space-1); margin: var(--space-4) 0; border: 0; border-radius: var(--radius-md); background: var(--color-fill); }
 .segmented legend { padding: 0 0 var(--space-2); font-weight: var(--weight-semibold); }
-.segmented label { flex: 1; display: grid; place-items: center; min-height: 40px; border-radius: var(--radius-sm); cursor: pointer; }
+.segmented label { flex: 1; display: grid; place-items: center; min-height: var(--tap-target); border-radius: var(--radius-sm); cursor: pointer; }
 .segmented input { position: absolute; opacity: 0; }
 .segmented label:has(input:checked) { background: var(--color-thumb); box-shadow: var(--shadow-1); font-weight: var(--weight-semibold); }
 .segmented label:has(input:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 2px; }
@@ -123,7 +123,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .faq-list summary { cursor: pointer; font-weight: var(--weight-semibold); min-height: var(--tap-target); display: flex; align-items: center; }
 @media (forced-colors: active) { .sheet, .panel, .button, .segmented, .alert, .group-card { border: 1px solid CanvasText; } }
 .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
-.form .check { align-items: center; min-height: 28px; }
+.form .check { align-items: center; min-height: var(--tap-target); cursor: pointer; } /* whole row is the hit area */
 .form .check input { width: 20px; height: 20px; flex: none; }
 
 /* ---------- Desktop menu = dropdown under the menu button (APP-STANDARD §1) ---------- */
@@ -238,3 +238,15 @@ html { -webkit-tap-highlight-color: transparent; }
   .steps, .faq-list, .app-footer { display: none; }
   .main { padding-block: var(--space-4) var(--space-8); }
 }
+
+/* ---------- UX review 2026-11-06 ---------- */
+/* Touch: every control ≥ 44 px on coarse pointers (code-block Copy too). */
+@media (pointer: coarse) { .copy { min-height: var(--tap-target); } }
+/* Phones: the header is logo + name + menu only — Share app and the theme live in the menu/Settings,
+   so a result screen never shows two different Share buttons. */
+@media (max-width: 600px) { .header-actions [data-action="share"], .header-actions [data-theme-toggle] { display: none; } }
+/* Small sheets (a few buttons) are compact bottom sheets on phones, not full-screen. */
+@media (max-width: 600px) {
+  .sheet.sheet--compact { top: auto; bottom: 0; height: auto; max-height: 70dvh; border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding-bottom: max(var(--space-4), var(--safe-bottom)); }
+}
+/* Alert keeps the solid red confirm (red text on the dark alert surface is only 4.09:1); Cancel has the focus. */

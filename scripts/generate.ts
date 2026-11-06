@@ -227,6 +227,9 @@ if (app.modes.n8n && existsSync(n8nBlock)) copyFileSync(n8nBlock, join(pub, "n8n
     css += `:root {\n  --color-accent: light-dark(${ok(base)}, ${ok(base)});\n  --color-on-accent: ${onAccent};\n  --color-accent-pressed: light-dark(${ok(pressed)}, ${ok(pressed)});\n  --color-accent-text: light-dark(${ok(linkLight)}, ${ok(linkDark)});\n  --color-accent-tint: light-dark(${ok(base).replace(")", " / 0.1)")}, ${ok(linkDark).replace(")", " / 0.16)")});\n  --color-focus: light-dark(${ok(base)}, ${ok(linkDark)});\n}\n`;
   }
   writeFileSync(join(gen, "accent.css"), css);
+  // Static pages (404, offline, policies) use public/tokens.css — give them the same accent.
+  const pubTokens = join(pub, "tokens.css");
+  if (existsSync(pubTokens) && app.accent) writeFileSync(pubTokens, readFileSync(pubTokens, "utf8") + "\n" + css);
 }
 
 // UI languages (forge-app-shell → i18n): bundle only the languages in app.config, English first.

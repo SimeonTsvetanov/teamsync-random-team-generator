@@ -136,7 +136,7 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Reading list: the agents' own files
 - Acceptance: no open high/critical findings; licences allowed; Credits complete
 - Depends on: T-10
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-12 · Release v1.0.0
 - Goal: release checklist, CHANGELOG, tag; link from old TeamSync and npm publish stay deferred (Moni)

@@ -10,6 +10,8 @@ export interface DialogOptions {
   /** Called before the user closes the dialog (X, Esc). Return false to keep it open — e.g. ask
    *  `confirmAction()` when a form has unsaved input (forge-design → ui-patterns §4). */
   readonly beforeClose?: () => boolean | Promise<boolean>;
+  /** A few buttons only: compact bottom sheet on phones instead of full screen. */
+  readonly compact?: boolean;
 }
 
 /**
@@ -23,7 +25,7 @@ export function openDialog(id: string, title: string, body: Node[], options: Dia
   const close = h("button", { class: "icon-button", type: "button", "aria-label": t("shell.close") });
   close.append(icon("close"));
   const heading = h("h2", { id: `dlg-${id}`, tabindex: "-1", autofocus: "" }, title);
-  const dialog = h("dialog", { class: "sheet", "data-dialog": id, "aria-labelledby": `dlg-${id}` },
+  const dialog = h("dialog", { class: options.compact ? "sheet sheet--compact" : "sheet", "data-dialog": id, "aria-labelledby": `dlg-${id}` },
     h("header", { class: "sheet-head" }, heading, close),
     h("div", { class: "sheet-body" }, ...body));
   const tryClose = async (): Promise<void> => {
