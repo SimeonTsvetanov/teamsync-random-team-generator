@@ -1,6 +1,6 @@
 # SPEC — TeamSync
 
-> Status: **draft 2026-11-05** (waiting for Moni's approval) · Phase 0–1 output (forge-flow).
+> Status: **approved by Moni 2026-11-06** · Phase 0–1 output (forge-flow). Changes after approval → DECISIONS + CHANGELOG.
 > Rebuild of https://github.com/SimeonTsvetanov/TeamSync (live: /TeamSync/) as a forge micro-app
 > in the new repo `teamsync-random-team-generator`. The old repo stays untouched.
 
@@ -23,7 +23,7 @@
 | F5 | Copy/Share text keeps the old format + attribution line `— Made with TeamSync · <url>`; Web Share API, fallback copy (no broken Facebook fallback) | AC3 |
 | F6 | **Cheat (keep exactly):** a line equal to `the followers` (case-insensitive, trimmed) is replaced in place by: Moni, Iliyana, George, Viki, Eli, Asen, Lubomir, Ralica, Venci, Slavi, Joni, Apapa, Mitaka G, Tonkata, Dinkata, Raiko, Tancheto | AC5 |
 | F7 | Remember the last list on this device (prefs tier); "Clear" empties it; Settings → Clear my data removes it | AC6 |
-| F8 | English + Bulgarian UI, language switch in Settings, default from the browser language | AC7 |
+| F8 | English + Bulgarian UI; **English is always the default** (no browser auto-detect); Bulgarian via Settings → Language or `?lang=bg`, remembered on the device (forge i18n module) | AC7 |
 | F9 | Deep links: `?teams=3` pre-selects the number of teams (names are never put in the URL) | AC4 |
 | F10 | Everything from the forge template: Help, Settings/Storage, About, What's new, Install, Report a problem, offline, legal/policy pages, 404, error screen, SEO + llms.txt, local MCP | AC8 |
 
@@ -58,19 +58,19 @@
 - AC4: more teams than names is prevented with a clear message; `?teams=4` pre-selects 4.
 - AC5: typing `the followers` (any case) on its own line expands to the 17 names in place.
 - AC6: reload keeps the last list; Clear and Clear my data remove it.
-- AC7: switching to Bulgarian translates every UI string; the choice is remembered.
+- AC7: first visit is English; switching to Bulgarian translates every UI string; the choice is remembered; `?lang=bg` works for one visit.
 - AC8: template e2e suite (15 tests) + new app tests green; offline works; Lighthouse budgets pass.
 
 ## 10. Risks
 | Risk | Mitigation |
 |---|---|
-| Template has no i18n yet (EN + BG requested) | add a small i18n module to the forge template (benefits every app), then use it here |
+| ~~Template has no i18n yet~~ | done 2026-11-06: forge template 0.3.0 ships i18n (EN default + BG) |
 | Old installs point to /TeamSync/ | old repo untouched; later add a "new version" link there (Moni decides) |
 | Old logo is a 1.3 MB PNG | use it as source for `/icons` (or redraw as SVG with Moni) |
 
 ## 11. Deferred decisions
 | Decision | Who/when |
 |---|---|
-| Accent shade + logo (keep old icon or redraw) | Moni, at `/icons` |
+| ~~Accent shade + logo~~ | decided 2026-11-06: `#B4530F` + vectorized original logo |
 | Link from the old TeamSync to the new app | Moni, at release |
 | npm publishing of core + MCP | needs the `simeonts` npm org, at release |

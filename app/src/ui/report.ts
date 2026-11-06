@@ -2,6 +2,7 @@ import { app } from "../config.ts";
 import { prefs } from "../storage/index.ts";
 import { h } from "./dom.ts";
 import { openDialog } from "./dialog.ts";
+import { t } from "../i18n/index.ts";
 
 const diagnostics = (): Record<string, string> => ({
   app: `${app.name} ${app.version}`,
@@ -14,7 +15,7 @@ const diagnostics = (): Record<string, string> => ({
 
 /** Report a problem (APP-STANDARD §7.1): send via the shared webhook, or open a pre-filled GitHub issue. */
 export function openReport(): void {
-  const type = h("select", { name: "type" }, ...["Problem", "Idea", "Question"].map((t) => h("option", {}, t)));
+  const type = h("select", { name: "type" }, ...(["Problem", "Idea", "Question"] as const).map((v) => h("option", { value: v }, t(`shell.report.type${v}`))));
   const title = h("input", { name: "title", required: "", maxlength: "120", autocomplete: "off" });
   const text = h("textarea", { name: "text", required: "", rows: "5", maxlength: "4000" });
   const email = h("input", { name: "email", type: "email", autocomplete: "email", placeholder: "you@example.com…" });
@@ -29,17 +30,17 @@ export function openReport(): void {
   const status = h("p", { class: "status", "aria-live": "polite" });
   const chosen = (): Record<string, string> => Object.fromEntries(checks.filter((c) => c.box.checked).map((c) => [c.k, c.v]));
   const body = (): string => `${text.value}\n\n---\n${Object.entries(chosen()).map(([k, v]) => `${k}: ${v}`).join("\n")}`;
-  const github = h("a", { class: "button", target: "_blank", rel: "noopener", href: "#" }, "Open on GitHub");
+  const github = h("a", { class: "button", target: "_blank", rel: "noopener", href: "#" }, t("shell.report.github"));
   github.addEventListener("click", () => {
     github.href = `${app.repo}/issues/new?template=${type.value === "Idea" ? "feature_request" : "bug_report"}.yml&title=${encodeURIComponent(`[${type.value}] ${title.value}`)}&body=${encodeURIComponent(body().slice(0, 6000))}`;
   });
-  const send = h("button", { class: "button button--primary", type: "submit" }, "Send report");
+  const send = h("button", { class: "button button--primary", type: "submit" }, t("shell.report.send"));
   if (!app.feedback.webhook) send.hidden = true;
   const form = h("form", { class: "form" },
-    h("p", { class: "hint" }, "Reports become public GitHub issues. Your email is never published."),
-    h("label", {}, "Type", type), h("label", {}, "Short title", title), h("label", {}, "What happened / your idea", text),
-    h("label", {}, "Email for a reply (optional)", email), trap,
-    h("fieldset", {}, h("legend", {}, "Diagnostics (untick what you don't want to send)"), ...checks.map((c) => c.row)),
+    h("p", { class: "hint" }, t("shell.report.public")),
+    h("label", {}, t("shell.report.type"), type), h("label", {}, t("shell.report.shortTitle"), title), h("label", {}, t("shell.report.text"), text),
+    h("label", {}, t("shell.report.email"), email), trap,
+    h("fieldset", {}, h("legend", {}, t("shell.report.diagnostics")), ...checks.map((c) => c.row)),
     h("div", { class: "actions" }, send, github), status);
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -48,19 +49,19 @@ export function openReport(): void {
     const payload = { app: app.id, repo: app.repo, version: app.version, type: type.value.toLowerCase(), title: title.value, description: text.value, email: email.value, diagnostics: chosen(), website: honeypot.value };
     if (!navigator.onLine) {
       prefs.set("report-queue", [...prefs.get<unknown[]>("report-queue", []), payload]);
-      status.textContent = "You're offline — the report will be sent when you're online.";
+      status.textContent = t("shell.report.offline");
       return;
     }
-    status.textContent = "Sending…";
+    status.textContent = t("shell.report.sending");
     void fetch(webhook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
       .then(async (r) => {
         if (!r.ok) throw new Error(String(r.status));
         const { issue } = (await r.json()) as { issue: number };
-        status.textContent = `Thanks! Report #${String(issue)} sent ✓`;
+        status.textContent = t("shell.report.sent", { issue });
       })
-      .catch(() => { status.textContent = "Couldn't send right now — use “Open on GitHub” instead."; });
+      .catch(() => { status.textContent = t("shell.report.failed"); });
   });
-  openDialog("report", "Report a problem", [form]);
+  openDialog("report", t("shell.report.title"), [form]);
 }
 
 /** Sends queued offline reports on start / when back online. */

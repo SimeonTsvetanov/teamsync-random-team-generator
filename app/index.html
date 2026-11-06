@@ -8,6 +8,7 @@
     <title>%APP_NAME% — %APP_TAGLINE%</title>
     <meta name="description" content="%APP_DESCRIPTION%" />
     <link rel="canonical" href="%APP_URL%" />
+    %APP_HREFLANG%
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F5F5F7" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
     <meta name="apple-mobile-web-app-title" content="%APP_NAME%" />
@@ -21,73 +22,73 @@
     <script src="./theme-init.js"></script>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main" data-i18n="shell.skip">Skip to content</a>
     <header class="app-header" data-header>
-      <a class="brand" href="./" aria-label="%APP_NAME% — home">
+      <a class="brand" href="./" aria-label="%APP_NAME% — home" data-i18n-aria-label="shell.home">
         <img src="./logo.svg" alt="" width="28" height="28" />
         <span>%APP_NAME%</span>
       </a>
       <div class="header-actions">
-        <button class="icon-button" type="button" data-action="share" data-icon="share" aria-label="Share app"></button>
+        <button class="icon-button" type="button" data-action="share" data-icon="share" aria-label="Share app" data-i18n-aria-label="shell.menu.share"></button>
         <button class="icon-button" type="button" data-theme-toggle aria-label="Theme"></button>
-        <button class="icon-button" type="button" data-menu-open data-icon="menu" aria-haspopup="dialog" aria-label="Open menu"></button>
+        <button class="icon-button" type="button" data-menu-open data-icon="menu" aria-haspopup="dialog" aria-label="Open menu" data-i18n-aria-label="shell.menu.open"></button>
       </div>
     </header>
     <main id="main" class="main">
       <span class="scroll-sentinel" data-sentinel aria-hidden="true"></span>
       <section class="hero">
         <h1>%APP_NAME%</h1>
-        <p class="lead">%APP_TAGLINE%</p>
-        <p>%APP_DESCRIPTION%</p>
+        <p class="lead" data-text="tagline">%APP_TAGLINE%</p>
+        <p data-text="description">%APP_DESCRIPTION%</p>
       </section>
       <section class="empty-state" data-empty>
-        <p>This is a fresh micro-app. The tool UI is built in Phase 3 (/build).</p>
+        <p data-i18n="app.emptyState">This is a fresh micro-app. The tool UI is built in Phase 3 (/build).</p>
       </section>
       <section class="steps">
-        <h2>How it works</h2>
-        <ol>%APP_STEPS%</ol>
+        <h2 data-i18n="shell.howItWorks">How it works</h2>
+        <ol data-text="steps">%APP_STEPS%</ol>
       </section>
       <section class="faq-list">
-        <h2>FAQ</h2>
-        %APP_FAQ%
+        <h2 data-i18n="shell.faq">FAQ</h2>
+        <div data-text="faq">%APP_FAQ%</div>
       </section>
       <section class="for-agents">
-        <h2>For AI agents</h2>
-        <p>To use this app from an agent: docs at <a href="./llms.txt">llms.txt</a> (full reference: <a href="./llms-full.txt">llms-full.txt</a>), local MCP: <code>npx -y @simeonts/teamsync-random-team-generator-mcp</code>.</p>
+        <h2 data-i18n="shell.forAgents">For AI agents</h2>
+        <p><span data-i18n="shell.forAgentsText">Use this app from an AI agent:</span> <a href="./llms.txt">llms.txt</a> · <a href="./llms-full.txt">llms-full.txt</a> · MCP: <code>npx -y @simeonts/teamsync-random-team-generator-mcp</code></p>
       </section>
       <noscript><p>The tool needs JavaScript. The policies and docs above work without it.</p></noscript>
     </main>
     <footer class="app-footer">
-      <p>© <span data-year>%BUILD_YEAR%</span> Simeon Tsvetanov. All rights reserved.</p>
-      <nav aria-label="Policies">
-        <a href="./terms/">Terms</a> · <a href="./privacy/">Privacy</a> · <a href="./ai-notice/">AI notice</a> ·
-        <a href="./legal-notice/">Legal notice</a> · <a href="./support/">Support</a> ·
-        <a href="https://buymeacoffee.com/simeontsvetanov" target="_blank" rel="noopener">Support ☕</a>
+      <p>© <span data-year>%BUILD_YEAR%</span> Simeon Tsvetanov. <span data-i18n="shell.rights">All rights reserved.</span></p>
+      <nav aria-label="Policies" data-i18n-aria-label="shell.policies">
+        <a href="./terms/" data-i18n="shell.menu.terms">Terms</a> · <a href="./privacy/" data-i18n="shell.menu.privacy">Privacy</a> · <a href="./ai-notice/" data-i18n="shell.menu.aiNotice">AI notice</a> ·
+        <a href="./legal-notice/" data-i18n="shell.menu.legalNotice">Legal notice</a> · <a href="./support/" data-i18n="shell.menu.contact">Contact</a> ·
+        <a href="https://buymeacoffee.com/simeontsvetanov" target="_blank" rel="noopener" data-i18n="shell.menu.supportMe">Support ☕</a>
       </nav>
-      <p class="version"><a href="#whats-new" data-action="whats-new">v<span data-version></span></a> · <a href="https://simeontsvetanov.github.io/">More free tools</a></p>
+      <p class="version"><a href="#whats-new" data-action="whats-new">v<span data-version></span></a> · <a href="https://simeontsvetanov.github.io/" data-i18n="shell.moreTools">More free tools</a></p>
     </footer>
-    <dialog class="menu" data-menu aria-label="Menu">
+    <dialog class="menu" data-menu aria-label="Menu" data-i18n-aria-label="shell.menu.title">
       <nav>
-        <h2>Use</h2>
-        <a href="#help" data-action="help" data-icon="help"><span data-label>Help</span></a>
-        <a href="#settings" data-action="settings" data-icon="settings"><span data-label>Settings</span></a>
-        <a href="#whats-new" data-action="whats-new" data-icon="sparkles"><span data-label>What's new</span></a>
-        <h2>App</h2>
-        <button type="button" data-action="share" data-icon="share"><span data-label>Share app</span></button>
-        <button type="button" data-action="install" data-icon="download"><span data-label>Install app</span></button>
-        <a href="#report" data-action="report" data-icon="bug"><span data-label>Report a problem</span></a>
-        <h2>About</h2>
-        <a href="#about" data-action="about" data-icon="info"><span data-label>About</span></a>
-        <a href="./terms/" data-icon="doc"><span data-label>Terms</span></a>
-        <a href="./privacy/" data-icon="doc"><span data-label>Privacy</span></a>
-        <a href="./ai-notice/" data-icon="doc"><span data-label>AI notice</span></a>
-        <a href="./legal-notice/" data-icon="doc"><span data-label>Legal notice</span></a>
-        <a href="./support/" data-icon="mail"><span data-label>Contact</span></a>
-        <h2>Support</h2>
-        <a href="https://buymeacoffee.com/simeontsvetanov" target="_blank" rel="noopener" data-icon="coffee"><span data-label>Support ☕</span></a>
-        <a href="https://github.com/SimeonTsvetanov/teamsync-random-team-generator" target="_blank" rel="noopener" data-icon="code"><span data-label>GitHub</span></a>
+        <h2 data-i18n="shell.menu.use">Use</h2>
+        <a href="#help" data-action="help" data-icon="help"><span data-label data-i18n="shell.menu.help">Help</span></a>
+        <a href="#settings" data-action="settings" data-icon="settings"><span data-label data-i18n="shell.menu.settings">Settings</span></a>
+        <a href="#whats-new" data-action="whats-new" data-icon="sparkles"><span data-label data-i18n="shell.menu.whatsNew">What's new</span></a>
+        <h2 data-i18n="shell.menu.app">App</h2>
+        <button type="button" data-action="share" data-icon="share"><span data-label data-i18n="shell.menu.share">Share app</span></button>
+        <button type="button" data-action="install" data-icon="download"><span data-label data-i18n="shell.menu.install">Install app</span></button>
+        <a href="#report" data-action="report" data-icon="bug"><span data-label data-i18n="shell.menu.report">Report a problem</span></a>
+        <h2 data-i18n="shell.menu.aboutGroup">About</h2>
+        <a href="#about" data-action="about" data-icon="info"><span data-label data-i18n="shell.menu.about">About</span></a>
+        <a href="./terms/" data-icon="doc"><span data-label data-i18n="shell.menu.terms">Terms</span></a>
+        <a href="./privacy/" data-icon="doc"><span data-label data-i18n="shell.menu.privacy">Privacy</span></a>
+        <a href="./ai-notice/" data-icon="doc"><span data-label data-i18n="shell.menu.aiNotice">AI notice</span></a>
+        <a href="./legal-notice/" data-icon="doc"><span data-label data-i18n="shell.menu.legalNotice">Legal notice</span></a>
+        <a href="./support/" data-icon="mail"><span data-label data-i18n="shell.menu.contact">Contact</span></a>
+        <h2 data-i18n="shell.menu.support">Support</h2>
+        <a href="https://buymeacoffee.com/simeontsvetanov" target="_blank" rel="noopener" data-icon="coffee"><span data-label data-i18n="shell.menu.supportMe">Support ☕</span></a>
+        <a href="https://github.com/SimeonTsvetanov/teamsync-random-team-generator" target="_blank" rel="noopener" data-icon="code"><span data-label data-i18n="shell.menu.github">GitHub</span></a>
       </nav>
-      <button class="close" type="button" data-menu-close>Close</button>
+      <button class="close" type="button" data-menu-close data-i18n="shell.close">Close</button>
     </dialog>
     <div class="toast-region" role="status" aria-live="polite" data-toasts></div>
     <script type="module" src="./src/main.ts"></script>

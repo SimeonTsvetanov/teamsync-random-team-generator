@@ -1,6 +1,7 @@
 import { prefs } from "../storage/index.ts";
 import { h } from "./dom.ts";
 import { openDialog } from "./dialog.ts";
+import { t } from "../i18n/index.ts";
 
 interface InstallEvent extends Event { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> }
 let deferred: InstallEvent | null = null;
@@ -15,11 +16,11 @@ export function initInstall(): void {
   updateMenuLabel();
 }
 
-function updateMenuLabel(): void {
+export function updateMenuLabel(): void {
   document.querySelectorAll<HTMLElement>("[data-action=install]").forEach((el) => {
     if (!isInstalled()) return;
     const label = el.querySelector("[data-label]");
-    if (label) label.textContent = "Installed ✓";
+    if (label) label.textContent = t("shell.menu.installed");
     el.setAttribute("aria-disabled", "true");
   });
 }
@@ -32,10 +33,10 @@ export function openInstall(): void {
     void ev.prompt().then(() => ev.userChoice).then(() => { deferred = null; updateMenuLabel(); });
     return;
   }
-  openDialog("install", "Install the app", [
+  openDialog("install", t("shell.install.title"), [
     isIOS()
-      ? h("ol", {}, h("li", {}, "Tap Share (the square with an arrow)."), h("li", {}, "Tap “Add to Home Screen”."), h("li", {}, "Keep “Open as Web App” on."), h("li", {}, "Tap Add."))
-      : h("p", {}, "Use your browser's menu or the install icon in the address bar and choose “Install”."),
+      ? h("ol", {}, h("li", {}, t("shell.install.ios1")), h("li", {}, t("shell.install.ios2")), h("li", {}, t("shell.install.ios3")), h("li", {}, t("shell.install.ios4")))
+      : h("p", {}, t("shell.install.other")),
   ]);
 }
 

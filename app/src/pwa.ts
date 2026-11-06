@@ -3,6 +3,7 @@
 import { registerSW } from "virtual:pwa-register";
 import { showToast } from "./ui/toast.ts";
 import { isTaskRunning } from "./state.ts";
+import { t } from "./i18n/index.ts";
 
 export function initPwa(): void {
   const updateSW = registerSW({
@@ -10,9 +11,9 @@ export function initPwa(): void {
     onNeedRefresh() {
       const offer = (): void => {
         showToast({
-          message: "New version available",
+          message: t("shell.update.available"),
           action: {
-            label: "Reload",
+            label: t("shell.update.reload"),
             run: () => {
               void updateSW(true);
             },
@@ -25,7 +26,7 @@ export function initPwa(): void {
       else offer();
     },
     onOfflineReady() {
-      showToast({ message: "Ready to work offline ✓" });
+      showToast({ message: t("shell.update.offlineReady") });
     },
     onRegisterError(error) {
       console.warn("Service worker registration failed", error);

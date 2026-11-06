@@ -1,5 +1,6 @@
 import { prefs } from "../storage/index.ts";
 import { icon } from "./icons.ts";
+import { t } from "../i18n/index.ts";
 
 export type Theme = "system" | "light" | "dark";
 const ORDER: readonly Theme[] = ["system", "light", "dark"];
@@ -23,7 +24,7 @@ export function applyTheme(theme: Theme, save = false): void {
   const button = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
   if (button) {
     button.replaceChildren(icon(theme === "system" ? "monitor" : theme === "light" ? "sun" : "moon"));
-    button.setAttribute("aria-label", `Theme: ${theme} (change)`);
+    button.setAttribute("aria-label", t("shell.theme.toggle", { theme: t(`shell.theme.${theme}`) }));
   }
 }
 

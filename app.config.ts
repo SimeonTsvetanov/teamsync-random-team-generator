@@ -12,6 +12,14 @@ export interface UrlParam {
   readonly meaning: string;
 }
 
+/** Texts shown to users that also exist in another UI language (forge-app-shell → i18n §3). */
+export interface AppText {
+  readonly tagline: string;
+  readonly description: string;
+  readonly help: AppConfig["help"];
+  readonly faq: AppConfig["faq"];
+}
+
 export interface AppConfig {
   readonly id: string; // kebab-case, = repo name, = storage namespace
   readonly name: string; // "PDF → PNG"
@@ -21,7 +29,9 @@ export interface AppConfig {
   readonly url: string; // https://simeontsvetanov.github.io/<id>/
   readonly repo: string; // https://github.com/SimeonTsvetanov/<id>
   readonly version: string; // injected from package.json at build time
-  readonly languages: readonly ("en" | "bg")[]; // default ["en"]; /new-service asks
+  readonly languages: readonly ("en" | "bg")[]; // English first and default; /new-service asks
+  /** One entry per extra language in `languages`, same number of steps/features/FAQ (generate.ts checks). */
+  readonly l10n?: { readonly bg?: AppText };
   readonly accent?: string; // hex; must pass forge-design color.mjs check
   readonly categories: readonly string[]; // manifest categories, e.g. ["utilities"]
   readonly contact: { readonly email: string }; // ask Moni every time — never guess
@@ -58,7 +68,7 @@ export const app = {
   repo: "https://github.com/SimeonTsvetanov/teamsync-random-team-generator",
   version: "0.1.0",
   languages: ["en", "bg"],
-  accent: "#B4530F", // proposed 2026-11-05: same hue as the peach logo #FFBF92, darkened to pass 4.5:1 with white text
+  accent: "#B4530F", // approved by Moni 2026-11-06: logo hue (#FFBF92) darkened to 5.02:1 with white text
   categories: ["utilities", "productivity"],
   contact: { email: "tsvetanov.simeon@gmail.com" },
   support: { buyMeACoffee: "https://buymeacoffee.com/simeontsvetanov" },
@@ -79,6 +89,20 @@ export const app = {
   help: {
     steps: ["Open TeamSync.", "Use the main action.", "Copy, share or download the result."],
     features: [],
+  },
+  l10n: {
+    bg: {
+      tagline: "Честни, случайни отбори за секунди",
+      description: "Разделете всеки списък с имена на честни, случайни отбори за секунди. Безплатно, поверително и работи без интернет — всичко се изпълнява в браузъра.",
+      help: {
+        steps: ["Отворете TeamSync.", "Използвайте основното действие.", "Копирайте, споделете или изтеглете резултата."],
+        features: [],
+      },
+      faq: [
+        { q: "Безплатен ли е TeamSync?", a: "Да. Безплатен е, с отворен код (MIT) и работи в браузъра." },
+        { q: "Напускат ли файловете ми устройството?", a: "Не. В браузъра всичко се обработва на Вашето устройство." },
+      ],
+    },
   },
   author: { name: "Simeon Tsvetanov", country: "Bulgaria" },
   faq: [

@@ -2,10 +2,11 @@
  * src/ui/error-screen.ts — the in-app "Something went wrong" screen (APP-STANDARD §15.1 item 8).
  * Level 1: call installErrorScreen() once in main.ts. Level 2: render the same markup from the
  * app-level error boundary. Styled by error-page.css (tokens only). No innerHTML with data.
- * Template: forge-app-shell 0.2.0 (2026-11-05).
+ * Template: forge-app-shell 0.3.0 (2026-11-06). Technical details stay English (they go into reports).
  */
 import { app } from "../config.ts";
 import { sendErrorReport } from "./feedback.ts"; // POSTs { type: "crash", … } to the feedback webhook
+import { t } from "../i18n/index.ts"; // initialised synchronously before this screen can appear
 
 let shown = false;
 
@@ -42,48 +43,47 @@ export function show(error: Error, lastAction = getLastAction()): void {
   const icon = el("div", { className: "es-icon", "aria-hidden": "true" });
   icon.textContent = "!";
   const title = el("h1", { className: "es-title", id: "es-title", tabIndex: -1 });
-  title.textContent = "Something went wrong";
+  title.textContent = t("shell.error.title");
   const text = el("p", { className: "es-text" });
-  text.textContent =
-    "The app hit an unexpected error. Your files and saved data are safe on this device. Reload to continue — if it happens again, send us a report.";
+  text.textContent = t("shell.error.text");
   const chip = el("p", { className: "es-chip" });
-  chip.textContent = error.name === "Error" ? "Unexpected error" : error.name;
+  chip.textContent = error.name === "Error" ? t("shell.error.unexpected") : error.name;
 
   const actions = el("div", { className: "es-actions" });
-  const reload = button("Reload", true, () => {
+  const reload = button(t("shell.error.reload"), true, () => {
     location.reload();
   });
   const status = el("p", { className: "es-status", "aria-live": "polite" });
-  const report = button("Send error report", false, async () => {
+  const report = button(t("shell.error.send"), false, async () => {
     report.disabled = true;
-    status.textContent = "Sending…";
+    status.textContent = t("shell.error.sending");
     try {
       const { issue } = await sendErrorReport({ message: error.message, stack: error.stack ?? "", lastAction });
-      status.textContent = `Thanks! Report #${String(issue)} sent ✓`;
+      status.textContent = t("shell.error.sent", { issue });
     } catch {
-      status.textContent = "Couldn't send right now. Copy the details and use Report a problem later.";
+      status.textContent = t("shell.error.failed");
       report.disabled = false;
     }
   });
-  const copy = button("Copy details", false, async () => {
-    try { await navigator.clipboard.writeText(details); copy.textContent = "Copied ✓"; }
-    catch { copy.textContent = "Select the text below to copy"; }
+  const copy = button(t("shell.error.copy"), false, async () => {
+    try { await navigator.clipboard.writeText(details); copy.textContent = t("shell.error.copied"); }
+    catch { copy.textContent = t("shell.error.selectText"); }
     setTimeout(() => {
-      copy.textContent = "Copy details";
+      copy.textContent = t("shell.error.copy");
     }, 2000);
   });
   actions.append(reload, report, copy);
 
   const det = el("details", { className: "es-details" });
   const sum = el("summary");
-  sum.textContent = "Technical details";
+  sum.textContent = t("shell.error.details");
   const pre = el("pre");
   pre.textContent = details;
   det.append(sum, pre);
 
   root.append(icon, title, text, chip, actions, status, det);
   document.body.append(root);
-  document.title = `Error · ${app.name}`;
+  document.title = t("shell.error.docTitle", { name: app.name });
   title.focus();
 }
 

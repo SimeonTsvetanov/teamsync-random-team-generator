@@ -226,6 +226,9 @@ importers:
       fflate:
         specifier: ^0.8.2
         version: 0.8.3
+      i18next:
+        specifier: ^26.7.1
+        version: 26.7.1(typescript@6.0.3)
       lucide:
         specifier: ^1.68.0
         version: 1.68.0
@@ -2068,6 +2071,14 @@ packages:
 
   hookified@2.2.0:
     resolution: {integrity: sha512-p/LgFzRN5FeoD3DLS6bkUapeye6E4SI6yJs6KetENd18S+FBthqYq2amJUWpt5z0EQwwHemidjY5OqJGEKm5uA==}
+
+  i18next@26.7.1:
+    resolution: {integrity: sha512-cX+3RRVczel/V2kCMTACckSGSpqgtWYEA6beXNYVms7dOQiHojdPYHD26lT4IKimNeoGWrLvtPgjftbRvmZJVw==}
+    peerDependencies:
+      typescript: ^5 || ^6 || ^7
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   ico-endec@0.1.6:
     resolution: {integrity: sha512-ZdLU38ZoED3g1j3iEyzcQj+wAkY2xfWNkymszfJPoxucIUhK7NayQ+/C4Kv0nDFMIsbtbEHldv3V8PU494/ueQ==}
@@ -4848,6 +4859,10 @@ snapshots:
   hookified@1.15.1: {}
 
   hookified@2.2.0: {}
+
+  i18next@26.7.1(typescript@6.0.3):
+    optionalDependencies:
+      typescript: 6.0.3
 
   ico-endec@0.1.6: {}
 

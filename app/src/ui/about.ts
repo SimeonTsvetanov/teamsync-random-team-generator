@@ -1,16 +1,17 @@
 import { app } from "../config.ts";
 import credits from "../generated/credits.json";
+import { t, text } from "../i18n/index.ts";
 import { h } from "./dom.ts";
 import { openDialog } from "./dialog.ts";
 
 export function openAbout(): void {
-  const link = (href: string, text: string): HTMLAnchorElement => h("a", { href, target: "_blank", rel: "noopener" }, text);
-  openDialog("about", `About ${app.name}`, [
-    h("p", {}, app.description),
-    h("p", {}, "How it works: everything runs in your browser on your device."),
-    h("p", {}, `Built by ${app.author.name} (Moni) · `, link(app.repo, "Source on GitHub"), " · ", link(app.support.buyMeACoffee, "Support ☕")),
-    h("p", {}, `Version ${app.version} · MIT licence · `, h("a", { href: "#whats-new" }, "What's new")),
-    h("h3", {}, "Credits"),
+  const link = (href: string, label: string): HTMLAnchorElement => h("a", { href, target: "_blank", rel: "noopener" }, label);
+  openDialog("about", t("shell.about.title", { name: app.name }), [
+    h("p", {}, text().description),
+    h("p", {}, t("shell.about.how")),
+    h("p", {}, t("shell.about.builtBy", { author: app.author.name }), link(app.repo, t("shell.about.source")), " · ", link(app.support.buyMeACoffee, t("shell.menu.supportMe"))),
+    h("p", {}, t("shell.about.version", { version: app.version }), h("a", { href: "#whats-new" }, t("shell.menu.whatsNew"))),
+    h("h3", {}, t("shell.about.credits")),
     h("ul", { class: "credits" }, ...credits.map((c) => h("li", {}, `${c.name} — ${c.license}`))),
   ]);
 }

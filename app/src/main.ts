@@ -4,7 +4,8 @@ import "./generated/accent.css"; // per-app accent from app.config (empty = defa
 import "./styles/app.css";
 import { app } from "./config.ts";
 import { hydrateIcons } from "./ui/icons.ts";
-import { initTheme } from "./ui/theme.ts";
+import { applyTheme, getTheme, initTheme } from "./ui/theme.ts";
+import { initI18n } from "./i18n/index.ts";
 import { shareApp } from "./ui/share.ts";
 import { installErrorScreen } from "./ui/error-screen.ts";
 import { initOfflineIndicator } from "./ui/offline.ts";
@@ -14,9 +15,10 @@ import { openSettings } from "./ui/settings.ts";
 import { openAbout } from "./ui/about.ts";
 import { maybeShowWhatsNew, openWhatsNew } from "./ui/whats-new.ts";
 import { flushReportQueue, openReport } from "./ui/report.ts";
-import { initInstall, openInstall } from "./ui/install.ts";
+import { initInstall, openInstall, updateMenuLabel } from "./ui/install.ts";
 import { initPwa } from "./pwa.ts";
 
+initI18n(); // first: every later module (incl. the error screen) uses t()
 installErrorScreen();
 // Embed mode (iframe or ?embed=1): no install prompt, no support line, compact chrome (APP-STANDARD §1).
 if (window.self !== window.top || new URLSearchParams(location.search).has("embed")) {
@@ -27,6 +29,8 @@ initTheme();
 initOfflineIndicator();
 initTitle();
 initInstall();
+// Language switch: static HTML is re-translated by setLanguage(); refresh the JS-set labels too.
+document.addEventListener("i18n:change", () => { applyTheme(getTheme()); updateMenuLabel(); });
 
 // Footer: runtime year (never hard-coded) and version.
 document.querySelectorAll("[data-year]").forEach((el) => { el.textContent = String(new Date().getFullYear()); });

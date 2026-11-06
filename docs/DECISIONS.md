@@ -12,4 +12,8 @@ Format: `date · decision · reason`. Newest last.
 - **2026-11-05 · Standard app (no server): modes browser, link, embed, local MCP; no API/n8n.** · Nothing to process server-side.
 - **2026-11-05 · Shuffle = Fisher–Yates with crypto.getRandomValues.** · The old `sort(() => 0.5 - Math.random())` is biased.
 - **2026-11-05 · Logo: the original TeamSync icon (Moni), vectorized to `app/public/logo.svg` (same shapes, peach #FFBF92); source kept in `design/logo-source.png`.** · One SVG master feeds all icons and the OG image.
-- **2026-11-05 · Accent proposed `#B4530F` (logo hue, darkened; 5.02:1 with white) — waiting for Moni's OK.** · The logo peach is 1.60:1 with white and can't be a button color.
+- **2026-11-05 · Accent proposed `#B4530F` (logo hue, darkened; 5.02:1 with white).** · The logo peach is 1.60:1 with white and can't be a button color.
+- **2026-11-06 · Moni: spec approved (docs/SPEC.md); accent `#B4530F` and the vectorized logo approved.**
+- **2026-11-06 · i18n from the forge template 0.3.0 (i18next, typed keys); English is always the
+  default, Bulgarian via Settings → Language or `?lang=bg`; Claude writes and reviews the
+  Bulgarian texts.** · Moni. Policy pages stay English.

@@ -24,6 +24,11 @@ function appHtml(): Plugin {
   const esc = (t: string): string => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const origin = (u: string | null | undefined): string => (u ? new URL(u).origin : "");
   const connect = ["'self'", origin(app.feedback.webhook), origin(app.modes.api?.baseUrl)].filter(Boolean).join(" ");
+  // Multilingual apps: hreflang alternates (?lang=xx) + x-default (forge-app-shell → i18n §4).
+  const hreflang = app.languages.length > 1
+    ? [...app.languages.map((l) => `<link rel="alternate" hreflang="${l}" href="${app.url}${l === "en" ? "" : `?lang=${l}`}" />`),
+      `<link rel="alternate" hreflang="x-default" href="${app.url}" />`].join("\n    ")
+    : "";
   return {
     name: "forge-app-html",
     transformIndexHtml(html, ctx) {
@@ -39,6 +44,7 @@ function appHtml(): Plugin {
         .replaceAll("%BUILD_YEAR%", String(new Date().getFullYear()))
         .replace("%APP_JSONLD%", JSON.stringify(jsonLd))
         .replace("connect-src 'self'", `connect-src ${connect}`)
+        .replace("%APP_HREFLANG%", hreflang)
         .replace("%APP_STEPS%", app.help.steps.map((t) => `<li>${esc(t)}</li>`).join(""))
         .replace("%APP_FAQ%", app.faq.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join(""));
     },

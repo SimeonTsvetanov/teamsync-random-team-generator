@@ -3,10 +3,11 @@ import changelog from "../generated/changelog.json";
 import { prefs } from "../storage/index.ts";
 import { h } from "./dom.ts";
 import { openDialog } from "./dialog.ts";
+import { t } from "../i18n/index.ts";
 
 export function openWhatsNew(): void {
   prefs.set("last-seen-version", app.version);
-  openDialog("whats-new", "What's new", changelog.map((v) =>
+  openDialog("whats-new", t("shell.whatsNew.title"), changelog.map((v) =>
     h("section", {}, h("h3", {}, `${v.version}${v.date ? ` · ${v.date}` : ""}`), h("ul", {}, ...v.items.map((i) => h("li", {}, i))))));
 }
 

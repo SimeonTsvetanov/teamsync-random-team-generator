@@ -1,5 +1,6 @@
 import { h } from "./dom.ts";
 import { icon } from "./icons.ts";
+import { t } from "../i18n/index.ts";
 
 /**
  * Opens a native modal <dialog> (Esc closes, focus trapped and restored) with a title and body.
@@ -9,7 +10,7 @@ export function openDialog(id: string, title: string, body: Node[]): HTMLDialogE
   // Only one sheet at a time (deep links can change while one is open).
   document.querySelectorAll<HTMLDialogElement>("dialog.sheet[open]").forEach((d) => { d.close(); });
   const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-  const close = h("button", { class: "icon-button", type: "button", "aria-label": "Close" });
+  const close = h("button", { class: "icon-button", type: "button", "aria-label": t("shell.close") });
   close.append(icon("close"));
   const heading = h("h2", { id: `dlg-${id}`, tabindex: "-1", autofocus: "" }, title);
   const dialog = h("dialog", { class: "sheet", "data-dialog": id, "aria-labelledby": `dlg-${id}` },

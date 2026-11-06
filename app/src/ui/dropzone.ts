@@ -1,5 +1,6 @@
 import { h } from "./dom.ts";
 import { icon } from "./icons.ts";
+import { t } from "../i18n/index.ts";
 
 export interface DropzoneOptions {
   readonly accept: readonly string[]; // MIME types, e.g. ["application/pdf"]
@@ -15,15 +16,15 @@ export interface DropzoneOptions {
  */
 export function createDropzone(o: DropzoneOptions): HTMLElement {
   const input = h("input", { type: "file", accept: o.accept.join(","), hidden: "", multiple: "" });
-  const choose = h("button", { class: "button button--primary", type: "button" }, "Choose file");
+  const choose = h("button", { class: "button button--primary", type: "button" }, t("shell.dropzone.choose"));
   const zone = h("div", { class: "dropzone" }, icon("download", 28), h("p", { class: "dropzone-label" }, o.label),
-    h("p", { class: "hint" }, `or paste · max ${String(o.maxMB)} MB`), choose, input);
+    h("p", { class: "hint" }, t("shell.dropzone.hint", { mb: o.maxMB })), choose, input);
   const take = (list: Iterable<File>): void => {
     const files = [...list];
     const bad = files.find((f) => !o.accept.includes(f.type));
-    if (bad) { o.onError(`“${bad.name}” isn't a supported file. Use: ${o.accept.join(", ")}.`); return; }
+    if (bad) { o.onError(t("shell.dropzone.badType", { file: bad.name, types: o.accept.join(", ") })); return; }
     const big = files.find((f) => f.size > o.maxMB * 1024 * 1024);
-    if (big) { o.onError(`“${big.name}” is larger than ${String(o.maxMB)} MB.`); return; }
+    if (big) { o.onError(t("shell.dropzone.tooBig", { file: big.name, mb: o.maxMB })); return; }
     if (files.length) o.onFiles(files);
   };
   choose.addEventListener("click", () => { input.click(); });

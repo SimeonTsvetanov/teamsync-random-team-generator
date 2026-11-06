@@ -1,5 +1,6 @@
 import { app } from "../config.ts";
 import { isTaskRunning } from "../state.ts";
+import { t, text } from "../i18n/index.ts";
 
 const isStandalone = (): boolean => matchMedia("(display-mode: standalone)").matches;
 const isEmbedded = (): boolean => window.self !== window.top || new URLSearchParams(location.search).has("embed");
@@ -12,12 +13,12 @@ export function initTitle(): void {
   setInterval(() => {
     if (document.hidden || isTaskRunning()) return;
     showTagline = !showTagline;
-    document.title = showTagline ? app.tagline : app.name;
+    document.title = showTagline ? text().tagline : app.name;
   }, 6000);
 }
 
 /** While a task runs: "45% · App"; when done in a background tab: "✓ Done · App". */
 export function setTitleProgress(percent: number | "done"): void {
-  if (percent === "done") document.title = document.hidden ? `✓ Done · ${app.name}` : app.name;
+  if (percent === "done") document.title = document.hidden ? t("shell.progress.done", { name: app.name }) : app.name;
   else document.title = `${String(Math.round(percent))}% · ${app.name}`;
 }

@@ -1,4 +1,5 @@
 /** Tiny DOM helpers — textContent only, never innerHTML with data. */
+import { getLanguage, t } from "../i18n/index.ts";
 export function h<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   props: Record<string, string> = {},
@@ -16,17 +17,17 @@ export function h<K extends keyof HTMLElementTagNameMap>(
 /** Code block with a Copy button that turns into "Copied ✓" (APP-STANDARD §3). */
 export function copyBlock(code: string): HTMLElement {
   // tabindex: horizontally scrollable code must be reachable by keyboard (WCAG 2.1.1, axe scrollable-region-focusable).
-  const pre = h("pre", { class: "code", tabindex: "0", "aria-label": "Code example" }, h("code", {}, code));
-  const button = h("button", { class: "copy", type: "button" }, "Copy");
+  const pre = h("pre", { class: "code", tabindex: "0", "aria-label": t("shell.codeExample") }, h("code", {}, code));
+  const button = h("button", { class: "copy", type: "button" }, t("shell.copy"));
   button.addEventListener("click", () => {
     void navigator.clipboard.writeText(code).then(() => {
-      button.textContent = "Copied ✓";
-      setTimeout(() => { button.textContent = "Copy"; }, 2000);
+      button.textContent = t("shell.copied");
+      setTimeout(() => { button.textContent = t("shell.copy"); }, 2000);
     });
   });
   return h("div", { class: "code-block" }, pre, button);
 }
 
 export const formatBytes = (n: number): string =>
-  new Intl.NumberFormat(undefined, { style: "unit", unit: n > 1e9 ? "gigabyte" : n > 1e6 ? "megabyte" : "kilobyte", maximumFractionDigits: 1 })
+  new Intl.NumberFormat(getLanguage(), { style: "unit", unit: n > 1e9 ? "gigabyte" : n > 1e6 ? "megabyte" : "kilobyte", maximumFractionDigits: 1 })
     .format(n > 1e9 ? n / 1e9 : n > 1e6 ? n / 1e6 : n / 1e3);
