@@ -17,3 +17,6 @@ Format: `date · decision · reason`. Newest last.
 - **2026-11-06 · i18n from the forge template 0.3.0 (i18next, typed keys); English is always the
   default, Bulgarian via Settings → Language or `?lang=bg`; Claude writes and reviews the
   Bulgarian texts.** · Moni. Policy pages stay English.
+- **2026-11-06 · Forge template 0.4.0 merged: confirm modal for delete/replace/discard, equal-width
+  button groups, iOS-style grouped Settings, blurred modal backdrops (Moni's design feedback,
+  forge learning L-2026-11-06-01).** · Applies to TeamSync's Clear button and result actions (PLAN T-06, T-07).

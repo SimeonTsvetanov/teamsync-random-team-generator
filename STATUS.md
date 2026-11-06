@@ -4,7 +4,7 @@
 
 ## Done
 - Intake (DECISIONS 2026-11-05) · SPEC approved 2026-11-06 · accent + logo approved.
-- i18n from forge template 0.3.0 merged (EN default + BG); `pnpm verify` green.
+- Forge template 0.4.0 merged (i18n EN default + BG; confirm modal, equal buttons, grouped Settings); `pnpm verify` + e2e (38) green.
 
 ## Next
 - Moni: approve docs/PLAN.md (12 tasks). Then Phase 3 `/build` from T-01.

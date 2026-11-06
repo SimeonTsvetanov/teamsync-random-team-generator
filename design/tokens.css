@@ -15,8 +15,9 @@
   --color-bg: light-dark(oklch(97.1% 0.003 286.4), oklch(0% 0 0)); /* #F5F5F7 / #000000 */
   --color-surface: light-dark(oklch(100% 0 0), oklch(22.7% 0.004 286.1)); /* #FFFFFF / #1C1C1E */
   --color-surface-raised: light-dark(oklch(100% 0 0), oklch(29.4% 0.004 286.2)); /* dialogs, menus: #FFFFFF / #2C2C2E */
-  --color-fill: light-dark(oklch(93.2% 0.007 286.3), oklch(29.4% 0.004 286.2)); /* inputs, segmented bg: #E8E8ED / #2C2C2E */
-  --color-fill-hover: light-dark(oklch(90% 0.007 286.3), oklch(34.9% 0.003 286.2));
+  --color-fill: light-dark(oklch(93.2% 0.007 286.3), oklch(35.9% 0.004 286.2)); /* inputs, segmented bg, secondary buttons: #E8E8ED / #3A3A3C — dark must differ from surface-raised (#2C2C2E) or buttons vanish in dialogs (2026-11-06) */
+  --color-fill-hover: light-dark(oklch(90% 0.007 286.3), oklch(41.5% 0.004 286.2)); /* #48484A dark */
+  --color-thumb: light-dark(oklch(100% 0 0), oklch(51.6% 0.009 286.1)); /* selected segment: #FFFFFF / #636366 — lighter than the track, as on iOS */
   --color-separator: light-dark(oklch(23.2% 0.004 286.1 / 0.1), oklch(100% 0 0 / 0.12)); /* hairline inside lists only, never a box border */
 
   /* ---------- Color: text ---------- */
@@ -42,6 +43,8 @@
   /* ---------- Frosted header ---------- */
   --header-bg: light-dark(oklch(97.1% 0.003 286.4 / 0.72), oklch(0% 0 0 / 0.72));
   --header-blur: saturate(180%) blur(20px);
+  --backdrop: oklch(0% 0 0 / 0.28); /* behind every modal (sheet, menu on phones, alert) */
+  --backdrop-blur: blur(8px) saturate(120%); /* the page behind a modal is softly blurred (Moni 2026-11-06) */
 
   /* ---------- Elevation (shadows, no borders) ---------- */
   --shadow-color: light-dark(oklch(0% 0 0 / 0.08), oklch(0% 0 0 / 0.5));
@@ -134,4 +137,9 @@
     --color-text-secondary: light-dark(oklch(40% 0.008 286.1), oklch(85% 0.007 286.2));
     --color-separator: light-dark(oklch(23.2% 0.004 286.1 / 0.3), oklch(100% 0 0 / 0.35));
   }
+}
+
+/* Users who ask for less transparency get a solid, darker backdrop instead of blur. */
+@media (prefers-reduced-transparency: reduce) {
+  :root { --backdrop: oklch(0% 0 0 / 0.5); --backdrop-blur: none; }
 }

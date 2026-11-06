@@ -27,7 +27,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .app-footer p { margin: var(--space-1) 0; }
 
 .menu { border: 0; padding: var(--space-5); border-radius: var(--radius-xl); background: var(--color-surface-raised); color: var(--color-text); box-shadow: var(--shadow-3); width: min(100% - 2 * var(--space-4), 360px); max-height: 85dvh; overscroll-behavior: contain; }
-.menu::backdrop { background: oklch(0% 0 0 / 0.3); }
+.menu::backdrop, .sheet::backdrop, .alert::backdrop { background: var(--backdrop); -webkit-backdrop-filter: var(--backdrop-blur); backdrop-filter: var(--backdrop-blur); }
 .menu nav { display: flex; flex-direction: column; }
 .menu h2 { font-size: var(--text-xs); text-transform: none; color: var(--color-text-tertiary); margin: var(--space-4) 0 var(--space-1); font-weight: var(--weight-semibold); }
 .menu a, .menu nav button { display: flex; align-items: center; min-height: var(--tap-target); padding: 0 var(--space-2); border-radius: var(--radius-md); color: var(--color-text); text-decoration: none; text-align: start; }
@@ -52,7 +52,6 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 
 /* ---------- Dialog sheets (Help, Settings, About, What's new, Report, Install) ---------- */
 .sheet { border: 0; padding: 0; width: min(100% - 2 * var(--space-4), 720px); max-height: 85dvh; border-radius: var(--radius-xl); background: var(--color-surface-raised); color: var(--color-text); box-shadow: var(--shadow-3); overscroll-behavior: contain; }
-.sheet::backdrop { background: oklch(0% 0 0 / 0.3); }
 .sheet-head { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5); background: var(--color-surface-raised); }
 .sheet-head h2 { margin: 0; font-size: var(--text-lg); }
 .sheet-body { padding: 0 var(--space-5) var(--space-6); }
@@ -72,10 +71,36 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .segmented legend { padding: 0 0 var(--space-2); font-weight: var(--weight-semibold); }
 .segmented label { flex: 1; display: grid; place-items: center; min-height: 40px; border-radius: var(--radius-sm); cursor: pointer; }
 .segmented input { position: absolute; opacity: 0; }
-.segmented label:has(input:checked) { background: var(--color-surface); box-shadow: var(--shadow-1); font-weight: var(--weight-semibold); }
+.segmented label:has(input:checked) { background: var(--color-thumb); box-shadow: var(--shadow-1); font-weight: var(--weight-semibold); }
 .segmented label:has(input:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 .panel { padding: var(--space-4); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-1); }
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
+/* Button groups: equal width, never ragged (Moni 2026-11-06). One column on phones, two from 480px. */
+.button-stack { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+.button-stack .button { width: 100%; text-align: center; padding-block: var(--space-2); }
+@media (min-width: 480px) { .button-stack:has(> :nth-child(2)) { grid-template-columns: repeat(2, 1fr); } .button-stack > :last-child:nth-child(odd):not(:first-child) { grid-column: 1 / -1; } }
+
+/* Settings: iOS-style grouped sections — small title above a card, label/value rows inside. */
+.group { margin-block: var(--space-5); }
+.group-title { margin: 0 0 var(--space-2); padding-inline: var(--space-1); font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-text-secondary); }
+.group-card { display: grid; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-1); }
+.group-card > .segmented { margin: 0; }
+.group-card:has(> .segmented:only-child) { padding: 0; background: none; box-shadow: none; }
+.group-note { margin: calc(-1 * var(--space-3)) var(--space-1) 0; font-size: var(--text-sm); color: var(--color-text-secondary); }
+.row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-3); min-height: 32px; padding-inline: var(--space-1); }
+.row-label { color: var(--color-text); }
+.row-value { color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+
+/* Alert (confirm before deleting / replacing / discarding): small centered card over a blurred page. */
+.alert { border: 0; padding: var(--space-5); width: min(100% - 2 * var(--space-6), 380px); border-radius: var(--radius-xl); background: var(--color-surface-raised); color: var(--color-text); box-shadow: var(--shadow-3); text-align: center; }
+.alert[open] { animation: alert-in var(--duration-base) var(--ease-standard); }
+.alert-title { margin: 0 0 var(--space-2); font-size: var(--text-lg); }
+.alert-text { margin: 0 0 var(--space-5); color: var(--color-text-secondary); }
+/* Side by side like iOS; a label that doesn't fit on one line moves both buttons to full-width rows. */
+.alert-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.alert-actions .button { flex: 1 1 7rem; white-space: nowrap; }
+@keyframes alert-in { from { opacity: 0; transform: scale(0.96); } }
+@media (prefers-reduced-motion: reduce) { .alert[open] { animation: none; } }
 .hint { font-size: var(--text-sm); color: var(--color-text-secondary); }
 .form { display: grid; gap: var(--space-4); }
 .form label { display: grid; gap: var(--space-1); font-weight: var(--weight-medium); }
@@ -83,7 +108,11 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .form fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: var(--space-1); }
 .form .check { display: flex; gap: var(--space-2); font-weight: var(--weight-regular); font-size: var(--text-sm); color: var(--color-text-secondary); overflow-wrap: anywhere; }
 .status { min-height: 1.5em; color: var(--color-text-secondary); }
-.credits { columns: 2; font-size: var(--text-sm); color: var(--color-text-secondary); }
+.credits { columns: 1; padding-inline-start: var(--space-5); font-size: var(--text-sm); color: var(--color-text-secondary); overflow-wrap: anywhere; }
+@media (min-width: 600px) { .credits { columns: 2; column-gap: var(--space-6); } .credits li { break-inside: avoid; } }
+:root { accent-color: var(--color-accent); } /* native checkboxes, radios, progress use the app accent */
+.diag summary { cursor: pointer; min-height: var(--tap-target); display: flex; align-items: center; font-weight: var(--weight-medium); }
+.diag[open] summary { margin-bottom: var(--space-2); }
 
 /* ---------- Offline pill, steps, FAQ ---------- */
 .offline-pill { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-fill); color: var(--color-warning-text); font-size: var(--text-sm); }
@@ -92,7 +121,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .steps h2, .faq-list h2 { font-size: var(--text-xl); }
 .faq-list details { padding: var(--space-3) 0; box-shadow: inset 0 -1px 0 var(--color-separator); }
 .faq-list summary { cursor: pointer; font-weight: var(--weight-semibold); min-height: var(--tap-target); display: flex; align-items: center; }
-@media (forced-colors: active) { .sheet, .panel, .button, .segmented { border: 1px solid CanvasText; } }
+@media (forced-colors: active) { .sheet, .panel, .button, .segmented, .alert, .group-card { border: 1px solid CanvasText; } }
 .honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .form .check { align-items: center; min-height: 28px; }
 .form .check input { width: 20px; height: 20px; flex: none; }

@@ -48,10 +48,33 @@ test("storage is namespaced and Clear my data keeps other apps' data", async ({ 
   const keys = await page.evaluate(() => Object.keys(localStorage));
   expect(keys.every((k) => k.startsWith(`${appId}:v1:`))).toBe(true);
   await page.evaluate(() => { localStorage.setItem("other-app:v1:x", "1"); });
-  page.on("dialog", (d) => { void d.accept(); });
+  page.on("dialog", (d) => { throw new Error(`native ${d.type()} dialog used — use confirmAction()`); });
+  // Destructive actions ask first in our own alert (forge-design → ui-patterns §4); Cancel keeps data.
   await page.getByRole("button", { name: "Clear my data" }).click();
+  const alert = page.getByRole("alertdialog");
+  await expect(alert).toBeVisible();
+  await expect(alert.getByRole("button", { name: "Cancel" })).toBeFocused();
+  expect(await serious(page)).toEqual([]);
+  await alert.getByRole("button", { name: "Cancel" }).click();
+  await expect(alert).toHaveCount(0);
+  expect(await page.evaluate((id) => Object.keys(localStorage).filter((k) => k.startsWith(`${id}:`)).length, appId)).toBeGreaterThan(0);
+  await page.getByRole("button", { name: "Clear my data" }).click();
+  await page.getByRole("alertdialog").getByRole("button", { name: "Delete" }).click();
   await expect.poll(() => page.evaluate((id) => Object.keys(localStorage).filter((k) => k.startsWith(`${id}:`)).length, appId)).toBe(0);
   expect(await page.evaluate(() => localStorage.getItem("other-app:v1:x"))).toBe("1");
+});
+
+test("closing Report a problem with typed text asks before discarding it", async ({ page }) => {
+  await page.goto("./#report");
+  await page.getByLabel("What happened / your idea").fill("The button does nothing");
+  await page.locator('dialog[data-dialog="report"] .sheet-head button').click();
+  const alert = page.getByRole("alertdialog");
+  await expect(alert).toBeVisible();
+  await alert.getByRole("button", { name: "Keep editing" }).click();
+  await expect(page.getByLabel("What happened / your idea")).toHaveValue("The button does nothing");
+  await page.locator('dialog[data-dialog="report"] .sheet-head button').click();
+  await page.getByRole("alertdialog").getByRole("button", { name: "Discard" }).click();
+  await expect(page.locator('dialog[data-dialog="report"]')).toHaveCount(0);
 });
 
 test("works offline after the first visit", async ({ page, context }) => {

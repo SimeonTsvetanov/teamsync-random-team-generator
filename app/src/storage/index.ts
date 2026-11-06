@@ -89,7 +89,7 @@ export async function importAll(file: File): Promise<number> {
   } else {
     data = JSON.parse(await file.text()) as Partial<ExportData>;
   }
-  if (data.app !== app.id) throw new Error("This file is not an export from this app.");
+  if (data.app !== app.id) throw new Error("NOT_THIS_APP"); // code; the UI shows a translated message
   let n = 0;
   for (const [k, v] of Object.entries(data.prefs ?? {})) { prefs.set(k, v); n++; }
   if (data.tables && Object.keys(data.tables).length) n += await (await import("./db.ts")).restoreTables(data.tables);

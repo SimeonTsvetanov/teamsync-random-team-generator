@@ -2,6 +2,7 @@ import { app } from "../config.ts";
 import { prefs } from "../storage/index.ts";
 import { h } from "./dom.ts";
 import { openDialog } from "./dialog.ts";
+import { confirmAction } from "./confirm.ts";
 import { t } from "../i18n/index.ts";
 
 const diagnostics = (): Record<string, string> => ({
@@ -40,8 +41,10 @@ export function openReport(): void {
     h("p", { class: "hint" }, t("shell.report.public")),
     h("label", {}, t("shell.report.type"), type), h("label", {}, t("shell.report.shortTitle"), title), h("label", {}, t("shell.report.text"), text),
     h("label", {}, t("shell.report.email"), email), trap,
-    h("fieldset", {}, h("legend", {}, t("shell.report.diagnostics")), ...checks.map((c) => c.row)),
+    h("details", { class: "diag" }, h("summary", {}, t("shell.report.diagnosticsSummary", { count: checks.length })),
+      h("fieldset", {}, h("legend", { class: "hint" }, t("shell.report.diagnostics")), ...checks.map((c) => c.row))),
     h("div", { class: "actions" }, send, github), status);
+  let sent = false; // queued or delivered → closing needs no confirmation
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const webhook = app.feedback.webhook;
@@ -50,6 +53,7 @@ export function openReport(): void {
     if (!navigator.onLine) {
       prefs.set("report-queue", [...prefs.get<unknown[]>("report-queue", []), payload]);
       status.textContent = t("shell.report.offline");
+      sent = true;
       return;
     }
     status.textContent = t("shell.report.sending");
@@ -58,10 +62,17 @@ export function openReport(): void {
         if (!r.ok) throw new Error(String(r.status));
         const { issue } = (await r.json()) as { issue: number };
         status.textContent = t("shell.report.sent", { issue });
+        sent = true;
       })
       .catch(() => { status.textContent = t("shell.report.failed"); });
   });
-  openDialog("report", t("shell.report.title"), [form]);
+  // Typed text is never lost silently: closing with unsent input asks first (ui-patterns §4).
+  openDialog("report", t("shell.report.title"), [form], {
+    beforeClose: () => sent || (!title.value.trim() && !text.value.trim()) || confirmAction({
+      title: t("shell.report.discardTitle"), message: t("shell.report.discardMessage"),
+      confirm: t("shell.report.discardConfirm"), cancel: t("shell.report.keepEditing"),
+    }),
+  });
 }
 
 /** Sends queued offline reports on start / when back online. */

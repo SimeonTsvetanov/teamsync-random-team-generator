@@ -1,35 +1,48 @@
 import { app } from "../config.ts";
 import { clearAll, estimate, exportAll, importAll, isPersisted, requestPersist } from "../storage/index.ts";
+import { getLanguage, LANG_NAMES, setLanguage, t } from "../i18n/index.ts";
 import { formatBytes, h } from "./dom.ts";
 import { openDialog } from "./dialog.ts";
+import { confirmAction } from "./confirm.ts";
 import { applyTheme, getTheme, type Theme } from "./theme.ts";
 import { showToast } from "./toast.ts";
-import { getLanguage, LANG_NAMES, setLanguage, t } from "../i18n/index.ts";
+
+/** iOS-style grouped section: small title above a card (forge-design → ui-patterns §12). */
+const group = (title: string, ...content: Node[]): HTMLElement =>
+  h("section", { class: "group" }, h("h3", { class: "group-title" }, title), h("div", { class: "group-card" }, ...content));
+/** Label left, value right; wraps under each other when narrow. */
+const row = (label: string, value: HTMLElement): HTMLElement => h("div", { class: "row" }, h("span", { class: "row-label" }, label), value);
+
+function segmented(name: string, legend: string, options: readonly { value: string; label: string; lang?: string }[], current: string, onPick: (v: string) => void): HTMLFieldSetElement {
+  const set = h("fieldset", { class: "segmented" }, h("legend", { class: "visually-hidden" }, legend));
+  for (const o of options) {
+    const input = h("input", { type: "radio", name, value: o.value, id: `${name}-${o.value}` });
+    input.checked = current === o.value;
+    input.addEventListener("change", () => { onPick(o.value); });
+    set.append(h("label", { for: `${name}-${o.value}`, ...(o.lang ? { lang: o.lang } : {}) }, input, o.label));
+  }
+  return set;
+}
 
 export function openSettings(): void {
-  const themeGroup = h("fieldset", { class: "segmented" }, h("legend", {}, t("shell.theme.label")));
-  for (const th of ["system", "light", "dark"] as const satisfies readonly Theme[]) {
-    const input = h("input", { type: "radio", name: "theme", value: th, id: `theme-${th}` });
-    input.checked = getTheme() === th;
-    input.addEventListener("change", () => { applyTheme(th, true); });
-    themeGroup.append(h("label", { for: `theme-${th}` }, input, t(`shell.theme.${th}`)));
-  }
+  const theme = segmented("theme", t("shell.theme.label"),
+    (["system", "light", "dark"] as const satisfies readonly Theme[]).map((v) => ({ value: v, label: t(`shell.theme.${v}`) })),
+    getTheme(), (v) => { applyTheme(v as Theme, true); });
   // Language picker only when the app ships more than one language (forge-app-shell rule 9).
-  const langGroup = h("fieldset", { class: "segmented" }, h("legend", {}, t("shell.language.label")));
-  for (const l of app.languages) {
-    const input = h("input", { type: "radio", name: "lang", value: l, id: `lang-${l}` });
-    input.checked = getLanguage() === l;
-    input.addEventListener("change", () => { setLanguage(l); openSettings(); });
-    langGroup.append(h("label", { for: `lang-${l}`, lang: l }, input, LANG_NAMES[l]));
-  }
-  const used = h("p", {}, t("shell.settings.usedPending"));
-  const persisted = h("p", {}, t("shell.settings.keptPending"));
-  void estimate().then((e) => { used.textContent = e ? t("shell.settings.used", { size: formatBytes(e.usage) }) : t("shell.settings.usedNA"); });
-  void isPersisted().then((ok) => { persisted.textContent = ok ? t("shell.settings.keptYes") : t("shell.settings.keptNo"); });
+  const language = segmented("lang", t("shell.language.label"),
+    app.languages.map((l) => ({ value: l, label: LANG_NAMES[l], lang: l })),
+    getLanguage(), (v) => { setLanguage(v as (typeof app.languages)[number]); openSettings(); });
+
+  const used = h("span", { class: "row-value" }, "…");
+  const kept = h("span", { class: "row-value" }, "…");
+  void estimate().then((e) => { used.textContent = e ? formatBytes(e.usage) : t("shell.settings.usedNA"); });
+  void isPersisted().then((ok) => { kept.textContent = ok ? t("shell.settings.keptYes") : t("shell.settings.keptNo"); });
+
   const keep = h("button", { class: "button", type: "button" }, t("shell.settings.keep"));
   keep.addEventListener("click", () => {
     void requestPersist().then((ok) => {
-      persisted.textContent = ok ? t("shell.settings.keptYes") : t("shell.settings.keptDenied");
+      kept.textContent = ok ? t("shell.settings.keptYes") : t("shell.settings.keptNo");
+      if (!ok) showToast({ message: t("shell.settings.keptDenied") });
     });
   });
   const exportBtn = h("button", { class: "button", type: "button" }, t("shell.settings.export"));
@@ -46,21 +59,36 @@ export function openSettings(): void {
   importBtn.addEventListener("click", () => { file.click(); });
   file.addEventListener("change", () => {
     const f = file.files?.[0];
-    if (f) void importAll(f).then((n) => { showToast({ message: t("shell.settings.imported", { count: n }) }); }, (e: unknown) => {
-      showToast({ message: e instanceof Error ? e.message : t("shell.settings.importFailed") });
+    file.value = "";
+    if (!f) return;
+    void confirmAction({
+      title: t("shell.settings.importTitle"), message: t("shell.settings.importMessage", { name: app.name, file: f.name }),
+      confirm: t("shell.settings.importConfirm"),
+    }).then((yes) => {
+      if (!yes) return;
+      importAll(f).then((n) => { showToast({ message: t("shell.settings.imported", { count: n }) }); }, (e: unknown) => {
+        showToast({ message: e instanceof Error && e.message === "NOT_THIS_APP" ? t("shell.settings.importWrongApp", { name: app.name }) : t("shell.settings.importFailed") });
+      });
     });
   });
   const clear = h("button", { class: "button button--danger", type: "button" }, t("shell.settings.clear"));
   clear.addEventListener("click", () => {
-    if (confirm(t("shell.settings.clearConfirm", { name: app.name, stores: app.storage.stores.join(", ") }))) {
-      void clearAll().then(() => { showToast({ message: t("shell.settings.cleared") }); });
-    }
+    void confirmAction({
+      title: t("shell.settings.clearTitle"), message: t("shell.settings.clearMessage", { name: app.name, stores: app.storage.stores.join(", ") }),
+      confirm: t("shell.settings.clearConfirm"),
+    }).then((yes) => {
+      if (yes) void clearAll().then(() => { showToast({ message: t("shell.settings.cleared") }); });
+    });
   });
+
   openDialog("settings", t("shell.settings.title"), [
-    themeGroup,
-    ...(app.languages.length > 1 ? [langGroup] : []),
-    h("section", { class: "panel" }, h("h3", {}, t("shell.settings.storage")), used, persisted,
-      h("div", { class: "actions" }, keep, exportBtn, importBtn, clear), file,
-      h("p", { class: "hint" }, t("shell.settings.hint"))),
+    group(t("shell.theme.label"), theme),
+    ...(app.languages.length > 1 ? [group(t("shell.language.label"), language)] : []),
+    group(t("shell.settings.storage"),
+      row(t("shell.settings.usedLabel"), used),
+      row(t("shell.settings.keptLabel"), kept),
+      h("div", { class: "button-stack" }, keep, exportBtn, importBtn), file),
+    h("p", { class: "group-note" }, t("shell.settings.hint")),
+    group(t("shell.settings.danger"), h("div", { class: "button-stack" }, clear)),
   ]);
 }

@@ -2,11 +2,17 @@ import { h } from "./dom.ts";
 import { icon } from "./icons.ts";
 import { t } from "../i18n/index.ts";
 
+export interface DialogOptions {
+  /** Called before the user closes the dialog (X, Esc). Return false to keep it open — e.g. ask
+   *  `confirmAction()` when a form has unsaved input (forge-design → ui-patterns §4). */
+  readonly beforeClose?: () => boolean | Promise<boolean>;
+}
+
 /**
  * Opens a native modal <dialog> (Esc closes, focus trapped and restored) with a title and body.
  * Phones get a full-height sheet via CSS. Each dialog has a deep link (#help, #settings, …).
  */
-export function openDialog(id: string, title: string, body: Node[]): HTMLDialogElement {
+export function openDialog(id: string, title: string, body: Node[], options: DialogOptions = {}): HTMLDialogElement {
   // Only one sheet at a time (deep links can change while one is open).
   document.querySelectorAll<HTMLDialogElement>("dialog.sheet[open]").forEach((d) => { d.close(); });
   const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -16,7 +22,15 @@ export function openDialog(id: string, title: string, body: Node[]): HTMLDialogE
   const dialog = h("dialog", { class: "sheet", "data-dialog": id, "aria-labelledby": `dlg-${id}` },
     h("header", { class: "sheet-head" }, heading, close),
     h("div", { class: "sheet-body" }, ...body));
-  close.addEventListener("click", () => { dialog.close(); });
+  const tryClose = async (): Promise<void> => {
+    if (!options.beforeClose || (await options.beforeClose())) dialog.close();
+  };
+  close.addEventListener("click", () => { void tryClose(); });
+  dialog.addEventListener("cancel", (e) => { // Esc
+    if (!options.beforeClose) return;
+    e.preventDefault();
+    void tryClose();
+  });
   dialog.addEventListener("close", () => {
     dialog.remove();
     if (location.hash === `#${id}`) history.replaceState(null, "", location.pathname + location.search);

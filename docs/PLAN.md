@@ -94,12 +94,12 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Goal: team cards + actions; Share via `navigator.share`, fallback copy + toast; `maybeOfferInstall()` after the first result
 - Files: app/src/teams/view.ts, app/src/styles/app.css, i18n files
 - Reading list: forge-app-shell → app-shell §8; forge-design → ux-principles
-- Acceptance: AC1, AC3 in the browser; result announced politely (aria-live); works offline
+- Acceptance: AC1, AC3 in the browser; result announced politely (aria-live); works offline; Regenerate · Copy · Share are an equal-width `.button-stack` (forge-design ui-patterns §1)
 - Depends on: T-03, T-05
 - [ ] done
 
 ### T-07 · Remember list, Clear, `?teams=`, embed events (app)
-- Goal: prefs `names` / `teams` (+ `storage.stores` in app.config), Clear button, deep link `?teams=N` (names never in the URL), postMessage `teamsync:ready|result|error`
+- Goal: prefs `names` / `teams` (+ `storage.stores` in app.config), Clear button (asks first with `confirmAction()` — "Clear the names list?"), deep link `?teams=N` (names never in the URL), postMessage `teamsync:ready|result|error`
 - Files: app/src/teams/state.ts, app/src/teams/embed.ts, app.config.ts (urlParams, storage)
 - Reading list: forge-engineering → browser-storage §1, frontend-level1 §6
 - Acceptance: AC4, AC6; Settings → Clear my data removes the list; embed test page receives events
