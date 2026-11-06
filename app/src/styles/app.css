@@ -3,7 +3,6 @@
 html { background: var(--color-bg); color: var(--color-text); font-family: var(--font-sans); font-size: 100%; -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-height) + var(--safe-top)); }
 body { margin: 0; min-height: 100dvh; display: flex; flex-direction: column; line-height: var(--leading-normal); font-size: var(--text-base); }
 a { color: var(--color-accent-text); font-weight: var(--weight-semibold); text-decoration: none; } /* Moni: no underlines; accent + weight mark links (≥ 3:1 vs text, WCAG 1.4.1) */
-@media (hover: hover) { a:hover { opacity: 0.75; } }
 :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 .skip-link { position: absolute; left: var(--space-2); top: -100px; padding: var(--space-2) var(--space-3); background: var(--color-surface); border-radius: var(--radius-md); z-index: var(--z-toast); }
 .skip-link:focus { top: calc(var(--space-2) + var(--safe-top)); }
@@ -214,7 +213,7 @@ html { -webkit-tap-highlight-color: transparent; }
 
 /* Quiet destructive action (iOS Settings style): red text, no fill — never the loudest button. */
 .button--destructive { background: transparent; color: var(--color-danger-text); box-shadow: none; }
-@media (hover: hover) { .button--destructive:hover { background: var(--color-fill); box-shadow: none; } }
+@media (hover: hover) { .button--destructive:hover { background: transparent; box-shadow: none; transform: translateY(-1px); } } /* no fill, no fade: red text keeps 4.5:1 */
 
 /* ---------- Launch splash (theme-init.js sets [data-splash] once per session) ---------- */
 .splash { display: none; }

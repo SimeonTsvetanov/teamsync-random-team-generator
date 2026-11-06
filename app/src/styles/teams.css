@@ -77,3 +77,7 @@
   .results-actions > :first-child { grid-column: 1 / -1; } /* primary on its own row, then Share | Copy */
   .results-actions > :last-child:nth-child(odd):not(:first-child) { grid-column: auto; }
 }
+
+/* "Clear and start over": always the last row, full width, quiet (red text, no fill). */
+.results-actions > .results-clear { grid-column: 1 / -1; }
+@media (min-width: 900px) { .button-stack.results-actions { grid-template-columns: repeat(3, 1fr); } .button-stack.results-actions > .results-clear { grid-column: 1 / -1; } }

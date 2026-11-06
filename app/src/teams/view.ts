@@ -1,6 +1,7 @@
 import { MAX_TEAMS, MIN_TEAMS, expandFollowers, formatTeams, makeTeams, namesFromSharedText, parseNames, type FormatLabels } from "@simeonts/teamsync-random-team-generator-core";
 import { onShared } from "../ui/share-target.ts";
 import { shareText } from "../ui/share.ts";
+import { confirmAction } from "../ui/confirm.ts";
 import { app } from "../config.ts";
 import { t } from "../i18n/index.ts";
 import { h } from "../ui/dom.ts";
@@ -148,6 +149,25 @@ export function initTeams(): void {
 
 
   form.addEventListener("submit", (e) => { e.preventDefault(); generate(); });
+  // Clear and start over (last, quiet button — Moni 2026-11-06): asks first, then empties the
+  // names and the teams and returns to the first screen.
+  document.querySelector("[data-start-over]")?.addEventListener("click", () => {
+    void confirmAction({ title: t("app.startOverTitle"), message: t("app.startOverMessage"), confirm: t("app.startOverConfirm") }).then((yes) => {
+      if (!yes) return;
+      clearTimeout(saveTimer);
+      saved.setNames("");
+      withTransition(() => {
+        area.value = "";
+        last = null;
+        grid.replaceChildren();
+        results.hidden = true;
+        workspace.classList.remove("has-results");
+        renderCount();
+        showError(null);
+      });
+      window.scrollTo({ top: 0 });
+    });
+  });
   // Phones: results are the next screen; "‹ Names" goes back (desktop shows both side by side).
   back.addEventListener("click", () => { withTransition(() => { workspace.classList.remove("has-results"); }); area.focus({ preventScroll: true }); });
   // Desktop: the names box has the focus from the start (phones: no keyboard pop-up on launch).

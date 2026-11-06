@@ -152,3 +152,20 @@ test("WhatsApp: pasting a chat list keeps only the names; shared text arrives vi
   expect(href?.startsWith("https://wa.me/?text=")).toBe(true);
   expect(decodeURIComponent(href ?? "")).toContain("🏆 Team 1 | Members - 2");
 });
+
+test("Clear and start over asks first, then empties the list and returns to the first screen", async ({ page }) => {
+  await page.goto("./");
+  await page.locator("#names").fill("Ana\nBoris\nVesko");
+  await generate(page);
+  await page.getByRole("button", { name: "Clear and start over" }).click();
+  const alert = page.getByRole("alertdialog");
+  await alert.getByRole("button", { name: "Cancel" }).click();
+  await expect(page.locator(".team-card")).toHaveCount(2);
+  await page.getByRole("button", { name: "Clear and start over" }).click();
+  await page.getByRole("alertdialog").getByRole("button", { name: "Clear", exact: true }).click();
+  await expect(page.locator("[data-results]")).toBeHidden();
+  await expect(page.locator("#names")).toBeVisible();
+  await expect(page.locator("#names")).toHaveValue("");
+  await page.reload();
+  await expect(page.locator("#names")).toHaveValue("");
+});

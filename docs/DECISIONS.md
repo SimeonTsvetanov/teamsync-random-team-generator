@@ -58,3 +58,7 @@ Format: `date · decision · reason`. Newest last.
 - **2026-11-06 · Moni: LinkedIn (https://www.linkedin.com/in/simeon-tsvetanov-a00963159) in
   About, menu (Support group), Support page, Legal notice and JSON-LD `sameAs`** — from
   `app.config.author.linkedin` (forge template 0.6.5).
+- **2026-11-06 · Moni: "Clear and start over" as the last, quiet button on the results screen —
+  asks first, then empties names + teams and returns to the first screen.** · Explicit wish for a
+  confirmation here (not Undo). Hover on quiet red buttons/links no longer fades or fills (axe:
+  3.18–3.72:1); they keep full contrast.

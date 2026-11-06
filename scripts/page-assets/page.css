@@ -6,7 +6,6 @@
 .page-body h1 { font-size: var(--text-2xl); margin-top: 0; }
 .page-body h2 { font-size: var(--text-lg); margin-top: var(--space-8); }
 .page-body a, .page-nav a, .page-foot a { color: var(--color-accent-text); font-weight: var(--weight-semibold); text-decoration: none; } /* no underlines (Moni 2026-11-06) */
-@media (hover: hover) { .page-body a:hover, .page-nav a:hover, .page-foot a:hover { opacity: 0.75; } }
 .page-body table { width: 100%; border-collapse: collapse; font-size: var(--text-md); }
 .page-body th, .page-body td { text-align: start; padding: var(--space-2); border-bottom: 1px solid var(--color-separator); }
 .page-nav { margin-top: var(--space-6); text-align: center; font-size: var(--text-sm); color: var(--color-text-secondary); }
