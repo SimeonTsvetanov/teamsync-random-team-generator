@@ -11,3 +11,7 @@
 .page-nav { margin-top: var(--space-6); text-align: center; font-size: var(--text-sm); color: var(--color-text-secondary); }
 .page-foot { text-align: center; font-size: var(--text-sm); color: var(--color-text-tertiary); }
 @media print { .ep-header, .page-nav { display: none; } .page-body { box-shadow: none; } }
+
+/* Smooth navigation to/from the app (the app opts in too). */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }

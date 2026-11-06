@@ -1,6 +1,6 @@
 # PLAN — TeamSync
 
-> Status: **draft 2026-11-06** (waiting for Moni's approval) · Phase 2 output. Based on SPEC approved 2026-11-06.
+> Status: **approved by Moni 2026-11-06** · Phase 2 output. Based on SPEC approved 2026-11-06.
 
 ## 1. Architecture
 ### core (`@simeonts/teamsync-random-team-generator-core`) — pure TS, no DOM

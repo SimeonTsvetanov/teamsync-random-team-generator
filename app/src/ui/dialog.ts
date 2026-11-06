@@ -26,6 +26,11 @@ export function openDialog(id: string, title: string, body: Node[], options: Dia
     if (!options.beforeClose || (await options.beforeClose())) dialog.close();
   };
   close.addEventListener("click", () => { void tryClose(); });
+  // Light dismiss: a tap on the dimmed area outside closes it (same guard as X / Esc).
+  dialog.addEventListener("click", (e) => {
+    const r = dialog.getBoundingClientRect();
+    if (e.target === dialog && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)) void tryClose();
+  });
   dialog.addEventListener("cancel", (e) => { // Esc
     if (!options.beforeClose) return;
     e.preventDefault();

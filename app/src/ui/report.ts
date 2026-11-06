@@ -3,6 +3,7 @@ import { prefs } from "../storage/index.ts";
 import { h } from "./dom.ts";
 import { openDialog } from "./dialog.ts";
 import { confirmAction } from "./confirm.ts";
+import { keepDraft } from "./draft.ts";
 import { t } from "../i18n/index.ts";
 
 const diagnostics = (): Record<string, string> => ({
@@ -22,6 +23,7 @@ export function openReport(): void {
   const email = h("input", { name: "email", type: "email", autocomplete: "email", placeholder: "you@example.com…" });
   const honeypot = h("input", { name: "website", tabindex: "-1", autocomplete: "off" });
   const trap = h("div", { class: "honeypot", "aria-hidden": "true" }, honeypot); // bots fill it, people never see it
+  const draft = keepDraft("report", [type, title, text, email]); // survives reload / accidental close
   const diag = diagnostics();
   const checks = Object.entries(diag).map(([k, v]) => {
     const box = h("input", { type: "checkbox", name: `d-${k}` });
@@ -54,6 +56,7 @@ export function openReport(): void {
       prefs.set("report-queue", [...prefs.get<unknown[]>("report-queue", []), payload]);
       status.textContent = t("shell.report.offline");
       sent = true;
+      draft.clear();
       return;
     }
     status.textContent = t("shell.report.sending");
@@ -63,15 +66,21 @@ export function openReport(): void {
         const { issue } = (await r.json()) as { issue: number };
         status.textContent = t("shell.report.sent", { issue });
         sent = true;
+        draft.clear();
       })
       .catch(() => { status.textContent = t("shell.report.failed"); });
   });
   // Typed text is never lost silently: closing with unsent input asks first (ui-patterns §4).
   openDialog("report", t("shell.report.title"), [form], {
-    beforeClose: () => sent || (!title.value.trim() && !text.value.trim()) || confirmAction({
-      title: t("shell.report.discardTitle"), message: t("shell.report.discardMessage"),
-      confirm: t("shell.report.discardConfirm"), cancel: t("shell.report.keepEditing"),
-    }),
+    beforeClose: async () => {
+      if (sent || draft.isEmpty()) return true;
+      const discard = await confirmAction({
+        title: t("shell.report.discardTitle"), message: t("shell.report.discardMessage"),
+        confirm: t("shell.report.discardConfirm"), cancel: t("shell.report.keepEditing"),
+      });
+      if (discard) draft.clear();
+      return discard;
+    },
   });
 }
 

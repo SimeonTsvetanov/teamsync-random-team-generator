@@ -155,3 +155,26 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 /* ---------- Embed mode ---------- */
 .is-embed [data-action="install"], .is-embed .app-footer, .is-embed .for-agents, .is-embed .steps, .is-embed .faq-list { display: none; }
 .is-embed .app-header { position: static; box-shadow: none; }
+
+/* ---------- App feel (web.dev "The app experience", 2026-11-06) ---------- */
+/* UI chrome is not text: no selection callout on long-press. Content (results, help) stays selectable. */
+.app-header, .menu, .sheet-head, .button, .icon-button, .segmented, .toast, .alert-actions, .help-section summary, .copy { -webkit-user-select: none; user-select: none; }
+/* No grey flash on tap — every control has its own visible pressed state instead. */
+html { -webkit-tap-highlight-color: transparent; }
+.icon-button:active, .menu a:active, .menu nav button:active { background: var(--color-fill); }
+/* Installed app: pulling down must not reload it by accident. */
+@media (display-mode: standalone) { html, body { overscroll-behavior-y: contain; } }
+
+/* Smooth page-to-page navigation (app ↔ policy pages); page.css opts in too. */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+
+/* ---------- Print: content only (APP-STANDARD §15 #14) ---------- */
+@media print {
+  .app-header, .app-footer, .menu, .toast-region, .skip-link, .offline-pill, .for-agents, .actions, .button-stack, .alert, .sheet-head button { display: none !important; }
+  :root { color-scheme: light; }
+  body { background: Canvas; color: CanvasText; } /* system colors, no hard-coded hex */
+  .panel, .group-card, .sheet { box-shadow: none; }
+  .sheet[open] { position: static; max-height: none; width: auto; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; }
+}

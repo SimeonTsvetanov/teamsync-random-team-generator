@@ -49,6 +49,8 @@ export interface AppConfig {
     readonly api: { readonly baseUrl: string; readonly openapi: string } | null;
     readonly mcp: { readonly url: string | null; readonly npm: string } | null;
     readonly n8n: { readonly workflow: string } | null;
+    /** Receive text/links shared from other apps (Android "Share → app"); see ui/share-target.ts. */
+    readonly shareTarget?: boolean;
   };
   readonly help: {
     readonly steps: readonly string[]; // Quick start, 3–5 steps with the exact UI labels

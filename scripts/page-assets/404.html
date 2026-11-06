@@ -1,7 +1,9 @@
 <!doctype html>
 <!-- public/404.html — GitHub Pages serves it for ANY unknown path, so every asset URL is absolute
      (/APP_BASE/…). No inline JS/CSS (meta CSP). Generated from app.config.ts: replace APP_* tokens.
-     tokens.css is copied to public/ by the build. Template: forge-app-shell 0.2.0 (2026-11-05). -->
+     tokens.css is copied to public/ by the build. The service worker also serves this page for any
+     uncached address while OFFLINE (navigateFallback) — error-page.js then shows the offline variant
+     (web.dev PWA checklist: never the browser's own offline page). Template: forge-app-shell 0.5.0 (2026-11-06). -->
 <html lang="en">
   <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'self'; object-src 'none'; form-action 'self'" />
@@ -25,15 +27,19 @@
       </a>
     </header>
     <main class="ep" aria-labelledby="ep-title">
-      <p class="ep-code" aria-hidden="true">404</p>
-      <h1 id="ep-title" class="ep-title">This page doesn’t exist</h1>
-      <p class="ep-text">
+      <p class="ep-code" aria-hidden="true" data-ep-offline-text="Offline">404</p>
+      <h1 id="ep-title" class="ep-title" data-ep-offline-text="You’re offline">This page doesn’t exist</h1>
+      <p class="ep-text" data-ep-offline hidden>
+        This page isn’t saved on this device yet. APP_NAME itself works offline — open it and
+        keep working; this page will load when you’re back online.
+      </p>
+      <p class="ep-text" data-ep-online>
         The address <code class="ep-path" data-ep-path>you opened</code> isn’t part of APP_NAME.
         It may be an old or mistyped link.
       </p>
       <div class="ep-actions">
         <a class="ep-button ep-button--primary" href="/APP_BASE/">Open APP_NAME</a>
-        <a class="ep-button" data-ep-report href="https://github.com/SimeonTsvetanov/APP_REPO/issues/new?template=bug_report.yml&title=%5BProblem%5D%20Broken%20link">Report a broken link</a>
+        <a class="ep-button" data-ep-report data-ep-online href="https://github.com/SimeonTsvetanov/APP_REPO/issues/new?template=bug_report.yml&title=%5BProblem%5D%20Broken%20link">Report a broken link</a>
       </div>
       <p class="ep-support">While you’re here, you can support my work —
         <a href="https://buymeacoffee.com/simeontsvetanov" target="_blank" rel="noopener">Buy me a coffee ☕</a></p>

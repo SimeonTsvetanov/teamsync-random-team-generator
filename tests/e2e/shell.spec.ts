@@ -77,6 +77,42 @@ test("closing Report a problem with typed text asks before discarding it", async
   await expect(page.locator('dialog[data-dialog="report"]')).toHaveCount(0);
 });
 
+test("a draft in Report a problem survives a reload", async ({ page }) => {
+  await page.goto("./#report");
+  await page.getByLabel("Short title").fill("Draft title");
+  await page.waitForTimeout(500); // debounce
+  await page.reload();
+  await expect(page.getByLabel("Short title")).toHaveValue("Draft title");
+});
+
+test("a tap outside a sheet closes it (light dismiss)", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("./#about");
+  await expect(page.locator('dialog[data-dialog="about"][open]')).toBeVisible();
+  await page.mouse.click(10, 790);
+  await expect(page.locator('dialog[data-dialog="about"]')).toHaveCount(0);
+});
+
+test("offline: an address that isn't saved shows our offline page, not the browser's", async ({ page, context }) => {
+  await page.goto("./");
+  await page.evaluate(async () => { await window.navigator.serviceWorker.ready; });
+  await page.reload();
+  await context.setOffline(true);
+  await page.goto("./no-such-page");
+  await expect(page.locator("h1")).toHaveText("You’re offline");
+  await page.goto("./?lang=en&embed=1"); // any query still opens the saved app
+  await expect(page.locator("[data-menu-open]")).toBeAttached();
+  await context.setOffline(false);
+});
+
+test("print shows content only", async ({ page }) => {
+  await page.goto("./");
+  await page.emulateMedia({ media: "print" });
+  await expect(page.locator(".app-header")).toBeHidden();
+  await expect(page.locator(".app-footer")).toBeHidden();
+  await expect(page.locator("main h1")).toBeVisible();
+});
+
 test("works offline after the first visit", async ({ page, context }) => {
   await page.goto("./");
   await page.evaluate(async () => { await window.navigator.serviceWorker.ready; });

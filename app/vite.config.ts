@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { defineConfig, type Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { app as config, type AppConfig } from "../app.config.ts";
@@ -5,6 +6,15 @@ import { app as config, type AppConfig } from "../app.config.ts";
 const app: AppConfig = config;
 
 const BASE = `/${app.id}/`;
+
+// Manifest screenshots for the richer install dialog (Chrome/Edge) — made by `pnpm screenshots`
+// (tests/screenshots) before a release and committed; skipped until they exist.
+const shot = (file: string, sizes: string, form_factor: "narrow" | "wide", label: string) =>
+  existsSync(new URL(`./public/screenshots/${file}`, import.meta.url)) ? [{ src: `screenshots/${file}`, sizes, type: "image/png", form_factor, label }] : [];
+const screenshots = [
+  ...shot("narrow.png", "780x1688", "narrow", `${app.name} on a phone`),
+  ...shot("wide.png", "1280x800", "wide", `${app.name} on a computer`),
+];
 
 /** Fills %APP_*% placeholders and the JSON-LD block in index.html from app.config.ts. */
 function appHtml(): Plugin {
@@ -67,6 +77,13 @@ export default defineConfig({
         background_color: "#F5F5F7", theme_color: "#F5F5F7", orientation: "any",
         categories: [...app.categories],
         launch_handler: { client_mode: ["navigate-existing", "auto"] },
+        ...(screenshots.length ? { screenshots } : {}),
+        // Long-press the app icon → jump straight to a task (app.config.shortcuts).
+        ...(app.shortcuts?.length ? { shortcuts: app.shortcuts.map((s) => ({ name: s.name, url: s.url })) } : {}),
+        // "Share → app" on Android (app.config.modes.shareTarget; handled in ui/share-target.ts).
+        ...(app.modes.shareTarget
+          ? { share_target: { action: `${BASE}?share-target=1`, method: "GET", params: { title: "title", text: "text", url: "url" } } }
+          : {}),
       },
       workbox: {
         cacheId: app.id,
@@ -74,8 +91,12 @@ export default defineConfig({
         // Inter: precache only latin + cyrillic; other subsets still load on demand (unicode-range).
         globIgnores: ["**/inter-{latin-ext,cyrillic-ext,greek,greek-ext,vietnamese}-*.woff2"],
         cleanupOutdatedCaches: true,
-        navigateFallback: `${BASE}index.html`,
-        navigateFallbackAllowlist: [new RegExp(`^${BASE}$`)],
+        // Any query (?lang=, ?teams=, ?embed=) still matches the precached page.
+        ignoreURLParametersMatching: [/.*/],
+        // Offline + an address that isn't precached → our 404 page in its offline variant,
+        // never the browser's dinosaur (web.dev PWA checklist). Precached pages are served first.
+        navigateFallback: `${BASE}404.html`,
+        navigateFallbackAllowlist: [new RegExp(`^${BASE}`)],
       },
       devOptions: { enabled: false },
     }),

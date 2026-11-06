@@ -17,6 +17,7 @@ import { maybeShowWhatsNew, openWhatsNew } from "./ui/whats-new.ts";
 import { flushReportQueue, openReport } from "./ui/report.ts";
 import { initInstall, openInstall, updateMenuLabel } from "./ui/install.ts";
 import { initPwa } from "./pwa.ts";
+import { initShareTarget } from "./ui/share-target.ts";
 
 initI18n(); // first: every later module (incl. the error screen) uses t()
 installErrorScreen();
@@ -24,6 +25,7 @@ installErrorScreen();
 if (window.self !== window.top || new URLSearchParams(location.search).has("embed")) {
   document.documentElement.classList.add("is-embed");
 }
+initShareTarget(); // before app code reads the URL
 hydrateIcons();
 initTheme();
 initOfflineIndicator();
@@ -67,6 +69,11 @@ document.querySelector("[data-menu-open]")?.addEventListener("click", () => {
   menu?.showModal();
 });
 document.querySelector("[data-menu-close]")?.addEventListener("click", () => { menu?.close(); });
+// Light dismiss: a tap outside the menu closes it.
+menu?.addEventListener("click", (e) => {
+  const r = menu.getBoundingClientRect();
+  if (e.target === menu && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)) menu.close();
+});
 
 // Header shadow after scrolling (IntersectionObserver, no scroll listeners).
 const header = document.querySelector<HTMLElement>("[data-header]");

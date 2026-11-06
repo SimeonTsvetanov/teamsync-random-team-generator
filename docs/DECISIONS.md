@@ -20,3 +20,7 @@ Format: `date · decision · reason`. Newest last.
 - **2026-11-06 · Forge template 0.4.0 merged: confirm modal for delete/replace/discard, equal-width
   button groups, iOS-style grouped Settings, blurred modal backdrops (Moni's design feedback,
   forge learning L-2026-11-06-01).** · Applies to TeamSync's Clear button and result actions (PLAN T-06, T-07).
+- **2026-11-06 · Moni: plan approved (docs/PLAN.md, 12 tasks) → Phase 3 /build starts at T-01.**
+- **2026-11-06 · Forge template 0.5.0 merged (offline page, app feel, light dismiss, undo, drafts,
+  view transitions, manifest screenshots/shortcuts, optional share target, perf helpers, print).** ·
+  Share target stays off until Moni decides (proposed for T-07: share a names list from WhatsApp).

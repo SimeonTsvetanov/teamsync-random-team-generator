@@ -9,6 +9,8 @@ export const en = {
     skip: "Skip to content",
     home: "{{name}} — home",
     cancel: "Cancel",
+    undo: "Undo",
+    undone: "Undone ✓",
     close: "Close",
     copy: "Copy",
     copied: "Copied ✓",

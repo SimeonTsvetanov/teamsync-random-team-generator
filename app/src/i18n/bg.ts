@@ -11,6 +11,8 @@ export const bg: Messages = {
     skip: "Към съдържанието",
     home: "{{name}} — начало",
     cancel: "Отказ",
+    undo: "Отмени",
+    undone: "Отменено ✓",
     close: "Затвори",
     copy: "Копирай",
     copied: "Копирано ✓",
