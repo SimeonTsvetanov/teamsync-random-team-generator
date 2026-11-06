@@ -21,8 +21,8 @@ describe("parseNames", () => {
 });
 
 describe("the followers cheat (SPEC F6, AC5)", () => {
-  it("has the 17 names in the original order", () => {
-    expect(FOLLOWERS).toEqual(["Moni", "Iliyana", "George", "Viki", "Eli", "Asen", "Lubomir", "Ralica", "Venci", "Slavi", "Joni", "Apapa", "Mitaka G", "Tonkata", "Dinkata", "Raiko", "Tancheto"]);
+  it("has the 18 names (original order + Keti after Dinkata)", () => {
+    expect(FOLLOWERS).toEqual(["Moni", "Iliyana", "George", "Viki", "Eli", "Asen", "Lubomir", "Ralica", "Venci", "Slavi", "Joni", "Apapa", "Mitaka G", "Tonkata", "Dinkata", "Keti", "Raiko", "Tancheto"]);
   });
   it.each(["the followers", "THE FOLLOWERS", "  The Followers  ", "tHe fOlLoWeRs"])("expands %j", (line) => {
     expect(parseNames(line)).toEqual({ ok: true, value: [...FOLLOWERS] });

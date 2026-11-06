@@ -215,6 +215,8 @@ export const bg: Messages = {
     regenerate: "Разбъркай отново",
     copy: "Копирай",
     share: "Сподели",
+    shareTitle: "Сподели отборите",
+    editNames: "‹ Имена",
     copied: "Отборите са копирани ✓",
     copyFailed: "Не може да се копира — маркирайте отборите и ги копирайте ръчно.",
     copyHeading: "✨ ОТБОРИТЕ СА ГОТОВИ ✨",

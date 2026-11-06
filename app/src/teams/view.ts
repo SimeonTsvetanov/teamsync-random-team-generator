@@ -1,5 +1,6 @@
 import { MAX_TEAMS, MIN_TEAMS, expandFollowers, formatTeams, makeTeams, namesFromSharedText, parseNames, type FormatLabels } from "@simeonts/teamsync-random-team-generator-core";
 import { onShared } from "../ui/share-target.ts";
+import { openDialog } from "../ui/dialog.ts";
 import { app } from "../config.ts";
 import { t } from "../i18n/index.ts";
 import { h } from "../ui/dom.ts";
@@ -23,7 +24,9 @@ export function initTeams(): void {
   const results = document.querySelector<HTMLElement>("[data-results]");
   const grid = document.querySelector<HTMLElement>("[data-teams-grid]");
   const status = document.querySelector<HTMLElement>("[data-results-status]");
-  if (!form || !area || !countEl || !valueEl || !dec || !inc || !clear || !errorEl || !results || !grid || !status) return;
+  const workspace = document.querySelector<HTMLElement>("[data-workspace]");
+  const back = document.querySelector<HTMLButtonElement>("[data-results-back]");
+  if (!workspace || !back || !form || !area || !countEl || !valueEl || !dec || !inc || !clear || !errorEl || !results || !grid || !status) return;
 
   let teams = teamsFromUrl() ?? saved.teams();
   let last: string[][] | null = null;
@@ -59,10 +62,8 @@ export function initTeams(): void {
   };
   const renderResults = (value: string[][], announce: boolean): void => {
     last = value;
-    // WhatsApp: opens the app on phones and WhatsApp Web on computers with the teams text ready.
-    const wa = document.querySelector<HTMLAnchorElement>("[data-whatsapp]");
-    if (wa) wa.href = `https://wa.me/?text=${encodeURIComponent(formatTeams(value, labels()))}`;
     withTransition(() => {
+      workspace.classList.add("has-results");
       grid.replaceChildren(...value.map((members, i) =>
         h("article", { class: "team-card", "aria-labelledby": `team-${String(i + 1)}` },
           h("header", { class: "team-head" },
@@ -147,6 +148,10 @@ export function initTeams(): void {
 
 
   form.addEventListener("submit", (e) => { e.preventDefault(); generate(); });
+  // Phones: results are the next screen; "‹ Names" goes back (desktop shows both side by side).
+  back.addEventListener("click", () => { withTransition(() => { workspace.classList.remove("has-results"); }); area.focus({ preventScroll: true }); });
+  // Desktop: the names box has the focus from the start (phones: no keyboard pop-up on launch).
+  if (matchMedia("(min-width: 601px) and (pointer: fine)").matches) area.focus({ preventScroll: true });
   document.querySelector("[data-regenerate]")?.addEventListener("click", generate);
   document.querySelector("[data-copy]")?.addEventListener("click", () => {
     if (!last) return;
@@ -158,11 +163,17 @@ export function initTeams(): void {
   document.querySelector("[data-share]")?.addEventListener("click", () => {
     if (!last) return;
     const text = formatTeams(last, labels());
-    const copyInstead = (): void => { void navigator.clipboard.writeText(text).then(() => { showToast({ message: t("app.copied") }); }); };
-    // Native share sheet where available; otherwise (or on failure) copy. Cancelling is silent.
-    if (typeof navigator.share !== "function") { copyInstead(); return; }
+    // ONE Share button (forge-app-shell → app-shell §8): the phone's own share sheet (WhatsApp,
+    // Viber, Messages…); where there is none (most desktops) a small sheet with WhatsApp + Copy.
+    const fallback = (): void => {
+      const wa = h("a", { class: "button button--primary", href: `https://wa.me/?text=${encodeURIComponent(text)}`, target: "_blank", rel: "noopener" }, icon("message"), "WhatsApp");
+      const copy = h("button", { class: "button", type: "button" }, icon("copy"), t("app.copy"));
+      copy.addEventListener("click", () => { void navigator.clipboard.writeText(text).then(() => { showToast({ message: t("app.copied") }); }); });
+      openDialog("share-teams", t("app.shareTitle"), [h("div", { class: "button-stack" }, wa, copy)]);
+    };
+    if (typeof navigator.share !== "function") { fallback(); return; }
     navigator.share({ title: app.name, text }).catch((e: unknown) => {
-      if (!(e instanceof DOMException && e.name === "AbortError")) copyInstead();
+      if (!(e instanceof DOMException && e.name === "AbortError")) fallback();
     });
   });
 
@@ -175,6 +186,7 @@ export function initTeams(): void {
     last = null;
     grid.replaceChildren();
     results.hidden = true;
+    workspace.classList.remove("has-results");
     teams = saved.teams();
     renderTeams();
     renderCount();

@@ -36,6 +36,8 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 @media (max-width: 600px) { .menu { margin: 0 0 0 auto; height: 100dvh; max-height: 100dvh; border-radius: var(--radius-xl) 0 0 var(--radius-xl); padding-top: calc(var(--space-5) + var(--safe-top)); padding-bottom: calc(var(--space-5) + var(--safe-bottom)); } }
 
 .toast-region { position: fixed; left: 50%; bottom: calc(var(--space-4) + var(--safe-bottom)); transform: translateX(-50%); z-index: var(--z-toast); }
+/* Phones: toasts drop in under the header (iOS banners) — the bottom belongs to the main action. */
+@media (max-width: 600px) { .toast-region { top: calc(var(--header-height) + var(--safe-top) + var(--space-2)); bottom: auto; width: calc(100% - 2 * var(--space-4)); display: grid; justify-items: center; } }
 .toast { display: flex; align-items: center; gap: var(--space-3); white-space: nowrap; max-width: calc(100vw - 2 * var(--space-4)); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4); background: var(--color-surface-raised); border-radius: var(--radius-full); box-shadow: var(--shadow-3); }
 .toast button { color: var(--color-accent-text); font-weight: var(--weight-semibold); }
 @media (forced-colors: active) { .empty-state, .for-agents, .menu, .toast { border: 1px solid CanvasText; } }
@@ -95,14 +97,11 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 
 /* Alert (confirm before deleting / replacing / discarding): small centered card over a blurred page. */
 .alert { border: 0; padding: var(--space-5); width: min(100% - 2 * var(--space-6), 380px); border-radius: var(--radius-xl); background: var(--color-surface-raised); color: var(--color-text); box-shadow: var(--shadow-3); text-align: center; }
-.alert[open] { animation: alert-in var(--duration-base) var(--ease-standard); }
 .alert-title { margin: 0 0 var(--space-2); font-size: var(--text-lg); }
 .alert-text { margin: 0 0 var(--space-5); color: var(--color-text-secondary); }
 /* Side by side like iOS; a label that doesn't fit on one line moves both buttons to full-width rows. */
 .alert-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .alert-actions .button { flex: 1 1 7rem; white-space: nowrap; }
-@keyframes alert-in { from { opacity: 0; transform: scale(0.96); } }
-@media (prefers-reduced-motion: reduce) { .alert[open] { animation: none; } }
 .hint { font-size: var(--text-sm); color: var(--color-text-secondary); }
 .form { display: grid; gap: var(--space-4); }
 .form label { display: grid; gap: var(--space-1); font-weight: var(--weight-medium); }
@@ -179,4 +178,64 @@ html { -webkit-tap-highlight-color: transparent; }
   .panel, .group-card, .sheet { box-shadow: none; }
   .sheet[open] { position: static; max-height: none; width: auto; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; }
+}
+
+/* ---------- Motion — Apple-like (forge-design → design-system §9) ----------
+   Sheets slide up on phones / scale in on desktop with the iOS curve; the side menu slides in;
+   alerts pop from 1.08 with a spring; backdrops fade. Closing animates too (overlay/display are
+   allow-discrete; dialog.ts removes the element after --duration-sheet). Durations are 0 under
+   prefers-reduced-motion (tokens). */
+.sheet, .menu, .alert { transition: opacity var(--duration-alert) var(--ease-out), transform var(--duration-sheet) var(--ease-ios), overlay var(--duration-sheet) allow-discrete, display var(--duration-sheet) allow-discrete; }
+.sheet:not([open]) { opacity: 0; transform: translateY(12px) scale(0.97); }
+@starting-style { .sheet[open] { opacity: 0; transform: translateY(12px) scale(0.97); } }
+.alert { transition-duration: var(--duration-alert); transition-timing-function: var(--ease-out), var(--ease-spring); }
+.alert:not([open]) { opacity: 0; transform: scale(0.94); }
+@starting-style { .alert[open] { opacity: 0; transform: scale(1.08); } }
+.menu:not([open]) { opacity: 0; transform: translateX(24px); }
+@starting-style { .menu[open] { opacity: 0; transform: translateX(24px); } }
+@media (max-width: 600px) {
+  .sheet:not([open]) { opacity: 1; transform: translateY(100%); }
+  @starting-style { .sheet[open] { opacity: 1; transform: translateY(100%); } }
+  .menu:not([open]) { opacity: 1; transform: translateX(100%); }
+  @starting-style { .menu[open] { opacity: 1; transform: translateX(100%); } }
+}
+@media (min-width: 601px) {
+  .menu { transform-origin: top right; }
+  .menu:not([open]) { transform: scale(0.95); }
+  @starting-style { .menu[open] { transform: scale(0.95); } }
+}
+.sheet::backdrop, .menu::backdrop, .alert::backdrop { transition: opacity var(--duration-sheet) var(--ease-out), overlay var(--duration-sheet) allow-discrete, display var(--duration-sheet) allow-discrete; }
+@starting-style { .sheet[open]::backdrop, .menu[open]::backdrop, .alert[open]::backdrop { opacity: 0; } }
+.toast { animation: toast-in var(--duration-alert) var(--ease-spring); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(12px) scale(0.98); } }
+@media (max-width: 600px) { @keyframes toast-in { from { opacity: 0; transform: translateY(-12px) scale(0.98); } } }
+.button, .icon-button, .stepper-button { transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard); }
+.button:active, .icon-button:active { transform: scale(0.97); }
+
+/* Quiet destructive action (iOS Settings style): red text, no fill — never the loudest button. */
+.button--destructive { background: transparent; color: var(--color-danger-text); box-shadow: none; }
+@media (hover: hover) { .button--destructive:hover { background: var(--color-fill); box-shadow: none; } }
+
+/* ---------- Launch splash (theme-init.js sets [data-splash] once per session) ---------- */
+.splash { display: none; }
+:root[data-splash] .splash {
+  display: grid; place-content: center; justify-items: center; gap: var(--space-4); position: fixed; inset: 0; z-index: 100;
+  padding: var(--space-6); background: var(--color-bg); text-align: center; pointer-events: none;
+  animation: splash-out var(--duration-sheet) var(--ease-out) 1100ms forwards;
+}
+.splash img { width: 88px; height: 88px; animation: splash-logo 700ms var(--ease-spring) both; }
+.splash p { margin: 0; max-width: 22ch; font-size: var(--text-2xl); font-weight: var(--weight-semibold); letter-spacing: var(--tracking-tight); text-wrap: balance; animation: splash-text 600ms var(--ease-out) 150ms both; }
+@keyframes splash-out { to { opacity: 0; visibility: hidden; } }
+@keyframes splash-logo { from { opacity: 0; transform: scale(0.8); } }
+@keyframes splash-text { from { opacity: 0; transform: translateY(8px); } }
+@media (prefers-reduced-motion: reduce) { :root[data-splash] .splash { animation: splash-out 1ms linear 700ms forwards; } .splash img, .splash p { animation: none; } }
+
+/* ---------- Phone = app, not a web page (forge-design → responsive-layout §2) ----------
+   The main screen is the tool only. Name/tagline live in the splash and stay in the HTML for
+   search engines and screen readers; how-it-works, FAQ, agent docs and the footer move to Help
+   and the menu on phones and in the installed app. Desktop browsers still show them below. */
+.hero { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 600px), (display-mode: standalone) {
+  .steps, .faq-list, .for-agents, .app-footer { display: none; }
+  .main { padding-block: var(--space-4) var(--space-8); }
 }

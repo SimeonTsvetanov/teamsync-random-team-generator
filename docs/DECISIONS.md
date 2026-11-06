@@ -34,3 +34,9 @@ Format: `date · decision · reason`. Newest last.
 - **2026-11-06 · CSP without `upgrade-insecure-requests`; Zod `jitless` in the browser.** · CI on
   WebKit: the directive upgraded `http://localhost` and nothing loaded (57 e2e failures); Pages
   already forces HTTPS. Firefox logged a CSP eval violation from Zod's JIT. Both fixed in the forge too.
+- **2026-11-06 · Moni's design round 2:** one Share button (native sheet; WhatsApp + Copy only as
+  fallback), phone = app (tool fills the screen, results are the next screen with "‹ Names",
+  steps/FAQ/footer only in Help/menu on phones), mint accent `#3DDC97` with dark text, quiet red
+  "Clear my data", launch splash with the tagline (once per session), Apple-like motion, toasts
+  from the top on phones, Keti added to the followers after Dinkata. All generic parts are in the
+  forge template 0.6.0.

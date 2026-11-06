@@ -48,3 +48,30 @@
 
 @media print { .tool, .results-actions { display: none !important; } .team-card { break-inside: avoid; box-shadow: none; } }
 @media (forced-colors: active) { .tool, .team-card, .stepper, .stepper-button { border: 1px solid CanvasText; } }
+
+/* App layout (Moni 2026-11-06): the tool is the screen. Phones: names fill the screen, results
+   are the next screen with "‹ Names" back. Desktop: tool and results side by side. */
+.workspace { display: grid; gap: var(--space-6); }
+.tool, .results { margin-top: 0; }
+.results-head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
+.results-head h2 { margin: 0; }
+.results-back { display: none; }
+@media (min-width: 900px) {
+  .workspace.has-results { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: start; }
+  .workspace.has-results .tool { position: sticky; top: calc(var(--header-height) + var(--space-4)); }
+}
+@media (max-width: 600px) {
+  .tool { display: flex; flex-direction: column; min-height: calc(100dvh - var(--header-height) - var(--safe-top) - var(--safe-bottom) - var(--space-12)); }
+  .tool-form { flex: 1; display: flex; flex-direction: column; }
+  .tool-form > .field:first-child { flex: 1; grid-template-rows: auto 1fr auto; }
+  .field textarea { min-height: 9rem; height: 100%; resize: none; }
+  .workspace.has-results .tool { display: none; }
+  .results-back { display: inline-flex; align-items: center; }
+}
+.results-actions .button { white-space: nowrap; padding-inline: var(--space-3); }
+/* Phones: the result actions stay in the thumb zone while scrolling long teams. */
+@media (max-width: 600px) {
+  .results-actions { position: sticky; bottom: calc(var(--space-3) + var(--safe-bottom)); z-index: 1; padding: var(--space-2); margin-inline: calc(-1 * var(--space-2)); border-radius: var(--radius-lg); background: var(--header-bg); -webkit-backdrop-filter: var(--header-blur); backdrop-filter: var(--header-blur); grid-template-columns: 1fr 1fr; }
+  .results-actions > :first-child { grid-column: 1 / -1; } /* primary on its own row, then Share | Copy */
+  .results-actions > :last-child:nth-child(odd):not(:first-child) { grid-column: auto; }
+}

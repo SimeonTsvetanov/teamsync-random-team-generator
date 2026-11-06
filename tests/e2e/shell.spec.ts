@@ -150,3 +150,12 @@ test("custom 404 page shows the requested path", async ({ page }) => {
   await expect(page.locator("h1")).toHaveText(/doesn.t exist/);
   await expect(page.locator("[data-ep-path]")).toContainText("/");
 });
+
+test("launch splash shows the tagline once per session, then the tool", async ({ page }) => {
+  await page.addInitScript(() => { Object.defineProperty(navigator, "webdriver", { get: () => false }); });
+  await page.goto("./");
+  await expect(page.locator(".splash")).toBeVisible();
+  await expect(page.locator(".splash")).toBeHidden({ timeout: 4000 });
+  await page.reload();
+  await expect(page.locator("html")).not.toHaveAttribute("data-splash", "");
+});

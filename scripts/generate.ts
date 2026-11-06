@@ -205,12 +205,21 @@ if (app.modes.n8n && existsSync(n8nBlock)) copyFileSync(n8nBlock, join(pub, "n8n
     if (!/^#[0-9a-fA-F]{6}$/.test(app.accent)) throw new Error(`app.config.accent must be #RRGGBB, got ${app.accent}`);
     const base = toOklch(app.accent);
     const white: [number, number, number] = [1, 1, 1];
-    const ratio = contrast(toRgb(base), white);
-    if (ratio < 4.5) throw new Error(`Accent ${app.accent} has ${ratio.toFixed(2)}:1 with white text (needs 4.5:1). Pick a darker accent.`);
+    const ink: [number, number, number] = [0.114, 0.114, 0.122]; // #1D1D1F
+    const surfaceDark: [number, number, number] = [0.173, 0.173, 0.18]; // #2C2C2E (raised, the lightest dark surface)
+    // Text on the accent: white when it passes 4.5:1, else near-black (light/fresh accents like mint).
+    const onWhite = contrast(toRgb(base), white), onInk = contrast(toRgb(base), ink);
+    if (onWhite < 4.5 && onInk < 4.5) throw new Error(`Accent ${app.accent}: neither white (${onWhite.toFixed(2)}:1) nor dark text (${onInk.toFixed(2)}:1) reaches 4.5:1. Pick a lighter or darker accent.`);
+    const onAccent = onWhite >= 4.5 ? "oklch(100% 0 0)" : "oklch(21% 0.004 286)";
     const pressed: [number, number, number] = [base[0] - 0.04, base[1], base[2]];
+    // Accent as TEXT (links, headings): darken / lighten the same hue until it passes 4.5:1.
     const linkLight: [number, number, number] = [Math.min(base[0], 0.52), base[1], base[2]];
+    // Check against the hardest backgrounds: --color-bg light #F5F5F7, --color-surface-raised dark #2C2C2E.
+    const bgLight: [number, number, number] = [0.961, 0.961, 0.969];
+    while (contrast(toRgb(linkLight), bgLight) < 4.5 && linkLight[0] > 0.2) linkLight[0] -= 0.01;
     const linkDark: [number, number, number] = [Math.max(base[0], 0.68), base[1], base[2]];
-    css += `:root {\n  --color-accent: light-dark(${ok(base)}, ${ok(base)});\n  --color-accent-pressed: light-dark(${ok(pressed)}, ${ok(pressed)});\n  --color-accent-text: light-dark(${ok(linkLight)}, ${ok(linkDark)});\n  --color-accent-tint: light-dark(${ok(base).replace(")", " / 0.1)")}, ${ok(linkDark).replace(")", " / 0.16)")});\n  --color-focus: light-dark(${ok(base)}, ${ok(linkDark)});\n}\n`;
+    while (contrast(toRgb(linkDark), surfaceDark) < 4.5 && linkDark[0] < 0.95) linkDark[0] += 0.01;
+    css += `:root {\n  --color-accent: light-dark(${ok(base)}, ${ok(base)});\n  --color-on-accent: ${onAccent};\n  --color-accent-pressed: light-dark(${ok(pressed)}, ${ok(pressed)});\n  --color-accent-text: light-dark(${ok(linkLight)}, ${ok(linkDark)});\n  --color-accent-tint: light-dark(${ok(base).replace(")", " / 0.1)")}, ${ok(linkDark).replace(")", " / 0.16)")});\n  --color-focus: light-dark(${ok(base)}, ${ok(linkDark)});\n}\n`;
   }
   writeFileSync(join(gen, "accent.css"), css);
 }

@@ -2,12 +2,17 @@ import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 // TeamSync app flows — acceptance criteria from docs/SPEC.md §9.
-const FOLLOWERS = ["Moni", "Iliyana", "George", "Viki", "Eli", "Asen", "Lubomir", "Ralica", "Venci", "Slavi", "Joni", "Apapa", "Mitaka G", "Tonkata", "Dinkata", "Raiko", "Tancheto"];
+const FOLLOWERS = ["Moni", "Iliyana", "George", "Viki", "Eli", "Asen", "Lubomir", "Ralica", "Venci", "Slavi", "Joni", "Apapa", "Mitaka G", "Tonkata", "Dinkata", "Keti", "Raiko", "Tancheto"];
 const names = (n: number): string => Array.from({ length: n }, (_, i) => `Player ${String(i + 1)}`).join("\n");
 const serious = async (page: Page): Promise<string[]> =>
   (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag22aa"]).analyze()).violations
     .filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => v.id);
 const generate = (page: Page) => page.getByRole("button", { name: "Generate teams" }).click();
+// Phones show results as the next screen; go back to the names before editing them.
+const backToNames = async (page: Page): Promise<void> => {
+  const back = page.locator("[data-results-back]");
+  if (await back.isVisible()) await back.click();
+};
 const setTeams = async (page: Page, n: number): Promise<void> => {
   for (let i = 0; i < 10 && Number(await page.locator("[data-teams-value]").textContent()) > n; i++) await page.getByRole("button", { name: "Fewer teams" }).click();
   for (let i = 0; i < 10 && Number(await page.locator("[data-teams-value]").textContent()) < n; i++) await page.getByRole("button", { name: "More teams" }).click();
@@ -21,6 +26,7 @@ test("AC1: 10 names → 2 teams of 5; 11 names → 4/4/3; every name once", asyn
   const cards = page.locator(".team-card");
   await expect(cards).toHaveCount(2);
   for (const c of await cards.all()) await expect(c.locator("li")).toHaveCount(5);
+  await backToNames(page);
   await page.locator("#names").fill(names(11));
   await setTeams(page, 3);
   await generate(page);
@@ -57,13 +63,13 @@ test("AC4: more teams than names shows a clear message; ?teams=4 pre-selects 4",
   await expect(page).toHaveURL(/teams=5/);
 });
 
-test("AC5: typing 'the followers' on its own line expands to the 17 names", async ({ page }) => {
+test("AC5: typing 'the followers' on its own line expands to the 18 names", async ({ page }) => {
   await page.goto("./");
   const area = page.locator("#names");
   await area.fill("Ana\n");
   await area.pressSequentially("The Followers");
   await expect(area).toHaveValue(["Ana", ...FOLLOWERS].join("\n"));
-  await expect(page.locator("[data-names-count]")).toHaveText("18 names");
+  await expect(page.locator("[data-names-count]")).toHaveText("19 names");
 });
 
 test("AC6: the list survives a reload; Clear has Undo; Clear my data removes it", async ({ page }) => {
@@ -109,6 +115,7 @@ test("dark mode: results and errors keep WCAG AA contrast", async ({ browser }) 
   await generate(page);
   await expect(page.locator(".team-card")).toHaveCount(3);
   expect(await serious(page)).toEqual([]);
+  await backToNames(page);
   await page.locator("#names").fill("Ana");
   await generate(page);
   await expect(page.getByRole("alert")).toBeVisible();
@@ -116,7 +123,7 @@ test("dark mode: results and errors keep WCAG AA contrast", async ({ browser }) 
   await context.close();
 });
 
-test("WhatsApp: pasting a chat list keeps only the names; shared text arrives via Share → TeamSync; WhatsApp button carries the teams", async ({ page, browserName }) => {
+test("WhatsApp: pasting a chat list keeps only the names; shared text arrives via Share → TeamSync; Share offers WhatsApp", async ({ page, browserName }) => {
   await page.goto("./");
   const area = page.locator("#names");
   // Firefox ignores clipboardData on synthetic paste events, so the paste part runs elsewhere.
@@ -136,7 +143,10 @@ test("WhatsApp: pasting a chat list keeps only the names; shared text arrives vi
   await expect.poll(() => page.evaluate(() => location.search)).not.toContain("share-target");
 
   await generate(page);
-  const href = await page.locator("[data-whatsapp]").getAttribute("href");
+  // One Share button: without a native share sheet it offers WhatsApp + Copy.
+  await page.evaluate(() => { Object.defineProperty(navigator, "share", { value: undefined, configurable: true }); });
+  await page.getByRole("button", { name: "Share", exact: true }).click();
+  const href = await page.locator('dialog[data-dialog="share-teams"] a').getAttribute("href");
   expect(href?.startsWith("https://wa.me/?text=")).toBe(true);
   expect(decodeURIComponent(href ?? "")).toContain("🏆 Team 1 | Members - 2");
 });

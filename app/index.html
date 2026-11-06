@@ -22,6 +22,7 @@
     <script src="./theme-init.js"></script>
   </head>
   <body>
+    <div class="splash" aria-hidden="true"><img src="./logo.svg" alt="" width="88" height="88" /><p data-text="tagline">%APP_TAGLINE%</p></div>
     <a class="skip-link" href="#main" data-i18n="shell.skip">Skip to content</a>
     <header class="app-header" data-header>
       <a class="brand" href="./" aria-label="%APP_NAME% — home" data-i18n-aria-label="shell.home">
@@ -41,6 +42,7 @@
         <p class="lead" data-text="tagline">%APP_TAGLINE%</p>
         <p data-text="description">%APP_DESCRIPTION%</p>
       </section>
+      <div class="workspace" data-workspace>
       <section class="tool">
         <form class="tool-form" data-teams-form novalidate>
           <div class="field">
@@ -67,16 +69,19 @@
         </form>
       </section>
       <section class="results" data-results hidden aria-labelledby="results-title">
-        <h2 id="results-title" data-i18n="app.yourTeams">Your teams</h2>
+        <div class="results-head">
+          <button type="button" class="link-button results-back" data-results-back data-i18n="app.editNames">‹ Names</button>
+          <h2 id="results-title" data-i18n="app.yourTeams">Your teams</h2>
+        </div>
         <p class="visually-hidden" role="status" data-results-status></p>
         <div class="teams-grid" data-teams-grid></div>
         <div class="button-stack results-actions">
           <button type="button" class="button button--primary" data-regenerate data-icon="shuffle"><span data-i18n="app.regenerate">Shuffle again</span></button>
-          <button type="button" class="button" data-copy data-icon="copy"><span data-i18n="app.copy">Copy</span></button>
           <button type="button" class="button" data-share data-icon="share"><span data-i18n="app.share">Share</span></button>
-          <a class="button" data-whatsapp data-icon="message" href="https://wa.me/" target="_blank" rel="noopener"><span>WhatsApp</span></a>
+          <button type="button" class="button" data-copy data-icon="copy"><span data-i18n="app.copy">Copy</span></button>
         </div>
       </section>
+      </div>
       <section class="steps">
         <h2 data-i18n="shell.howItWorks">How it works</h2>
         <ol data-text="steps">%APP_STEPS%</ol>

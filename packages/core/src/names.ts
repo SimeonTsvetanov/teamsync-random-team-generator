@@ -7,10 +7,10 @@ export const MAX_NAME_LENGTH = 100;
 /** The cheat word: a line with exactly this text (any case, surrounding spaces ignored). */
 export const FOLLOWERS_CHEAT = "the followers";
 
-/** The friends a `the followers` line expands to — same names and order as the original TeamSync. */
+/** The friends a `the followers` line expands to — the original TeamSync list + Keti (Moni 2026-11-06). */
 export const FOLLOWERS: readonly string[] = [
   "Moni", "Iliyana", "George", "Viki", "Eli", "Asen", "Lubomir", "Ralica", "Venci",
-  "Slavi", "Joni", "Apapa", "Mitaka G", "Tonkata", "Dinkata", "Raiko", "Tancheto",
+  "Slavi", "Joni", "Apapa", "Mitaka G", "Tonkata", "Dinkata", "Keti", "Raiko", "Tancheto",
 ];
 
 export type NamesErrorCode = "NAMES_EMPTY" | "NAMES_TOO_MANY" | "NAME_TOO_LONG";

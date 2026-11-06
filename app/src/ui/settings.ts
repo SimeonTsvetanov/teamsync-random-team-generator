@@ -71,7 +71,7 @@ export function openSettings(): void {
       });
     });
   });
-  const clear = h("button", { class: "button button--danger", type: "button" }, t("shell.settings.clear"));
+  const clear = h("button", { class: "button button--destructive", type: "button" }, t("shell.settings.clear")); // quiet: never the loudest button
   clear.addEventListener("click", () => {
     void confirmAction({
       title: t("shell.settings.clearTitle"), message: t("shell.settings.clearMessage", { name: app.name, stores: app.storage.stores.join(", ") }),

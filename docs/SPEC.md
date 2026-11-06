@@ -21,7 +21,7 @@
 | F3 | **Fair shuffle**: Fisher–Yates with `crypto.getRandomValues` (old `sort(() => 0.5 - Math.random())` is biased); team sizes differ by at most 1 | AC1, AC2 |
 | F4 | Result: team cards (Team 1…N, member count, names) with Regenerate, Copy and Share | AC1, AC3 |
 | F5 | Copy/Share text keeps the old format + attribution line `— Made with TeamSync · <url>`; Web Share API, fallback copy (no broken Facebook fallback) | AC3 |
-| F6 | **Cheat (keep exactly):** a line equal to `the followers` (case-insensitive, trimmed) is replaced in place by: Moni, Iliyana, George, Viki, Eli, Asen, Lubomir, Ralica, Venci, Slavi, Joni, Apapa, Mitaka G, Tonkata, Dinkata, Raiko, Tancheto | AC5 |
+| F6 | **Cheat (keep exactly):** a line equal to `the followers` (case-insensitive, trimmed) is replaced in place by: Moni, Iliyana, George, Viki, Eli, Asen, Lubomir, Ralica, Venci, Slavi, Joni, Apapa, Mitaka G, Tonkata, Dinkata, Keti, Raiko, Tancheto (Keti added by Moni 2026-11-06) | AC5 |
 | F7 | Remember the last list on this device (prefs tier); "Clear" empties it; Settings → Clear my data removes it | AC6 |
 | F8 | English + Bulgarian UI; **English is always the default** (no browser auto-detect); Bulgarian via Settings → Language or `?lang=bg`, remembered on the device (forge i18n module) | AC7 |
 | F9 | Deep links: `?teams=3` pre-selects the number of teams (names are never put in the URL) | AC4 |
@@ -56,7 +56,7 @@
 - AC2: fairness — over 30,000 runs each name lands in each team with frequency 1/N ± 2 %.
 - AC3: Copy produces the team text with attribution; Share opens the native sheet or copies.
 - AC4: more teams than names is prevented with a clear message; `?teams=4` pre-selects 4.
-- AC5: typing `the followers` (any case) on its own line expands to the 17 names in place.
+- AC5: typing `the followers` (any case) on its own line expands to the 18 names in place.
 - AC6: reload keeps the last list; Clear and Clear my data remove it.
 - AC7: first visit is English; switching to Bulgarian translates every UI string; the choice is remembered; `?lang=bg` works for one visit.
 - AC8: template e2e suite (15 tests) + new app tests green; offline works; Lighthouse budgets pass.

@@ -92,3 +92,10 @@ flushReportQueue();
 initTeams();
 maybeShowWhatsNew();
 initPwa();
+// Launch splash: remove it once its fade-out ends (also after a timeout, belt and braces).
+const splash = document.querySelector<HTMLElement>(".splash");
+if (splash && document.documentElement.hasAttribute("data-splash")) {
+  const end = (): void => { document.documentElement.removeAttribute("data-splash"); };
+  splash.addEventListener("animationend", (e) => { if (e.animationName === "splash-out") end(); });
+  setTimeout(end, 2500);
+}

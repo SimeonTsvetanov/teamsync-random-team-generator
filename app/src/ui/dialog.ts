@@ -2,6 +2,10 @@ import { h } from "./dom.ts";
 import { icon } from "./icons.ts";
 import { t } from "../i18n/index.ts";
 
+/** ms to keep a closed dialog for its exit animation (0 with reduced motion). */
+export const closeDelay = (): number =>
+  matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--duration-sheet")) || 0;
+
 export interface DialogOptions {
   /** Called before the user closes the dialog (X, Esc). Return false to keep it open — e.g. ask
    *  `confirmAction()` when a form has unsaved input (forge-design → ui-patterns §4). */
@@ -37,7 +41,8 @@ export function openDialog(id: string, title: string, body: Node[], options: Dia
     void tryClose();
   });
   dialog.addEventListener("close", () => {
-    dialog.remove();
+    // Keep it in the DOM until the closing animation ends (CSS overlay/display allow-discrete).
+    setTimeout(() => { dialog.remove(); }, closeDelay());
     if (location.hash === `#${id}`) history.replaceState(null, "", location.pathname + location.search);
     opener?.focus();
   });

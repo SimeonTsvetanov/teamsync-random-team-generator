@@ -70,7 +70,7 @@ export const app = {
   repo: "https://github.com/SimeonTsvetanov/teamsync-random-team-generator",
   version: "0.1.0",
   languages: ["en", "bg"],
-  accent: "#B4530F", // approved by Moni 2026-11-06: logo hue (#FFBF92) darkened to 5.02:1 with white text
+  accent: "#3DDC97", // Moni 2026-11-06: fresh mint green; dark text on it (9.5:1), chosen automatically by generate.ts
   categories: ["utilities", "productivity", "sports", "education"],
   contact: { email: "tsvetanov.simeon@gmail.com" },
   support: { buyMeACoffee: "https://buymeacoffee.com/simeontsvetanov" },

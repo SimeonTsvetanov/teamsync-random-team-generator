@@ -213,6 +213,8 @@ export const en = {
     regenerate: "Shuffle again",
     copy: "Copy",
     share: "Share",
+    shareTitle: "Share the teams",
+    editNames: "‹ Names",
     copied: "Teams copied ✓",
     copyFailed: "Couldn't copy — select the teams and copy them by hand.",
     copyHeading: "✨ TEAMS GENERATED ✨",

@@ -107,6 +107,11 @@
   --duration-slow: 350ms;
   --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Apple-like motion (2026-11-06): iOS sheet/navigation curve and a gentle spring (~5 % overshoot). */
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-spring: linear(0, 0.157, 0.484 9.5%, 0.763, 0.929 19.4%, 1.012 24.6%, 1.043 29.3%, 1.046 33.4%, 1.032 39.2%, 1.009 47.6%, 0.997 58.2%, 1);
+  --duration-sheet: 480ms; /* sheets, side menu, screen changes */
+  --duration-alert: 300ms; /* alerts, popovers, toasts */
 
   /* ---------- Layers ---------- */
   --z-header: 10;
@@ -128,6 +133,8 @@
     --duration-fast: 0ms;
     --duration-base: 0ms;
     --duration-slow: 0ms;
+    --duration-sheet: 0ms;
+    --duration-alert: 0ms;
     --lift: none;
   }
 }
