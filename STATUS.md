@@ -1,6 +1,6 @@
 # STATUS — TeamSync
 
-**Updated:** 2026-11-06 · **Phase:** 3 · Build — T-01–T-09 done; next T-10 (repo settings + Pages deploy, needs Moni)
+**Updated:** 2026-11-06 · **Phase:** 3 · Build — T-01–T-10 done; LIVE at https://simeontsvetanov.github.io/teamsync-random-team-generator/ ; next T-11 reviews, T-12 release
 
 ## Done
 - Intake (DECISIONS 2026-11-05) · SPEC approved 2026-11-06 · accent + logo approved.
@@ -10,6 +10,6 @@
 - T-01–T-09 done: core + MCP (39 unit tests), main screen EN/BG, remember list, ?teams, embed, Copy/Share, texts + legal filled, e2e 62 pass (AC1, AC3–AC7, dark-mode axe).
 
 ## Blockers / open
-- T-10 needs Moni: GitHub Pages source = GitHub Actions + repo security settings (UI steps in the report).
+- CI green on 5 browsers (162 e2e) + Lighthouse 100/100/100/100 (2026-11-06).
 - WhatsApp sharing in + out done (Moni 2026-11-06).
 - GitHub issues for the tasks: only after Moni's OK (public action).

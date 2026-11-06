@@ -128,7 +128,7 @@ export function formatTeams(teams: string[][], labels: { team: (n: number) => st
 - Reading list: forge-flow → release
 - Acceptance: CI green; https://simeontsvetanov.github.io/teamsync-random-team-generator/ loads and installs; Lighthouse budgets pass
 - Depends on: T-09
-- [ ] done
+- [x] done (2026-11-06)
 
 ### T-11 · Reviews: security, compliance, UX
 - Goal: run agents `security-auditor`, `compliance-reviewer`, `ux-reviewer`; fix findings
