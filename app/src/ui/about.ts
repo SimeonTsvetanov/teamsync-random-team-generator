@@ -4,16 +4,25 @@ import { t, text } from "../i18n/index.ts";
 import { h } from "./dom.ts";
 import { openDialog } from "./dialog.ts";
 
+const KINDS = ["font", "icons", "translations", "validation", "database", "zip", "mcp", "pdf"] as const;
+type Kind = (typeof KINDS)[number];
+const isKind = (k: string): k is Kind => (KINDS as readonly string[]).includes(k);
+
+/** About (APP-STANDARD §2): what it is, who made it (links), version, and credits in plain words. */
 export function openAbout(): void {
   const link = (href: string, label: string): HTMLAnchorElement => h("a", { href, target: "_blank", rel: "noopener" }, label);
+  const people = [link(app.repo, "GitHub"), ...(app.author.linkedin ? [link(app.author.linkedin, "LinkedIn")] : []), link(app.support.buyMeACoffee, t("shell.menu.supportMe"))];
+  const dot = (): Text => document.createTextNode(" · ");
   openDialog("about", t("shell.about.title", { name: app.name }), [
     h("p", {}, text().description),
-    h("p", {}, t("shell.about.how")),
-    h("p", {}, t("shell.about.builtBy", { author: app.author.name }), link(app.repo, t("shell.about.source")), " · ", ...(app.author.linkedin ? [link(app.author.linkedin, "LinkedIn"), " · "] : []), link(app.support.buyMeACoffee, t("shell.menu.supportMe"))),
-    h("p", {}, t("shell.about.version", { version: app.version }), h("a", { href: "#whats-new" }, t("shell.menu.whatsNew"))),
+    h("p", {}, t("shell.about.builtBy", { author: app.author.name }), ...people.flatMap((a, i) => (i ? [dot(), a] : [a]))),
+    h("p", { class: "hint" }, t("shell.about.version", { version: app.version }), h("a", { href: "#whats-new" }, t("shell.menu.whatsNew"))),
     h("h3", {}, t("shell.about.credits")),
-    h("ul", { class: "credits" }, ...credits.map((c) => h("li", {}, `${c.name} — ${c.license}`))),
+    h("ul", { class: "credits" }, ...credits.map((c) => h("li", {},
+      h("a", { href: c.url, target: "_blank", rel: "noopener" }, c.title),
+      ` — ${isKind(c.kind) ? t(`shell.credit.${c.kind}`) : c.what}`,
+      h("span", { class: "hint" }, ` · ${c.license}`)))),
     ...credits.filter((c): c is typeof c & { notice: string } => "notice" in c && typeof c.notice === "string")
-      .map((c) => h("details", { class: "notice" }, h("summary", {}, `${c.name} NOTICE`), h("pre", { class: "code", tabindex: "0" }, c.notice))),
+      .map((c) => h("details", { class: "notice" }, h("summary", {}, t("shell.about.notice", { name: c.title })), h("pre", { class: "code", tabindex: "0" }, c.notice))),
   ]);
 }

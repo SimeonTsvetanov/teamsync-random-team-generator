@@ -139,6 +139,18 @@ for (const pkg of ["app", "packages/core", "packages/mcp"]) {
   const pj = JSON.parse(readFileSync(join(root, pkg, "package.json"), "utf8")) as { dependencies?: Record<string, string> };
   for (const d of Object.keys(pj.dependencies ?? {})) if (!d.startsWith("@simeonts/")) depNames.add(d);
 }
+// Credits in words people understand (About → "Made with"): a known name + what it does (i18n key
+// shell.credit.<kind>); unknown packages fall back to their own description.
+const KNOWN: Record<string, { title: string; kind: string }> = {
+  "@fontsource-variable/inter": { title: "Inter", kind: "font" },
+  lucide: { title: "Lucide", kind: "icons" },
+  i18next: { title: "i18next", kind: "translations" },
+  zod: { title: "Zod", kind: "validation" },
+  dexie: { title: "Dexie", kind: "database" },
+  fflate: { title: "fflate", kind: "zip" },
+  "@modelcontextprotocol/server": { title: "Model Context Protocol SDK", kind: "mcp" },
+  "pdfjs-dist": { title: "PDF.js", kind: "pdf" },
+};
 const credits = [...depNames].sort().map((name) => {
   for (const pkg of ["app", "packages/core", "packages/mcp", "."]) {
     const f = join(root, pkg, "node_modules", name, "package.json");
@@ -146,10 +158,13 @@ const credits = [...depNames].sort().map((name) => {
       const license = (JSON.parse(readFileSync(f, "utf8")) as { license?: string }).license ?? "see package";
       // Apache-2.0 §4(d): a NOTICE file shipped by the dependency must be reproduced (About → Credits).
       const noticeFile = ["NOTICE", "NOTICE.md", "NOTICE.txt"].map((n) => join(dirname(f), n)).find((n) => existsSync(n));
-      return noticeFile ? { name, license, notice: readFileSync(noticeFile, "utf8").trim().slice(0, 2000) } : { name, license };
+      const pkg = JSON.parse(readFileSync(f, "utf8")) as { description?: string; homepage?: string };
+      const known = KNOWN[name];
+      const base = { name, title: known?.title ?? name, kind: known?.kind ?? "", what: pkg.description ?? "", url: pkg.homepage ?? `https://www.npmjs.com/package/${name}`, license };
+      return noticeFile ? { ...base, notice: readFileSync(noticeFile, "utf8").trim().slice(0, 2000) } : base;
     }
   }
-  return { name, license: "see package" };
+  return { name, title: KNOWN[name]?.title ?? name, kind: KNOWN[name]?.kind ?? "", what: "", url: `https://www.npmjs.com/package/${name}`, license: "see package" };
 });
 writeFileSync(join(gen, "credits.json"), JSON.stringify(credits, null, 2) + "\n");
 

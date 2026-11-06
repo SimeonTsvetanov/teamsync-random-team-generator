@@ -2,7 +2,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { background: var(--color-bg); color: var(--color-text); font-family: var(--font-sans); font-size: 100%; -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-height) + var(--safe-top)); }
 body { margin: 0; min-height: 100dvh; display: flex; flex-direction: column; line-height: var(--leading-normal); font-size: var(--text-base); }
-a { color: var(--color-accent-text); }
+a { color: var(--color-accent-text); font-weight: var(--weight-semibold); text-decoration: none; } /* Moni: no underlines; accent + weight mark links (≥ 3:1 vs text, WCAG 1.4.1) */
+@media (hover: hover) { a:hover { opacity: 0.75; } }
 :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
 .skip-link { position: absolute; left: var(--space-2); top: -100px; padding: var(--space-2) var(--space-3); background: var(--color-surface); border-radius: var(--radius-md); z-index: var(--z-toast); }
 .skip-link:focus { top: calc(var(--space-2) + var(--safe-top)); }
@@ -108,8 +109,8 @@ code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-
 .form fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: var(--space-1); }
 .form .check { display: flex; gap: var(--space-2); font-weight: var(--weight-regular); font-size: var(--text-sm); color: var(--color-text-secondary); overflow-wrap: anywhere; }
 .status { min-height: 1.5em; color: var(--color-text-secondary); }
-.credits { columns: 1; padding-inline-start: var(--space-5); font-size: var(--text-sm); color: var(--color-text-secondary); overflow-wrap: anywhere; }
-@media (min-width: 600px) { .credits { columns: 2; column-gap: var(--space-6); } .credits li { break-inside: avoid; } }
+.credits { columns: 1; list-style: none; padding-inline-start: 0; display: grid; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-text-secondary); overflow-wrap: anywhere; }
+
 :root { accent-color: var(--color-accent); } /* native checkboxes, radios, progress use the app accent */
 .diag summary { cursor: pointer; min-height: var(--tap-target); display: flex; align-items: center; font-weight: var(--weight-medium); }
 .diag[open] summary { margin-bottom: var(--space-2); }
