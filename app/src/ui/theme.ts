@@ -1,11 +1,16 @@
+// Light / dark / system theme: applies `data-theme`, updates theme-color meta and the toolbar icon.
 import { prefs } from "../storage/index.ts";
-import { icon } from "./icons.ts";
+import { icon, type IconName } from "./icons.ts";
 import { t } from "../i18n/index.ts";
 
+/** The user's theme choice; "system" follows the OS setting. */
 export type Theme = "system" | "light" | "dark";
 const ORDER: readonly Theme[] = ["system", "light", "dark"];
 const META = { light: "#F5F5F7", dark: "#000000" } as const;
+/** Toolbar icon per theme choice. */
+const THEME_ICONS = { system: "monitor", light: "sun", dark: "moon" } as const satisfies Record<Theme, IconName>;
 
+/** Returns the saved theme choice ("system" when none or invalid). */
 export const getTheme = (): Theme => {
   const v = prefs.get<string>("theme", "system");
   return v === "light" || v === "dark" ? v : "system";
@@ -23,11 +28,12 @@ export function applyTheme(theme: Theme, save = false): void {
   document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((m) => { m.content = dark ? META.dark : META.light; });
   const button = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
   if (button) {
-    button.replaceChildren(icon(theme === "system" ? "monitor" : theme === "light" ? "sun" : "moon"));
+    button.replaceChildren(icon(THEME_ICONS[theme]));
     button.setAttribute("aria-label", t("shell.theme.toggle", { theme: t(`shell.theme.${theme}`) }));
   }
 }
 
+/** Applies the saved theme and wires the toolbar toggle (system → light → dark). */
 export function initTheme(): void {
   applyTheme(getTheme());
   document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {

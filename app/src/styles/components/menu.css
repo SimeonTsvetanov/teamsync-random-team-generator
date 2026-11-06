@@ -1,0 +1,127 @@
+/* App menu: a side sheet from the right on phones, a dropdown under the menu button on desktop
+   (APP-STANDARD §1). */
+@layer components {
+  /* || Components: menu */
+  .menu {
+    /* Phone values first: a full-height side sheet that slides in from the right edge. */
+    --menu-enter-opacity: 1;
+    --menu-enter-transform: translateX(100%);
+    --menu-phone-width: 360px;
+    --menu-desktop-width: 300px;
+    --menu-desktop-row-height: 36px;
+
+    border: 0;
+    margin: 0 0 0 auto;
+    padding: calc(var(--space-5) + var(--safe-top)) var(--space-5) calc(var(--space-5) + var(--safe-bottom));
+    border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    box-shadow: var(--shadow-3);
+    width: min(100% - 2 * var(--space-4), var(--menu-phone-width));
+    height: 100dvh;
+    max-height: 100dvh;
+    overscroll-behavior: contain;
+    -webkit-user-select: none;
+    user-select: none;
+
+    &:not([open]) {
+      opacity: var(--menu-enter-opacity);
+      transform: var(--menu-enter-transform);
+    }
+
+    &[open] {
+      @starting-style {
+        opacity: var(--menu-enter-opacity);
+        transform: var(--menu-enter-transform);
+      }
+    }
+
+    & nav {
+      display: flex;
+      flex-direction: column;
+    }
+
+    & h2 {
+      font-size: var(--text-sm);
+      text-transform: none;
+      color: var(--color-text-secondary);
+      margin: var(--space-4) 0 var(--space-1);
+      font-weight: var(--weight-semibold);
+    }
+
+    /* Links and buttons look identical. */
+    & a,
+    & nav button {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      min-height: var(--tap-target);
+      padding: 0 var(--space-2);
+      border-radius: var(--radius-md);
+      color: var(--color-text);
+      font: inherit;
+      font-size: var(--text-md);
+      text-decoration: none;
+      text-align: start;
+
+      &:active {
+        background: var(--color-fill);
+      }
+    }
+
+    & a svg,
+    & nav button svg {
+      margin-inline-end: var(--space-3);
+      color: var(--color-text-secondary);
+    }
+
+    @media (hover: hover) {
+      & a:hover,
+      & nav button:hover {
+        background: var(--color-fill);
+      }
+    }
+
+    & .close {
+      margin-top: var(--space-4);
+      margin-bottom: max(var(--space-2), var(--safe-bottom));
+      width: 100%;
+      background: var(--color-fill);
+    }
+
+    .is-embed & [data-action="install"] {
+      display: none;
+    }
+
+    /* Desktop: dropdown under the menu button, no dimmed page, compact rows.
+       revert-layer = the browser's own <dialog> value. */
+    @media (width > 600px) {
+      --menu-enter-opacity: 0;
+      --menu-enter-transform: scale(0.95);
+
+      position: fixed;
+      inset: calc(var(--header-height) + var(--safe-top) + var(--space-1)) calc(var(--space-4) + var(--safe-right)) auto auto;
+      margin: 0;
+      width: var(--menu-desktop-width);
+      height: revert-layer;
+      max-height: calc(100dvh - var(--header-height) - var(--space-8));
+      overflow-y: auto;
+      padding: var(--space-3);
+      border-radius: var(--radius-lg);
+      transform-origin: top right;
+
+      &::backdrop {
+        background: transparent;
+      }
+
+      & a,
+      & nav button {
+        min-height: var(--menu-desktop-row-height);
+      }
+
+      & .close {
+        display: none;
+      }
+    }
+  }
+}

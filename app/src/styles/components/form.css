@@ -1,0 +1,78 @@
+/* Forms (Report a problem): fields, consent checkbox rows, spam honeypot, hints and status text. */
+@layer components {
+  /* || Components: form */
+  .form {
+    /* iOS Safari zooms into any field whose text is smaller than 16px. */
+    --form-field-min-font: 16px;
+    --form-check-size: 20px;
+
+    display: grid;
+    gap: var(--space-4);
+
+    & label {
+      display: grid;
+      gap: var(--space-1);
+      font-weight: var(--weight-medium);
+    }
+
+    & input,
+    & select,
+    & textarea {
+      font: inherit;
+      font-size: max(var(--form-field-min-font), var(--text-base));
+      padding: var(--space-3);
+      border: 0;
+      border-radius: var(--radius-md);
+      background: var(--color-fill);
+      color: var(--color-text);
+    }
+
+    & fieldset {
+      border: 0;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: var(--space-1);
+    }
+
+    /* The whole row is the hit area. */
+    & .check {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-height: var(--tap-target);
+      font-weight: var(--weight-regular);
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      overflow-wrap: anywhere;
+      cursor: pointer;
+
+      & input {
+        width: var(--form-check-size);
+        height: var(--form-check-size);
+        flex: none;
+      }
+    }
+  }
+
+  /* Bots fill every field; people never see this one. */
+  .honeypot {
+    --honeypot-offset: -10000px;
+
+    position: absolute;
+    left: var(--honeypot-offset);
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .hint {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .status {
+    min-height: 1.5em;
+    color: var(--color-text-secondary);
+  }
+}

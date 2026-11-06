@@ -1,0 +1,74 @@
+/* File input: the drop zone and the progress bar shown while files are processed. */
+@layer components {
+  /* || Components: drop zone */
+  .dropzone {
+    --dropzone-outline-width: 2px;
+    --dropzone-outline-inset: -8px;
+
+    display: grid;
+    justify-items: center;
+    gap: var(--space-2);
+    padding: var(--space-10) var(--space-5);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-1);
+    text-align: center;
+    transition: box-shadow var(--duration-fast) var(--ease-standard);
+
+    & svg {
+      color: var(--color-accent-text);
+    }
+
+    &.is-over {
+      outline: var(--dropzone-outline-width) dashed var(--color-accent-text);
+      outline-offset: var(--dropzone-outline-inset);
+      box-shadow: var(--shadow-2);
+    }
+  }
+
+  .dropzone-label {
+    margin: 0;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+  }
+
+  /* || Components: progress */
+  .progress {
+    --progress-height: 8px;
+
+    display: grid;
+    gap: var(--space-2);
+
+    & progress {
+      width: 100%;
+      height: var(--progress-height);
+      appearance: none;
+      border: 0;
+      border-radius: var(--radius-full);
+      background: var(--color-fill);
+      overflow: hidden;
+
+      &::-webkit-progress-bar {
+        background: var(--color-fill);
+      }
+
+      &::-webkit-progress-value {
+        background: var(--color-accent);
+        border-radius: var(--radius-full);
+        transition: width var(--duration-base) var(--ease-standard);
+      }
+
+      &::-moz-progress-bar {
+        background: var(--color-accent);
+        border-radius: var(--radius-full);
+      }
+    }
+  }
+
+  .progress-text {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+}

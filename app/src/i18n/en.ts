@@ -79,6 +79,7 @@ export const en = {
       clearMessage: "Everything {{name}} saved on this device will be deleted. Other apps are not affected. This can't be undone.",
       clearConfirm: "Delete",
       cleared: "Your data was cleared ✓",
+      clearFailed: "Your data could not be cleared. Close other tabs of this app and try again.",
       hint: "Everything stays only in this browser on this device. Export is your backup.",
     },
     help: {
@@ -159,6 +160,7 @@ export const en = {
       offline: "You're offline — the report will be sent when you're online.",
       sending: "Sending…",
       sent: "Thanks! Report #{{issue}} sent ✓",
+      sentNoNumber: "Thanks! Your report was sent ✓",
       failed: "Couldn't send right now — use “Open on GitHub” instead.",
       discardTitle: "Discard your report?",
       discardMessage: "What you typed will be lost.",

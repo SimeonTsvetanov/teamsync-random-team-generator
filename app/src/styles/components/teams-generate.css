@@ -1,0 +1,53 @@
+/* TeamSync main action: the error line above it and the large Generate button, which stays in
+   the thumb zone on phones. */
+@layer components {
+  /* || Components: form error */
+  /* On the card surface: danger text passes 4.5:1. */
+  .form-error {
+    margin: 0;
+    color: var(--color-danger-text);
+    font-weight: var(--weight-medium);
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  /* || Components: Generate button */
+  .button--large {
+    /* Taller than the 44px tap target: the one main action of the screen. */
+    --button-large-min-height: 52px;
+
+    width: 100%;
+    min-height: var(--button-large-min-height);
+    font-size: var(--text-md);
+  }
+
+  /* Phones: the main action sits in the thumb zone while the form is on screen. */
+  .cta-bar {
+    position: sticky;
+    bottom: calc(var(--space-3) + var(--safe-bottom));
+    z-index: 1;
+
+    & .button {
+      box-shadow: var(--shadow-2);
+    }
+
+    @media (width > 600px) {
+      position: static;
+      bottom: auto;
+      z-index: auto;
+
+      & .button {
+        box-shadow: none;
+      }
+    }
+
+    /* Desktop keeps the usual button hover lift (the flat rest state above would hide it). */
+    @media (width > 600px) and (hover: hover) {
+      & .button:hover {
+        box-shadow: var(--shadow-2);
+      }
+    }
+  }
+}

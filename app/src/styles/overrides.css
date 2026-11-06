@@ -1,0 +1,62 @@
+/* Overrides: output modes that must beat every component — forced colors and print. The last
+   layer, so plain declarations win; no !important needed. */
+@layer overrides {
+  /* || Overrides: forced colors */
+  /* Shadows are dropped in forced-colors mode; a system-colour border keeps surfaces visible. */
+  @media (forced-colors: active) {
+    .empty-state,
+    .menu,
+    .toast,
+    .sheet,
+    .panel,
+    .button,
+    .segmented,
+    .alert,
+    .group-card {
+      border: 1px solid CanvasText;
+    }
+  }
+
+  /* || Overrides: print — content only (APP-STANDARD §15 #14) */
+  @media print {
+    .app-header,
+    .app-footer,
+    .menu,
+    .toast-region,
+    .skip-link,
+    .offline-pill,
+    .actions,
+    .button-stack,
+    .alert,
+    .sheet-head button {
+      display: none;
+    }
+
+    :root {
+      color-scheme: light;
+    }
+
+    /* System colors, no hard-coded hex. */
+    body {
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    .panel,
+    .group-card,
+    .sheet {
+      box-shadow: none;
+    }
+
+    .sheet[open] {
+      position: static;
+      max-height: none;
+      width: auto;
+    }
+
+    a[href^="http"]::after {
+      content: " (" attr(href) ")";
+      font-size: 0.85em;
+    }
+  }
+}

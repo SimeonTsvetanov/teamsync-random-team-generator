@@ -24,6 +24,57 @@ function segmented(name: string, legend: string, options: readonly { value: stri
   return set;
 }
 
+/** Import error code → message (codes come from storage `importAll`). */
+function importErrorMessage(code: string): string {
+  switch (code) {
+    case "NOT_THIS_APP": return t("shell.settings.importWrongApp", { name: app.name });
+    case "IMPORT_TOO_BIG": return t("shell.settings.importTooBig");
+    default: return t("shell.settings.importFailed");
+  }
+}
+
+/** Import button + its hidden file input; restoring overwrites data, so it confirms first. */
+function importButton(): [HTMLButtonElement, HTMLInputElement] {
+  const file = h("input", { type: "file", accept: "application/json,application/zip,.zip", hidden: "" });
+  const button = h("button", { class: "button", type: "button" }, t("shell.settings.import"));
+  button.addEventListener("click", () => { file.click(); });
+  file.addEventListener("change", () => {
+    const picked = file.files?.[0];
+    file.value = "";
+    if (!picked) return;
+    void confirmAction({
+      title: t("shell.settings.importTitle"), message: t("shell.settings.importMessage", { name: app.name, file: picked.name }),
+      confirm: t("shell.settings.importConfirm"),
+    }).then((confirmed) => {
+      if (!confirmed) return;
+      importAll(picked).then((count) => { showToast({ message: t("shell.settings.imported", { count }) }); }, (e: unknown) => {
+        showToast({ message: importErrorMessage(e instanceof Error ? e.message : "") });
+      });
+    });
+  });
+  return [button, file];
+}
+
+/** "Delete all data" — quiet style (never the loudest button), always confirmed. */
+function clearButton(): HTMLButtonElement {
+  const button = h("button", { class: "button button--destructive", type: "button" }, t("shell.settings.clear"));
+  button.addEventListener("click", () => {
+    void confirmAction({
+      title: t("shell.settings.clearTitle"), message: t("shell.settings.clearMessage", { name: app.name, stores: app.storage.stores.join(", ") }),
+      confirm: t("shell.settings.clearConfirm"),
+    }).then((confirmed) => {
+      if (!confirmed) return;
+      // App code listens for "app:data-cleared" to reset what is on screen (else it could be saved again).
+      clearAll().then(
+        () => { document.dispatchEvent(new Event("app:data-cleared")); showToast({ message: t("shell.settings.cleared") }); },
+        () => { showToast({ message: t("shell.settings.clearFailed") }); }, // e.g. storage blocked by the browser
+      );
+    });
+  });
+  return button;
+}
+
+/** Opens the Settings sheet: theme, language, storage (usage, keep, export/import) and delete-all. */
 export function openSettings(): void {
   const theme = segmented("theme", t("shell.theme.label"),
     (["system", "light", "dark"] as const satisfies readonly Theme[]).map((v) => ({ value: v, label: t(`shell.theme.${v}`) })),
@@ -54,34 +105,8 @@ export function openSettings(): void {
       setTimeout(() => { URL.revokeObjectURL(a.href); }, 1000);
     });
   });
-  const file = h("input", { type: "file", accept: "application/json,application/zip,.zip", hidden: "" });
-  const importBtn = h("button", { class: "button", type: "button" }, t("shell.settings.import"));
-  importBtn.addEventListener("click", () => { file.click(); });
-  file.addEventListener("change", () => {
-    const f = file.files?.[0];
-    file.value = "";
-    if (!f) return;
-    void confirmAction({
-      title: t("shell.settings.importTitle"), message: t("shell.settings.importMessage", { name: app.name, file: f.name }),
-      confirm: t("shell.settings.importConfirm"),
-    }).then((yes) => {
-      if (!yes) return;
-      importAll(f).then((n) => { showToast({ message: t("shell.settings.imported", { count: n }) }); }, (e: unknown) => {
-        const code = e instanceof Error ? e.message : "";
-        showToast({ message: code === "NOT_THIS_APP" ? t("shell.settings.importWrongApp", { name: app.name }) : code === "IMPORT_TOO_BIG" ? t("shell.settings.importTooBig") : t("shell.settings.importFailed") });
-      });
-    });
-  });
-  const clear = h("button", { class: "button button--destructive", type: "button" }, t("shell.settings.clear")); // quiet: never the loudest button
-  clear.addEventListener("click", () => {
-    void confirmAction({
-      title: t("shell.settings.clearTitle"), message: t("shell.settings.clearMessage", { name: app.name, stores: app.storage.stores.join(", ") }),
-      confirm: t("shell.settings.clearConfirm"),
-    }).then((yes) => {
-      // App code listens for "app:data-cleared" to reset what is on screen (else it could be saved again).
-      if (yes) void clearAll().then(() => { document.dispatchEvent(new Event("app:data-cleared")); showToast({ message: t("shell.settings.cleared") }); });
-    });
-  });
+  const [importBtn, file] = importButton();
+  const clear = clearButton();
 
   openDialog("settings", t("shell.settings.title"), [
     group(t("shell.theme.label"), theme),

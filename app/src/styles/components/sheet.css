@@ -1,0 +1,98 @@
+/* Dialog sheets (Help, Settings, About, What's new, Report, Install): a centred card on desktop,
+   full-screen on phones; compact sheets are bottom sheets on phones. */
+@layer components {
+  /* || Components: sheet */
+  .sheet {
+    /* Phone values first (full screen, slides up from the bottom edge); .sheet--compact changes
+       only these variables. */
+    --sheet-enter-opacity: 1;
+    --sheet-enter-transform: translateY(100%);
+    --sheet-top: 0;
+    --sheet-height: 100dvh;
+    --sheet-max-height: 100dvh;
+    --sheet-radius: 0;
+    --sheet-padding-bottom: var(--safe-bottom);
+    --sheet-desktop-width: 720px;
+    --sheet-desktop-enter-y: 12px;
+
+    border: 0;
+    padding: var(--safe-top) 0 var(--sheet-padding-bottom);
+    top: var(--sheet-top);
+    width: 100%;
+    max-width: 100%;
+    height: var(--sheet-height);
+    max-height: var(--sheet-max-height);
+    margin: 0;
+    border-radius: var(--sheet-radius);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    box-shadow: var(--shadow-3);
+    overscroll-behavior: contain;
+
+    &:not([open]) {
+      opacity: var(--sheet-enter-opacity);
+      transform: var(--sheet-enter-transform);
+    }
+
+    &[open] {
+      @starting-style {
+        opacity: var(--sheet-enter-opacity);
+        transform: var(--sheet-enter-transform);
+      }
+    }
+
+    /* Desktop: a centred card that scales in. revert-layer = the browser's own <dialog> value. */
+    @media (width > 600px) {
+      --sheet-enter-opacity: 0;
+      --sheet-enter-transform: translateY(var(--sheet-desktop-enter-y)) scale(0.97);
+
+      padding: 0;
+      top: revert-layer;
+      width: min(100% - 2 * var(--space-4), var(--sheet-desktop-width));
+      max-width: revert-layer;
+      height: revert-layer;
+      max-height: 85dvh;
+      margin: revert-layer;
+      border-radius: var(--radius-xl);
+    }
+  }
+
+  /* Small sheets (a few buttons) are compact bottom sheets on phones, not full-screen. */
+  .sheet--compact {
+    --sheet-top: auto;
+    --sheet-height: auto;
+    --sheet-max-height: 70dvh;
+    --sheet-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    --sheet-padding-bottom: max(var(--space-4), var(--safe-bottom));
+  }
+
+  .sheet-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
+    background: var(--color-surface-raised);
+    -webkit-user-select: none;
+    user-select: none;
+
+    & h2 {
+      margin: 0;
+      font-size: var(--text-lg);
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  .sheet-body {
+    padding: 0 var(--space-5) var(--space-6);
+
+    & h3 {
+      font-size: var(--text-md);
+      margin: var(--space-5) 0 var(--space-2);
+    }
+  }
+}

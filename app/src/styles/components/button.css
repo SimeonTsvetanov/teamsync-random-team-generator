@@ -1,0 +1,144 @@
+/* Buttons: plain (icon, menu row, toast action), filled with variants, equal-width groups. */
+@layer components {
+  /* || Components: plain button (icon buttons, menu rows, toast action) */
+  .icon-button,
+  .menu button,
+  .toast button {
+    min-height: var(--tap-target);
+    min-width: var(--tap-target);
+    padding: 0 var(--space-3);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--text-md);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-standard);
+  }
+
+  /* || Components: icon button */
+  .icon-button {
+    display: inline-grid;
+    place-items: center;
+    transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+    -webkit-user-select: none;
+    user-select: none;
+
+    @media (hover: hover) {
+      &:hover {
+        background: var(--color-fill);
+      }
+    }
+
+    &:active {
+      background: var(--color-fill);
+      transform: scale(0.97);
+    }
+  }
+
+  /* || Components: button */
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: var(--tap-target);
+    padding: 0 var(--space-4);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: var(--color-fill);
+    color: var(--color-text);
+    font: inherit;
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+    /* UI chrome is not text: no selection callout on long-press (web.dev "The app experience",
+       2026-11-06). Header, menu, sheet head, segmented, toast, alert actions, help summaries and
+       Copy do the same; content (results, help text) stays selectable. */
+    -webkit-user-select: none;
+    user-select: none;
+
+    @media (hover: hover) {
+      &:hover {
+        box-shadow: var(--shadow-2);
+        transform: var(--lift);
+      }
+    }
+
+    /* After :hover so the press wins while the pointer is over the button. */
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+
+  .button--primary {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  .button--danger {
+    background: var(--color-danger);
+    color: var(--color-on-danger);
+  }
+
+  /* Quiet destructive action (iOS Settings style): red text, no fill — never the loudest button. */
+  .button--destructive {
+    background: transparent;
+    color: var(--color-danger-text);
+    box-shadow: none;
+
+    /* No fill, no fade: red text keeps 4.5:1. */
+    @media (hover: hover) {
+      &:hover {
+        background: transparent;
+        box-shadow: none;
+        transform: var(--lift);
+      }
+    }
+  }
+
+  /* || Components: button stack */
+  /* Button groups: equal width, never ragged (Moni 2026-11-06). One column on phones, two from 480px. */
+  .button-stack {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+
+    & .button {
+      width: 100%;
+      text-align: center;
+      padding-block: var(--space-2);
+    }
+
+    @media (width >= 480px) {
+      &:has(> :nth-child(2)) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      & > :last-child:nth-child(odd):not(:first-child) {
+        grid-column: 1 / -1;
+      }
+    }
+
+    /* Exactly three buttons on a wide screen: one row of three equal buttons. */
+    @media (width >= 900px) {
+      &:has(> :nth-child(3):last-child) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      &:has(> :nth-child(3):last-child) > :last-child:nth-child(odd):not(:first-child) {
+        grid-column: auto;
+      }
+    }
+  }
+
+  /* || Components: actions row */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+}

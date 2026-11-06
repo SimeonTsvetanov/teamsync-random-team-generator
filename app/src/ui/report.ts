@@ -6,14 +6,43 @@ import { confirmAction } from "./confirm.ts";
 import { keepDraft } from "./draft.ts";
 import { t } from "../i18n/index.ts";
 
+/** How the app is running: installed, inside an iframe embed, or a normal tab. */
+function displayMode(): "standalone" | "embed" | "browser" {
+  if (matchMedia("(display-mode: standalone)").matches) return "standalone";
+  return window.self === window.top ? "browser" : "embed";
+}
+
 const diagnostics = (): Record<string, string> => ({
   app: `${app.name} ${app.version}`,
   browser: navigator.userAgent,
   screen: `${String(screen.width)}×${String(screen.height)}`,
-  display: matchMedia("(display-mode: standalone)").matches ? "standalone" : window.self !== window.top ? "embed" : "browser",
+  display: displayMode(),
   language: navigator.language,
   time: new Date().toISOString(),
 });
+
+/**
+ * Sends one report to the webhook, or queues it while offline (flushReportQueue sends it later).
+ * `onDone` runs once the report is queued or delivered.
+ */
+function sendReport(webhook: string, payload: Record<string, unknown>, status: HTMLElement, onDone: () => void): void {
+  if (!navigator.onLine) {
+    prefs.set("report-queue", [...prefs.get<unknown[]>("report-queue", []), payload]);
+    status.textContent = t("shell.report.offline");
+    onDone();
+    return;
+  }
+  status.textContent = t("shell.report.sending");
+  void fetch(webhook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
+    .then(async (response) => {
+      if (!response.ok) throw new Error(String(response.status));
+      onDone(); // delivered: a body we can't read must not invite a duplicate resend
+      const body: unknown = await response.json().catch(() => null);
+      const issue = typeof body === "object" && body !== null && "issue" in body ? Number(body.issue) : Number.NaN;
+      status.textContent = Number.isFinite(issue) ? t("shell.report.sent", { issue }) : t("shell.report.sentNoNumber");
+    })
+    .catch(() => { status.textContent = t("shell.report.failed"); });
+}
 
 /** Report a problem (APP-STANDARD §7.1): send via the shared webhook, or open a pre-filled GitHub issue. */
 export function openReport(): void {
@@ -52,23 +81,7 @@ export function openReport(): void {
     const webhook = app.feedback.webhook;
     if (!webhook) return;
     const payload = { app: app.id, repo: app.repo, version: app.version, type: type.value.toLowerCase(), title: title.value, description: text.value, email: email.value, diagnostics: chosen(), website: honeypot.value };
-    if (!navigator.onLine) {
-      prefs.set("report-queue", [...prefs.get<unknown[]>("report-queue", []), payload]);
-      status.textContent = t("shell.report.offline");
-      sent = true;
-      draft.clear();
-      return;
-    }
-    status.textContent = t("shell.report.sending");
-    void fetch(webhook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
-      .then(async (r) => {
-        if (!r.ok) throw new Error(String(r.status));
-        const { issue } = (await r.json()) as { issue: number };
-        status.textContent = t("shell.report.sent", { issue });
-        sent = true;
-        draft.clear();
-      })
-      .catch(() => { status.textContent = t("shell.report.failed"); });
+    sendReport(webhook, payload, status, () => { sent = true; draft.clear(); });
   });
   // Typed text is never lost silently: closing with unsent input asks first (ui-patterns §4).
   openDialog("report", t("shell.report.title"), [form], {

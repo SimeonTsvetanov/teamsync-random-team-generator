@@ -1,0 +1,26 @@
+/* TeamSync output modes that must beat every component (same layer as overrides.css): forced
+   colors keep the cards visible, print shows only the teams. */
+@layer overrides {
+  /* || Overrides: forced colors */
+  @media (forced-colors: active) {
+    .tool,
+    .team-card,
+    .stepper,
+    .stepper-button {
+      border: 1px solid CanvasText;
+    }
+  }
+
+  /* || Overrides: print — the teams only */
+  @media print {
+    .tool,
+    .results-actions {
+      display: none;
+    }
+
+    .team-card {
+      break-inside: avoid;
+      box-shadow: none;
+    }
+  }
+}

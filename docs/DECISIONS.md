@@ -65,3 +65,12 @@ Format: `date · decision · reason`. Newest last.
 - **2026-11-06 · Moni: no visible "Your teams" title (results start level with the names card);
   "More free tools" → GitHub list of simeonts-microapp repos (hub site simeontsvetanov.github.io
   does not exist yet → was 404); About: "GitHub" = Moni's profile, the app's code is "Source code".**
+- **2026-11-06 · Forge 0.8.1 merged: code-quality + CSS-architecture rules applied.** Moni asked for
+  "clear, super-professional rules" in the plugin first, then TeamSync. `teams/view.ts` (207 lines)
+  split by meaning (screen, form, names-input, results, result-actions, view); TSDoc on every export
+  in teams/core/mcp; `teams.css` → `components/teams-{workspace,form,stepper,generate,results}.css`
+  + `teams-overrides.css` (print/forced-colors must be in `@layer overrides`, else a more specific
+  component rule wins). Reviewer: no correctness/security findings; template-level findings fixed
+  in forge 0.8.1. Kept for later: rename the `has-results` state class to `data-state`; result
+  buttons are required screen elements (always in index.html, covered by e2e). Behaviour and
+  rendering unchanged (130 computed-style dumps identical).

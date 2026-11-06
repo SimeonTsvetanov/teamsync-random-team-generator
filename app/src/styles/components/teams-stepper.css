@@ -1,0 +1,55 @@
+/* TeamSync teams stepper: − 3 + chooses 2–10 teams; the value never shifts the buttons. */
+@layer components {
+  /* || Components: stepper (− 3 +, 2–10 teams) */
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    border-radius: var(--radius-md);
+    background: var(--color-fill);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .stepper-button {
+    --stepper-pressed-scale: 0.94;
+    --stepper-disabled-opacity: 0.4;
+
+    display: inline-grid;
+    place-items: center;
+    width: var(--tap-target);
+    height: var(--tap-target);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--color-thumb);
+    color: var(--color-text);
+    box-shadow: var(--shadow-1);
+    cursor: pointer;
+    /* The same press motion as .button (the shell's button.css), so all controls feel alike. */
+    transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard);
+
+    &:active {
+      transform: scale(var(--stepper-pressed-scale));
+    }
+
+    /* After :active so a disabled end of the range never looks pressable. */
+    &:disabled {
+      opacity: var(--stepper-disabled-opacity);
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+  }
+
+  .stepper-value {
+    /* Room for "10" without the buttons shifting. */
+    --stepper-value-width: 2.5ch;
+
+    min-width: var(--stepper-value-width);
+    text-align: center;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+  }
+}

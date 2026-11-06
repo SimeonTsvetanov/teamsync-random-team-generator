@@ -1,0 +1,53 @@
+/* Code block with a Copy button (Help → agent docs, n8n workflow). */
+@layer components {
+  /* || Components: code block */
+  .code-block {
+    position: relative;
+    margin: var(--space-2) 0;
+  }
+
+  .code {
+    /* Room for the Copy button so it never covers the code. */
+    --code-copy-room: 88px;
+
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    padding-inline-end: var(--code-copy-room);
+    background: var(--color-fill);
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    font-size: var(--text-sm);
+
+    & code {
+      background: none;
+      padding: 0;
+    }
+  }
+
+  .copy {
+    /* Compact on fine pointers; coarse pointers get the full --tap-target below. */
+    --copy-min-height: 32px;
+
+    position: absolute;
+    top: var(--space-2);
+    inset-inline-end: var(--space-2);
+    min-height: var(--copy-min-height);
+    padding: 0 var(--space-3);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-accent-text);
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+    box-shadow: var(--shadow-1);
+    -webkit-user-select: none;
+    user-select: none;
+
+    /* Touch: every control ≥ 44 px on coarse pointers (code-block Copy too). */
+    @media (pointer: coarse) {
+      min-height: var(--tap-target);
+    }
+  }
+}

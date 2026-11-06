@@ -1,9 +1,6 @@
 import "./zod-setup.ts"; // first: before any module creates a Zod schema (CSP, frontend-level1 §5)
 import "@fontsource-variable/inter";
-import "../../design/tokens.css";
-import "./generated/accent.css"; // per-app accent from app.config (empty = default)
-import "./styles/app.css";
-import "./styles/teams.css";
+import "./styles/app.css"; // layer order, tokens, accent and every app style (forge-design → css-architecture)
 import { app } from "./config.ts";
 import { hydrateIcons } from "./ui/icons.ts";
 import { applyTheme, getTheme, initTheme } from "./ui/theme.ts";

@@ -1,3 +1,5 @@
+// iframe embedding of the main screen (SPEC modes → embed): talks to the embedding page via postMessage.
+// Used by view.ts and results.ts.
 import * as z from "zod";
 import { MAX_TEAMS, MIN_TEAMS } from "@simeonts/teamsync-random-team-generator-core";
 import { app } from "../config.ts";
@@ -10,9 +12,19 @@ import { app } from "../config.ts";
  */
 const prefix = app.modes.postMessage?.prefix ?? "teamsync";
 const embedded = window.self !== window.top;
-const parentOrigin = ((): string | null => {
-  try { return document.referrer ? new URL(document.referrer).origin : null; } catch { return null; }
-})();
+const parentOrigin = readParentOrigin();
+
+function readParentOrigin(): string | null {
+  if (!document.referrer) return null;
+  try {
+    return new URL(document.referrer).origin;
+  } catch {
+    // because an unparsable referrer means "origin unknown" — then nothing is ever posted.
+    return null;
+  }
+}
+
+const MAX_MESSAGE_LENGTH = 120_000;
 
 const MakeMessage = z.object({
   type: z.literal(`${prefix}:make`),
@@ -20,6 +32,7 @@ const MakeMessage = z.object({
   teams: z.int().min(MIN_TEAMS).max(MAX_TEAMS),
 });
 
+/** Posts `teamsync:<event>` to the embedding page's own origin; does nothing outside an iframe. */
 export function postToParent(event: "ready" | "result" | "error", data: Record<string, unknown> = {}): void {
   if (!embedded || !parentOrigin) return;
   window.parent.postMessage({ type: `${prefix}:${event}`, ...data }, parentOrigin);
@@ -30,7 +43,8 @@ export function initEmbed(onMake: (names: string[], teams: number) => void): voi
   if (!embedded || !parentOrigin) return;
   window.addEventListener("message", (e: MessageEvent<unknown>) => {
     if (e.origin !== parentOrigin || e.source !== window.parent) return;
-    if (JSON.stringify(e.data ?? null).length > 120_000) return; // payload cap
+    // Payload cap: a list of 1,000 names of 100 characters fits; anything larger is not ours.
+    if (JSON.stringify(e.data ?? null).length > MAX_MESSAGE_LENGTH) return;
     const msg = MakeMessage.safeParse(e.data);
     if (msg.success) onMake(msg.data.names, msg.data.teams);
   });

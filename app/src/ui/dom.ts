@@ -1,5 +1,7 @@
 /** Tiny DOM helpers — textContent only, never innerHTML with data. */
 import { getLanguage, t } from "../i18n/index.ts";
+
+/** Creates an element with string attributes and children (text is set via textContent, never parsed as HTML). */
 export function h<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   props: Record<string, string> = {},
@@ -28,6 +30,11 @@ export function copyBlock(code: string): HTMLElement {
   return h("div", { class: "code-block" }, pre, button);
 }
 
-export const formatBytes = (n: number): string =>
-  new Intl.NumberFormat(getLanguage(), { style: "unit", unit: n > 1e9 ? "gigabyte" : n > 1e6 ? "megabyte" : "kilobyte", maximumFractionDigits: 1 })
-    .format(n > 1e9 ? n / 1e9 : n > 1e6 ? n / 1e6 : n / 1e3);
+/** Decimal byte units, largest first (SI, as macOS Finder and storage APIs report them). */
+const BYTE_UNITS = [["gigabyte", 1e9], ["megabyte", 1e6], ["kilobyte", 1e3]] as const;
+
+/** Formats a byte count in the UI language, e.g. "1.2 MB". */
+export function formatBytes(bytes: number): string {
+  const [unit, size] = BYTE_UNITS.find(([, unitSize]) => bytes > unitSize) ?? BYTE_UNITS[2];
+  return new Intl.NumberFormat(getLanguage(), { style: "unit", unit, maximumFractionDigits: 1 }).format(bytes / size);
+}

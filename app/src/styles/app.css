@@ -1,252 +1,34 @@
-/* App shell styles — tokens only (forge-design). */
-*, *::before, *::after { box-sizing: border-box; }
-html { background: var(--color-bg); color: var(--color-text); font-family: var(--font-sans); font-size: 100%; -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-height) + var(--safe-top)); }
-body { margin: 0; min-height: 100dvh; display: flex; flex-direction: column; line-height: var(--leading-normal); font-size: var(--text-base); }
-a { color: var(--color-accent-text); font-weight: var(--weight-semibold); text-decoration: none; } /* Moni: no underlines; accent + weight mark links (≥ 3:1 vs text, WCAG 1.4.1) */
-:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-.skip-link { position: absolute; left: var(--space-2); top: -100px; padding: var(--space-2) var(--space-3); background: var(--color-surface); border-radius: var(--radius-md); z-index: var(--z-toast); }
-.skip-link:focus { top: calc(var(--space-2) + var(--safe-top)); }
+@layer tokens, base, layout, components, utilities, overrides;
+/* App stylesheet entry (main.ts imports only this file). The line above fixes the cascade order
+   once; every imported file wraps its rules in one of these layers (forge-design →
+   css-architecture §1). Components are imported in on-screen order. */
 
-.app-header { position: sticky; top: 0; z-index: var(--z-header); display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: calc(var(--space-2) + var(--safe-top)) calc(var(--space-4) + var(--safe-right)) var(--space-2) calc(var(--space-4) + var(--safe-left)); min-height: calc(var(--header-height) + var(--safe-top)); background: var(--header-bg); -webkit-backdrop-filter: var(--header-blur); backdrop-filter: var(--header-blur); transition: box-shadow var(--duration-base) var(--ease-standard); }
-.app-header[data-scrolled] { box-shadow: var(--shadow-2); }
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .app-header { background: var(--color-bg); } }
-.brand { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--color-text); text-decoration: none; font-weight: var(--weight-semibold); }
-.header-actions { display: flex; gap: var(--space-1); }
-.icon-button, .menu button, .toast button { min-height: var(--tap-target); min-width: var(--tap-target); padding: 0 var(--space-3); border: 0; border-radius: var(--radius-md); background: transparent; color: var(--color-text); font: inherit; font-size: var(--text-md); cursor: pointer; transition: background-color var(--duration-fast) var(--ease-standard); }
-@media (hover: hover) { .icon-button:hover { background: var(--color-fill); } }
-
-.main { flex: 1; width: min(100% - 2 * var(--space-5), var(--content-max)); margin-inline: auto; padding-block: var(--space-10); }
-.scroll-sentinel { display: block; height: 1px; }
-.hero h1 { font-size: var(--text-3xl); letter-spacing: var(--tracking-tight); margin: 0 0 var(--space-2); text-wrap: balance; }
-.lead { font-size: var(--text-lg); color: var(--color-text-secondary); margin: 0 0 var(--space-4); }
-.empty-state { margin-top: var(--space-8); padding: var(--space-6); background: var(--color-surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-1); }
-code { font-family: var(--font-mono); font-size: 0.9em; background: var(--color-fill); padding: 0.1em 0.35em; border-radius: var(--radius-sm); }
-
-.app-footer { padding: var(--space-8) var(--space-5) calc(var(--space-8) + var(--safe-bottom)); text-align: center; font-size: var(--text-sm); color: var(--color-text-secondary); }
-.app-footer p { margin: var(--space-1) 0; }
-
-.menu { border: 0; padding: var(--space-5); border-radius: var(--radius-xl); background: var(--color-surface-raised); color: var(--color-text); box-shadow: var(--shadow-3); width: min(100% - 2 * var(--space-4), 360px); max-height: 85dvh; overscroll-behavior: contain; }
-.menu::backdrop, .sheet::backdrop, .alert::backdrop { background: var(--backdrop); -webkit-backdrop-filter: var(--backdrop-blur); backdrop-filter: var(--backdrop-blur); }
-.menu nav { display: flex; flex-direction: column; }
-.menu h2 { font-size: var(--text-sm); text-transform: none; color: var(--color-text-secondary); margin: var(--space-4) 0 var(--space-1); font-weight: var(--weight-semibold); }
-.menu a, .menu nav button { display: flex; align-items: center; width: 100%; min-height: var(--tap-target); padding: 0 var(--space-2); border-radius: var(--radius-md); color: var(--color-text); font: inherit; font-size: var(--text-md); text-decoration: none; text-align: start; } /* links and buttons look identical */
-@media (hover: hover) { .menu a:hover, .menu nav button:hover { background: var(--color-fill); } }
-.menu .close { margin-top: var(--space-4); margin-bottom: max(var(--space-2), var(--safe-bottom)); width: 100%; background: var(--color-fill); }
-@media (max-width: 600px) { .menu { margin: 0 0 0 auto; height: 100dvh; max-height: 100dvh; border-radius: var(--radius-xl) 0 0 var(--radius-xl); padding-top: calc(var(--space-5) + var(--safe-top)); padding-bottom: calc(var(--space-5) + var(--safe-bottom)); } }
-
-.toast-region { position: fixed; left: 50%; bottom: calc(var(--space-4) + var(--safe-bottom)); transform: translateX(-50%); z-index: var(--z-toast); }
-/* Phones: toasts drop in under the header (iOS banners) — the bottom belongs to the main action. */
-@media (max-width: 600px) { .toast-region { top: calc(var(--header-height) + var(--safe-top) + var(--space-2)); bottom: auto; width: calc(100% - 2 * var(--space-4)); display: grid; justify-items: center; } }
-.toast { display: flex; align-items: center; gap: var(--space-3); white-space: nowrap; max-width: calc(100vw - 2 * var(--space-4)); padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4); background: var(--color-surface-raised); border-radius: var(--radius-full); box-shadow: var(--shadow-3); }
-.toast button { color: var(--color-accent-text); font-weight: var(--weight-semibold); }
-@media (forced-colors: active) { .empty-state, .menu, .toast { border: 1px solid CanvasText; } }
-
-/* ---------- Buttons ---------- */
-.button { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-height: var(--tap-target); padding: 0 var(--space-4); border: 0; border-radius: var(--radius-md); background: var(--color-fill); color: var(--color-text); font: inherit; font-weight: var(--weight-semibold); text-decoration: none; cursor: pointer; transition: box-shadow var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard); }
-.button--primary { background: var(--color-accent); color: var(--color-on-accent); }
-.button--danger { background: var(--color-danger); color: var(--color-on-danger); }
-.button:active { transform: scale(0.98); }
-@media (hover: hover) { .button:hover { box-shadow: var(--shadow-2); transform: var(--lift); } }
-.icon-button { display: inline-grid; place-items: center; }
-.menu a svg, .menu nav button svg { margin-inline-end: var(--space-3); color: var(--color-text-secondary); }
-.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
-/* ---------- Dialog sheets (Help, Settings, About, What's new, Report, Install) ---------- */
-.sheet { border: 0; padding: 0; width: min(100% - 2 * var(--space-4), 720px); max-height: 85dvh; border-radius: var(--radius-xl); background: var(--color-surface-raised); color: var(--color-text); box-shadow: var(--shadow-3); overscroll-behavior: contain; }
-.sheet-head { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5); background: var(--color-surface-raised); }
-.sheet-head h2 { margin: 0; font-size: var(--text-lg); }
-.sheet-body { padding: 0 var(--space-5) var(--space-6); }
-.sheet-body h3 { font-size: var(--text-md); margin: var(--space-5) 0 var(--space-2); }
-@media (max-width: 600px) { .sheet { width: 100%; max-width: 100%; max-height: 100dvh; height: 100dvh; margin: 0; border-radius: 0; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); } }
-.help-section + .help-section { box-shadow: 0 -1px 0 var(--color-separator); }
-.help-section summary { min-height: var(--tap-target); display: flex; align-items: center; font-weight: var(--weight-semibold); cursor: pointer; }
-.help-section table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
-.help-section th, .help-section td { text-align: start; padding: var(--space-2); box-shadow: inset 0 -1px 0 var(--color-separator); }
-.code-block { position: relative; margin: var(--space-2) 0; }
-.code { margin: 0; padding: var(--space-3) var(--space-4); padding-inline-end: 88px; background: var(--color-fill); border-radius: var(--radius-md); overflow-x: auto; font-size: var(--text-sm); }
-.code code { background: none; padding: 0; }
-.copy { position: absolute; top: var(--space-2); inset-inline-end: var(--space-2); min-height: 32px; padding: 0 var(--space-3); border: 0; border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-accent-text); font: inherit; font-size: var(--text-sm); font-weight: var(--weight-semibold); cursor: pointer; box-shadow: var(--shadow-1); }
-
-/* ---------- Settings / forms ---------- */
-.segmented { display: flex; gap: var(--space-1); padding: var(--space-1); margin: var(--space-4) 0; border: 0; border-radius: var(--radius-md); background: var(--color-fill); }
-.segmented legend { padding: 0 0 var(--space-2); font-weight: var(--weight-semibold); }
-.segmented label { flex: 1; display: grid; place-items: center; min-height: var(--tap-target); border-radius: var(--radius-sm); cursor: pointer; }
-.segmented input { position: absolute; opacity: 0; }
-.segmented label:has(input:checked) { background: var(--color-thumb); box-shadow: var(--shadow-1); font-weight: var(--weight-semibold); }
-.segmented label:has(input:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 2px; }
-.panel { padding: var(--space-4); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-1); }
-.actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
-/* Button groups: equal width, never ragged (Moni 2026-11-06). One column on phones, two from 480px. */
-.button-stack { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
-.button-stack .button { width: 100%; text-align: center; padding-block: var(--space-2); }
-@media (min-width: 480px) { .button-stack:has(> :nth-child(2)) { grid-template-columns: repeat(2, 1fr); } .button-stack > :last-child:nth-child(odd):not(:first-child) { grid-column: 1 / -1; } }
-/* Exactly three buttons on a wide screen: one row of three equal buttons. */
-@media (min-width: 900px) { .button-stack:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3, 1fr); } .button-stack:has(> :nth-child(3):last-child) > :last-child:nth-child(odd):not(:first-child) { grid-column: auto; } }
-
-/* Settings: iOS-style grouped sections — small title above a card, label/value rows inside. */
-.group { margin-block: var(--space-5); }
-.group-title { margin: 0 0 var(--space-2); padding-inline: var(--space-1); font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-text-secondary); }
-.group-card { display: grid; gap: var(--space-3); padding: var(--space-3); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-1); }
-.group-card > .segmented { margin: 0; }
-.group-card:has(> .segmented:only-child) { padding: 0; background: none; box-shadow: none; }
-.group-note { margin: calc(-1 * var(--space-3)) var(--space-1) 0; font-size: var(--text-sm); color: var(--color-text-secondary); }
-.row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-3); min-height: 32px; padding-inline: var(--space-1); }
-.row-label { color: var(--color-text); }
-.row-value { color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
-
-/* Alert (confirm before deleting / replacing / discarding): small centered card over a blurred page. */
-.alert { border: 0; padding: var(--space-5); width: min(100% - 2 * var(--space-6), 380px); border-radius: var(--radius-xl); background: var(--color-surface-raised); color: var(--color-text); box-shadow: var(--shadow-3); text-align: center; }
-.alert-title { margin: 0 0 var(--space-2); font-size: var(--text-lg); }
-.alert-text { margin: 0 0 var(--space-5); color: var(--color-text-secondary); }
-/* Side by side like iOS; a label that doesn't fit on one line moves both buttons to full-width rows. */
-.alert-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.alert-actions .button { flex: 1 1 7rem; white-space: nowrap; }
-.hint { font-size: var(--text-sm); color: var(--color-text-secondary); }
-.form { display: grid; gap: var(--space-4); }
-.form label { display: grid; gap: var(--space-1); font-weight: var(--weight-medium); }
-.form input, .form select, .form textarea { font: inherit; font-size: max(16px, var(--text-base)); padding: var(--space-3); border: 0; border-radius: var(--radius-md); background: var(--color-fill); color: var(--color-text); }
-.form fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: var(--space-1); }
-.form .check { display: flex; gap: var(--space-2); font-weight: var(--weight-regular); font-size: var(--text-sm); color: var(--color-text-secondary); overflow-wrap: anywhere; }
-.status { min-height: 1.5em; color: var(--color-text-secondary); }
-.credits { columns: 1; list-style: none; padding-inline-start: 0; display: grid; gap: var(--space-2); font-size: var(--text-sm); color: var(--color-text-secondary); overflow-wrap: anywhere; }
-
-:root { accent-color: var(--color-accent); } /* native checkboxes, radios, progress use the app accent */
-.diag summary { cursor: pointer; min-height: var(--tap-target); display: flex; align-items: center; font-weight: var(--weight-medium); }
-.diag[open] summary { margin-bottom: var(--space-2); }
-
-/* ---------- Offline pill, steps, FAQ ---------- */
-.offline-pill { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-surface); box-shadow: var(--shadow-1); color: var(--color-warning-text); font-size: var(--text-sm); } /* status text only on surface — on --color-fill it fails 4.5:1 */
-.offline-pill[hidden] { display: none; }
-.steps, .faq-list { margin-top: var(--space-8); }
-.steps h2, .faq-list h2 { font-size: var(--text-xl); }
-.faq-list details { padding: var(--space-3) 0; box-shadow: inset 0 -1px 0 var(--color-separator); }
-.faq-list summary { cursor: pointer; font-weight: var(--weight-semibold); min-height: var(--tap-target); display: flex; align-items: center; }
-@media (forced-colors: active) { .sheet, .panel, .button, .segmented, .alert, .group-card { border: 1px solid CanvasText; } }
-.honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
-.form .check { align-items: center; min-height: var(--tap-target); cursor: pointer; } /* whole row is the hit area */
-.form .check input { width: 20px; height: 20px; flex: none; }
-
-/* ---------- Desktop menu = dropdown under the menu button (APP-STANDARD §1) ---------- */
-@media (min-width: 601px) {
-  .menu { position: fixed; inset: calc(var(--header-height) + var(--safe-top) + var(--space-1)) calc(var(--space-4) + var(--safe-right)) auto auto; margin: 0; width: 300px; max-height: calc(100dvh - var(--header-height) - var(--space-8)); overflow-y: auto; padding: var(--space-3); border-radius: var(--radius-lg); }
-  .menu::backdrop { background: transparent; }
-  .menu a, .menu nav button { min-height: 36px; }
-  .menu .close { display: none; }
-}
-.sheet-head h2:focus { outline: none; }
-.help-section summary { list-style: none; justify-content: space-between; }
-.help-section summary::-webkit-details-marker { display: none; }
-.help-section summary::after { content: ""; width: 8px; height: 8px; border-inline-end: 2px solid var(--color-text-tertiary); border-block-end: 2px solid var(--color-text-tertiary); transform: rotate(45deg); transition: transform var(--duration-fast) var(--ease-standard); margin-inline-end: var(--space-2); }
-.help-section[open] summary::after { transform: rotate(-135deg); }
-.help-section > div > p:first-child { margin-top: 0; }
-
-/* ---------- Drop zone + progress ---------- */
-.dropzone { display: grid; justify-items: center; gap: var(--space-2); padding: var(--space-10) var(--space-5); border-radius: var(--radius-lg); background: var(--color-surface); box-shadow: var(--shadow-1); text-align: center; transition: box-shadow var(--duration-fast) var(--ease-standard); }
-.dropzone svg { color: var(--color-accent-text); }
-.dropzone.is-over { outline: 2px dashed var(--color-accent-text); outline-offset: -8px; box-shadow: var(--shadow-2); }
-.dropzone-label { margin: 0; font-size: var(--text-lg); font-weight: var(--weight-semibold); }
-.progress { display: grid; gap: var(--space-2); }
-.progress progress { width: 100%; height: 8px; appearance: none; border: 0; border-radius: var(--radius-full); background: var(--color-fill); overflow: hidden; }
-.progress progress::-webkit-progress-bar { background: var(--color-fill); }
-.progress progress::-webkit-progress-value { background: var(--color-accent); border-radius: var(--radius-full); transition: width var(--duration-base) var(--ease-standard); }
-.progress progress::-moz-progress-bar { background: var(--color-accent); border-radius: var(--radius-full); }
-.progress-text { margin: 0; font-size: var(--text-sm); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
-
-/* ---------- Embed mode ---------- */
-.is-embed [data-action="install"], .is-embed .app-footer, .is-embed .steps, .is-embed .faq-list { display: none; }
-.is-embed .app-header { position: static; box-shadow: none; }
-
-/* ---------- App feel (web.dev "The app experience", 2026-11-06) ---------- */
-/* UI chrome is not text: no selection callout on long-press. Content (results, help) stays selectable. */
-.app-header, .menu, .sheet-head, .button, .icon-button, .segmented, .toast, .alert-actions, .help-section summary, .copy { -webkit-user-select: none; user-select: none; }
-/* No grey flash on tap — every control has its own visible pressed state instead. */
-html { -webkit-tap-highlight-color: transparent; }
-.icon-button:active, .menu a:active, .menu nav button:active { background: var(--color-fill); }
-/* Installed app: pulling down must not reload it by accident. */
-@media (display-mode: standalone) { html, body { overscroll-behavior-y: contain; } }
-
-/* Smooth page-to-page navigation (app ↔ policy pages); page.css opts in too. */
-@view-transition { navigation: auto; }
-@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
-
-/* ---------- Print: content only (APP-STANDARD §15 #14) ---------- */
-@media print {
-  .app-header, .app-footer, .menu, .toast-region, .skip-link, .offline-pill, .actions, .button-stack, .alert, .sheet-head button { display: none !important; }
-  :root { color-scheme: light; }
-  body { background: Canvas; color: CanvasText; } /* system colors, no hard-coded hex */
-  .panel, .group-card, .sheet { box-shadow: none; }
-  .sheet[open] { position: static; max-height: none; width: auto; }
-  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; }
-}
-
-/* ---------- Motion — Apple-like (forge-design → design-system §9) ----------
-   Sheets slide up on phones / scale in on desktop with the iOS curve; the side menu slides in;
-   alerts pop from 1.08 with a spring; backdrops fade. Closing animates too (overlay/display are
-   allow-discrete; dialog.ts removes the element after --duration-sheet). Durations are 0 under
-   prefers-reduced-motion (tokens). */
-.sheet, .menu, .alert { transition: opacity var(--duration-alert) var(--ease-out), transform var(--duration-sheet) var(--ease-ios), overlay var(--duration-sheet) allow-discrete, display var(--duration-sheet) allow-discrete; }
-.sheet:not([open]) { opacity: 0; transform: translateY(12px) scale(0.97); }
-@starting-style { .sheet[open] { opacity: 0; transform: translateY(12px) scale(0.97); } }
-.alert { transition-duration: var(--duration-alert); transition-timing-function: var(--ease-out), var(--ease-spring); }
-.alert:not([open]) { opacity: 0; transform: scale(0.94); }
-@starting-style { .alert[open] { opacity: 0; transform: scale(1.08); } }
-.menu:not([open]) { opacity: 0; transform: translateX(24px); }
-@starting-style { .menu[open] { opacity: 0; transform: translateX(24px); } }
-@media (max-width: 600px) {
-  .sheet:not([open]) { opacity: 1; transform: translateY(100%); }
-  @starting-style { .sheet[open] { opacity: 1; transform: translateY(100%); } }
-  .menu:not([open]) { opacity: 1; transform: translateX(100%); }
-  @starting-style { .menu[open] { opacity: 1; transform: translateX(100%); } }
-}
-@media (min-width: 601px) {
-  .menu { transform-origin: top right; }
-  .menu:not([open]) { transform: scale(0.95); }
-  @starting-style { .menu[open] { transform: scale(0.95); } }
-}
-.sheet::backdrop, .menu::backdrop, .alert::backdrop { transition: opacity var(--duration-sheet) var(--ease-out), overlay var(--duration-sheet) allow-discrete, display var(--duration-sheet) allow-discrete; }
-@starting-style { .sheet[open]::backdrop, .menu[open]::backdrop, .alert[open]::backdrop { opacity: 0; } }
-.toast { animation: toast-in var(--duration-alert) var(--ease-spring); }
-@keyframes toast-in { from { transform: translateY(16px) scale(0.98); } } /* no opacity: text keeps full contrast at every frame */
-@media (max-width: 600px) { @keyframes toast-in { from { transform: translateY(-16px) scale(0.98); } } }
-.button, .icon-button, .stepper-button { transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-standard), background-color var(--duration-fast) var(--ease-standard); }
-.button:active, .icon-button:active { transform: scale(0.97); }
-
-/* Quiet destructive action (iOS Settings style): red text, no fill — never the loudest button. */
-.button--destructive { background: transparent; color: var(--color-danger-text); box-shadow: none; }
-@media (hover: hover) { .button--destructive:hover { background: transparent; box-shadow: none; transform: translateY(-1px); } } /* no fill, no fade: red text keeps 4.5:1 */
-
-/* ---------- Launch splash (theme-init.js sets [data-splash] once per session) ---------- */
-.splash { display: none; }
-:root[data-splash] .splash {
-  display: grid; place-content: center; justify-items: center; gap: var(--space-4); position: fixed; inset: 0; z-index: 100;
-  padding: var(--space-6); background: var(--color-bg); text-align: center; pointer-events: none;
-  animation: splash-out var(--duration-sheet) var(--ease-out) 1100ms forwards;
-}
-.splash img { width: 88px; height: 88px; animation: splash-logo 700ms var(--ease-spring) both; }
-.splash p { margin: 0; max-width: 22ch; font-size: var(--text-2xl); font-weight: var(--weight-semibold); letter-spacing: var(--tracking-tight); text-wrap: balance; animation: splash-text 600ms var(--ease-out) 150ms both; }
-@keyframes splash-out { to { opacity: 0; visibility: hidden; } }
-@keyframes splash-logo { from { opacity: 0; transform: scale(0.8); } }
-@keyframes splash-text { from { opacity: 0; transform: translateY(8px); } }
-@media (prefers-reduced-motion: reduce) { :root[data-splash] .splash { animation: splash-out 1ms linear 700ms forwards; } .splash img, .splash p { animation: none; } }
-
-/* ---------- Phone = app, not a web page (forge-design → responsive-layout §2) ----------
-   The main screen is the tool only. Name/tagline live in the splash and stay in the HTML for
-   search engines and screen readers; how-it-works, FAQ, agent docs and the footer move to Help
-   and the menu on phones and in the installed app. Desktop browsers still show them below. */
-.hero { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-@media (max-width: 600px), (display-mode: standalone) {
-  .steps, .faq-list, .app-footer { display: none; }
-  .main { padding-block: var(--space-4) var(--space-8); }
-}
-
-/* ---------- UX review 2026-11-06 ---------- */
-/* Touch: every control ≥ 44 px on coarse pointers (code-block Copy too). */
-@media (pointer: coarse) { .copy { min-height: var(--tap-target); } }
-/* Phones: the header is logo + name + menu only — Share app and the theme live in the menu/Settings,
-   so a result screen never shows two different Share buttons. */
-@media (max-width: 600px) { .header-actions [data-action="share"], .header-actions [data-theme-toggle] { display: none; } }
-/* Small sheets (a few buttons) are compact bottom sheets on phones, not full-screen. */
-@media (max-width: 600px) {
-  .sheet.sheet--compact { top: auto; bottom: 0; height: auto; max-height: 70dvh; border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding-bottom: max(var(--space-4), var(--safe-bottom)); }
-}
-/* Alert keeps the solid red confirm (red text on the dark alert surface is only 4.09:1); Cancel has the focus. */
+@import "../../../design/tokens.css";
+/* Per-app accent from app.config (empty = default); after tokens.css so it replaces the defaults. */
+@import "../generated/accent.css";
+@import "./base.css";
+@import "./layout.css";
+@import "./components/splash.css";
+@import "./components/header.css";
+@import "./components/content.css";
+@import "./components/dropzone.css";
+@import "./components/button.css";
+@import "./components/modal.css";
+@import "./components/menu.css";
+@import "./components/sheet.css";
+@import "./components/help.css";
+@import "./components/code-block.css";
+@import "./components/settings.css";
+@import "./components/form.css";
+@import "./components/alert.css";
+@import "./components/toast.css";
+/* TeamSync screens: after the shell components, so equal-specificity rules on shared classes
+   (.button, .button-stack) resolve in the app's favour. */
+@import "./components/teams-workspace.css";
+@import "./components/teams-form.css";
+@import "./components/teams-stepper.css";
+@import "./components/teams-generate.css";
+@import "./components/teams-results.css";
+@import "./utilities.css";
+@import "./overrides.css";
+@import "./teams-overrides.css";

@@ -1,0 +1,123 @@
+/* Layout layer: the page frame — skip link, frosted header, main column, footer, toast region. */
+@layer layout {
+  /* || Layout: skip link */
+  .skip-link {
+    /* Far enough above the viewport to hide the link until it gets focus. */
+    --skip-link-hidden-top: -100px;
+
+    position: absolute;
+    left: var(--space-2);
+    top: var(--skip-link-hidden-top);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    z-index: var(--z-toast);
+
+    &:focus {
+      top: calc(var(--space-2) + var(--safe-top));
+    }
+  }
+
+  /* || Layout: header */
+  .app-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: calc(var(--space-2) + var(--safe-top)) calc(var(--space-4) + var(--safe-right)) var(--space-2) calc(var(--space-4) + var(--safe-left));
+    min-height: calc(var(--header-height) + var(--safe-top));
+    background: var(--header-bg);
+    -webkit-backdrop-filter: var(--header-blur);
+    backdrop-filter: var(--header-blur);
+    transition: box-shadow var(--duration-base) var(--ease-standard);
+    -webkit-user-select: none;
+    user-select: none;
+
+    &[data-scrolled] {
+      box-shadow: var(--shadow-2);
+    }
+
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      background: var(--color-bg);
+    }
+
+    .is-embed & {
+      position: static;
+      box-shadow: none;
+    }
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: var(--weight-semibold);
+  }
+
+  /* || Layout: main */
+  .main {
+    flex: 1;
+    width: min(100% - 2 * var(--space-5), var(--content-max));
+    margin-inline: auto;
+    /* Phone = app: the tool starts right under the header (see content.css → steps). */
+    padding-block: var(--space-4) var(--space-8);
+
+    @media (width > 600px) and (not (display-mode: standalone)) {
+      padding-block: var(--space-10);
+    }
+  }
+
+  .scroll-sentinel {
+    display: block;
+    height: 1px;
+  }
+
+  /* || Layout: footer */
+  .app-footer {
+    /* Phone = app: the footer links live in the menu (see content.css → steps). */
+    display: none;
+    padding: var(--space-8) var(--space-5) calc(var(--space-8) + var(--safe-bottom));
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+
+    & p {
+      margin: var(--space-1) 0;
+    }
+
+    @media (width > 600px) and (not (display-mode: standalone)) {
+      display: block;
+    }
+
+    .is-embed & {
+      display: none;
+    }
+  }
+
+  /* || Layout: toast region */
+  .toast-region {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: var(--z-toast);
+    /* Phones: toasts drop in under the header (iOS banners) — the bottom belongs to the main action. */
+    top: calc(var(--header-height) + var(--safe-top) + var(--space-2));
+    width: calc(100% - 2 * var(--space-4));
+    display: grid;
+    justify-items: center;
+
+    /* Desktop: one stack of toasts centred at the bottom edge. */
+    @media (width > 600px) {
+      top: auto;
+      bottom: calc(var(--space-4) + var(--safe-bottom));
+      width: auto;
+      display: block;
+      justify-items: normal;
+    }
+  }
+}

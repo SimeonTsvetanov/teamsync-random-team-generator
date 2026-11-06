@@ -1,0 +1,38 @@
+/* Header contents: the action buttons on the right and the offline pill (APP-STANDARD §1). */
+@layer components {
+  /* || Components: header actions */
+  .header-actions {
+    display: flex;
+    gap: var(--space-1);
+
+    /* Phones: the header is logo + name + menu only — Share app and the theme live in the
+       menu/Settings, so a result screen never shows two different Share buttons. */
+    & [data-action="share"],
+    & [data-theme-toggle] {
+      display: none;
+
+      /* Desktop shows them again with the .icon-button display. */
+      @media (width > 600px) {
+        display: inline-grid;
+      }
+    }
+  }
+
+  /* || Components: offline pill */
+  /* Status text only on surface — on --color-fill it fails 4.5:1. */
+  .offline-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-1);
+    color: var(--color-warning-text);
+    font-size: var(--text-sm);
+
+    &[hidden] {
+      display: none;
+    }
+  }
+}

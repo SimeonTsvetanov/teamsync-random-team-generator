@@ -1,0 +1,57 @@
+/* Alert (confirm before deleting / replacing / discarding): small centred card over a blurred page. */
+@layer components {
+  /* || Components: alert */
+  .alert {
+    --alert-max-width: 380px;
+
+    border: 0;
+    padding: var(--space-5);
+    width: min(100% - 2 * var(--space-6), var(--alert-max-width));
+    border-radius: var(--radius-xl);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    box-shadow: var(--shadow-3);
+    text-align: center;
+    /* Faster than sheets, with a spring on the scale (modal.css sets the properties). */
+    transition-duration: var(--duration-alert);
+    transition-timing-function: var(--ease-out), var(--ease-spring);
+
+    &:not([open]) {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+
+    &[open] {
+      @starting-style {
+        opacity: 0;
+        transform: scale(1.08);
+      }
+    }
+  }
+
+  .alert-title {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-lg);
+  }
+
+  .alert-text {
+    margin: 0 0 var(--space-5);
+    color: var(--color-text-secondary);
+  }
+
+  /* Side by side like iOS; a label that doesn't fit on one line moves both buttons to full-width
+     rows. The confirm stays solid red (red text on the dark alert surface is only 4.09:1); Cancel
+     has the focus. */
+  .alert-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    -webkit-user-select: none;
+    user-select: none;
+
+    & .button {
+      flex: 1 1 7rem;
+      white-space: nowrap;
+    }
+  }
+}

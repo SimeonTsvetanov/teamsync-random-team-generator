@@ -119,7 +119,7 @@ export async function importAll(file: File): Promise<number> {
         },
       });
       raw = JSON.parse(strFromU8(zip["data.json"] ?? new Uint8Array()));
-      for (const [path, b] of Object.entries(zip)) if (path.startsWith("files/")) restored.push([path.slice(6), b]);
+      for (const [path, b] of Object.entries(zip).filter(([name]) => name.startsWith("files/"))) restored.push([path.slice(6), b]);
     } else {
       raw = JSON.parse(new TextDecoder().decode(bytes));
     }

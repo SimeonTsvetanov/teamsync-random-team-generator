@@ -1,0 +1,60 @@
+/* Help sheet: collapsible sections with a rotating chevron and simple tables. */
+@layer components {
+  /* || Components: help section */
+  .help-section {
+    --chevron-size: 8px;
+    --chevron-stroke: 2px;
+
+    & + & {
+      box-shadow: 0 -1px 0 var(--color-separator);
+    }
+
+    & summary {
+      min-height: var(--tap-target);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      list-style: none;
+      font-weight: var(--weight-semibold);
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &::after {
+        content: "";
+        width: var(--chevron-size);
+        height: var(--chevron-size);
+        border-inline-end: var(--chevron-stroke) solid var(--color-text-tertiary);
+        border-block-end: var(--chevron-stroke) solid var(--color-text-tertiary);
+        transform: rotate(45deg);
+        transition: transform var(--duration-fast) var(--ease-standard);
+        margin-inline-end: var(--space-2);
+      }
+    }
+
+    &[open] summary::after {
+      transform: rotate(-135deg);
+    }
+
+    & table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+
+    & th,
+    & td {
+      text-align: start;
+      padding: var(--space-2);
+      box-shadow: inset 0 -1px 0 var(--color-separator);
+    }
+
+    & > div > p:first-child {
+      margin-top: 0;
+    }
+  }
+}

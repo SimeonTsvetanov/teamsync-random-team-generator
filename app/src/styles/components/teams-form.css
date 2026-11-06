@@ -1,0 +1,99 @@
+/* TeamSync names field (PLAN T-05): label row with count and Clear, the names box, the hint.
+   Tokens only, no borders (forge-design). */
+@layer components {
+  /* || Components: field */
+  .field {
+    display: grid;
+    gap: var(--space-2);
+
+    & .hint {
+      margin: 0;
+    }
+
+    & textarea {
+      /* iOS Safari zooms into any field whose text is smaller than 16px. */
+      --names-min-font: 16px;
+      /* A little looser than body text: one name per line should scan like a list. */
+      --names-line-height: 1.5;
+      /* Phones: the box stretches to the card; this is only its floor. */
+      --names-min-height: 9rem;
+      --names-min-height-desktop: 12rem;
+
+      font: inherit;
+      font-size: max(var(--names-min-font), var(--text-base));
+      line-height: var(--names-line-height);
+      min-height: var(--names-min-height);
+      height: 100%;
+      resize: none;
+      padding: var(--space-3) var(--space-4);
+      border: 0;
+      border-radius: var(--radius-md);
+      background: var(--color-fill);
+      color: var(--color-text);
+
+      @media (width > 600px) {
+        min-height: var(--names-min-height-desktop);
+        height: auto;
+        resize: vertical;
+      }
+
+      &:focus-visible {
+        outline: var(--focus-ring-width) solid var(--color-focus);
+        outline-offset: var(--focus-ring-offset);
+      }
+
+      &[aria-invalid="true"] {
+        box-shadow: inset 0 0 0 var(--focus-ring-width) var(--color-danger);
+      }
+    }
+  }
+
+  .field--row {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .field-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+
+    & label {
+      font-weight: var(--weight-semibold);
+    }
+  }
+
+  .field-label {
+    font-weight: var(--weight-semibold);
+  }
+
+  .field-meta {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-3);
+
+    & .hint {
+      margin: 0;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  /* || Components: link button (Clear, ‹ Names) */
+  .link-button {
+    min-height: var(--tap-target);
+    padding: 0 var(--space-1);
+    border: 0;
+    background: none;
+    color: var(--color-accent-text);
+    font: inherit;
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+}

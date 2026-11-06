@@ -1,0 +1,75 @@
+/* TeamSync screen layout (Moni 2026-11-06): the tool is the screen. Phones: the names card fills
+   the screen and the results are the next screen ("‹ Names" goes back). Desktop: side by side. */
+@layer components {
+  /* || Components: workspace */
+  .workspace {
+    /* The teams get a little more room than the names when both are on screen. */
+    --workspace-results-width: 1.25fr;
+
+    display: grid;
+    gap: var(--space-6);
+
+    &.has-results {
+      @media (width >= 900px) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, var(--workspace-results-width));
+        align-items: start;
+      }
+    }
+  }
+
+  /* || Components: tool card (names + number of teams) */
+  .tool {
+    /* Phones: the card fills the screen under the header, minus the main column's padding. */
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100dvh - var(--header-height) - var(--safe-top) - var(--safe-bottom) - var(--space-12));
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-1);
+
+    @media (width > 600px) {
+      display: block;
+      flex-direction: row;
+      min-height: auto;
+    }
+
+    /* Phones: the results replace the form; desktop keeps the form in view beside them. */
+    .workspace.has-results & {
+      display: none;
+
+      @media (width > 600px) {
+        display: block;
+      }
+
+      @media (width >= 900px) {
+        position: sticky;
+        top: calc(var(--header-height) + var(--space-4));
+      }
+    }
+  }
+
+  .tool-form {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-5);
+
+    @media (width > 600px) {
+      display: grid;
+      flex: 0 1 auto;
+      flex-direction: row;
+    }
+
+    /* Phones: the names field takes the free height, so the list box grows with the screen. */
+    & > .field:first-child {
+      flex: 1;
+      grid-template-rows: auto 1fr auto;
+
+      @media (width > 600px) {
+        flex: 0 1 auto;
+        grid-template-rows: none;
+      }
+    }
+  }
+}

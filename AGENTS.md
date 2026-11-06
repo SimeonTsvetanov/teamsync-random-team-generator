@@ -21,9 +21,11 @@ Create fair, random teams in seconds — a free micro-app by Simeon "Moni" Tsvet
 ```
 packages/core   pure logic (+ tests)        packages/mcp   local MCP server (npx)
 app/            PWA (Vite, Level 1)         content/legal  Terms/Privacy/AI notice/… sources
-design/         tokens.css                  scripts/       generate.ts + page assets
-tests/e2e       Playwright                  docs/          SPEC, PLAN, DECISIONS, API, ASSETS
+design/         tokens.css                  scripts/       generate.ts, check-docs.ts, page assets
+tests/e2e       Playwright                  docs/          SPEC, PLAN, DECISIONS, API, ASSETS (dev)
+tests/docs      docs screenshots (shots.ts) docs/how-to|reference|about|images  user docs (English, docs-writer)
 ```
 
 ## Commands
-`pnpm i` · `pnpm dev` · `pnpm verify` (lint+typecheck+test+build) · `pnpm e2e` · `pnpm generate`
+`pnpm i` · `pnpm dev` · `pnpm verify` (lint+typecheck+test+docs:check+build) · `pnpm e2e` · `pnpm generate` ·
+`pnpm docs:images` (light+dark docs screenshots)

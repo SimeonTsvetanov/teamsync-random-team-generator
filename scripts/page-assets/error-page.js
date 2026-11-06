@@ -13,7 +13,7 @@
   if (el) el.textContent = path;
   var report = document.querySelector("[data-ep-report]");
   if (report) {
-    var body = "Broken link: " + location.href + "\nReferrer: " + (document.referrer || "(none)");
-    report.href += "&body=" + encodeURIComponent(body);
+    var body = `Broken link: ${location.href}\nReferrer: ${document.referrer || "(none)"}`;
+    report.href += `&body=${encodeURIComponent(body)}`;
   }
 })();

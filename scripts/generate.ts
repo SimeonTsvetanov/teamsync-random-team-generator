@@ -134,7 +134,7 @@ const changelog = readFileSync(join(root, "CHANGELOG.md"), "utf8")
   })
   .filter((v) => v.items.length)
   .slice(0, 3);
-writeFileSync(join(gen, "changelog.json"), JSON.stringify(changelog, null, 2) + "\n");
+writeFileSync(join(gen, "changelog.json"), `${JSON.stringify(changelog, null, 2)}\n`);
 const depNames = new Set<string>();
 for (const pkg of ["app", "packages/core", "packages/mcp"]) {
   const pj = JSON.parse(readFileSync(join(root, pkg, "package.json"), "utf8")) as { dependencies?: Record<string, string> };
@@ -167,7 +167,7 @@ const credits = [...depNames].sort().map((name) => {
   }
   return { name, title: KNOWN[name]?.title ?? name, kind: KNOWN[name]?.kind ?? "", what: "", url: `https://www.npmjs.com/package/${name}`, license: "see package" };
 });
-writeFileSync(join(gen, "credits.json"), JSON.stringify(credits, null, 2) + "\n");
+writeFileSync(join(gen, "credits.json"), `${JSON.stringify(credits, null, 2)}\n`);
 
 // og-image.png 1200×630 (logo + name + tagline on the light background).
 const esc = (t: string): string => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -214,9 +214,9 @@ if (app.modes.n8n && existsSync(n8nBlock)) copyFileSync(n8nBlock, join(pub, "n8n
     const B = 0.0259040371 * l + 0.7827717662 * m2 - 0.808675766 * s2;
     return [L, Math.hypot(A, B), ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360];
   };
-  const toRgb = ([L, C, H]: [number, number, number]): [number, number, number] => {
-    const a = C * Math.cos((H * Math.PI) / 180), b = C * Math.sin((H * Math.PI) / 180);
-    const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3, mm = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3, ss = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  const toRgb = ([lightness, chroma, hue]: [number, number, number]): [number, number, number] => {
+    const a = chroma * Math.cos((hue * Math.PI) / 180), b = chroma * Math.sin((hue * Math.PI) / 180);
+    const l = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3, mm = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3, ss = (lightness - 0.0894841775 * a - 1.291485548 * b) ** 3;
     return [delin(4.0767416621 * l - 3.3077115913 * mm + 0.2309699292 * ss), delin(-1.2684380046 * l + 2.6097574011 * mm - 0.3413193965 * ss), delin(-0.0041960863 * l - 0.7034186147 * mm + 1.707614701 * ss)];
   };
   const lum = (rgb: [number, number, number]): number => 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
@@ -241,12 +241,13 @@ if (app.modes.n8n && existsSync(n8nBlock)) copyFileSync(n8nBlock, join(pub, "n8n
     while (contrast(toRgb(linkLight), bgLight) < 4.5 && linkLight[0] > 0.2) linkLight[0] -= 0.01;
     const linkDark: [number, number, number] = [Math.max(base[0], 0.68), base[1], base[2]];
     while (contrast(toRgb(linkDark), surfaceDark) < 4.5 && linkDark[0] < 0.95) linkDark[0] += 0.01;
-    css += `:root {\n  --color-accent: light-dark(${ok(base)}, ${ok(base)});\n  --color-on-accent: ${onAccent};\n  --color-accent-pressed: light-dark(${ok(pressed)}, ${ok(pressed)});\n  --color-accent-text: light-dark(${ok(linkLight)}, ${ok(linkDark)});\n  --color-accent-tint: light-dark(${ok(base).replace(")", " / 0.1)")}, ${ok(linkDark).replace(")", " / 0.16)")});\n  --color-focus: light-dark(${ok(base)}, ${ok(linkDark)});\n}\n`;
+    // Same layer as design/tokens.css and loaded after it, so these values replace the defaults.
+    css += `@layer tokens {\n  :root {\n    --color-accent: light-dark(${ok(base)}, ${ok(base)});\n    --color-on-accent: ${onAccent};\n    --color-accent-pressed: light-dark(${ok(pressed)}, ${ok(pressed)});\n    --color-accent-text: light-dark(${ok(linkLight)}, ${ok(linkDark)});\n    --color-accent-tint: light-dark(${ok(base).replace(")", " / 0.1)")}, ${ok(linkDark).replace(")", " / 0.16)")});\n    --color-focus: light-dark(${ok(base)}, ${ok(linkDark)});\n  }\n}\n`;
   }
   writeFileSync(join(gen, "accent.css"), css);
   // Static pages (404, offline, policies) use public/tokens.css — give them the same accent.
   const pubTokens = join(pub, "tokens.css");
-  if (existsSync(pubTokens) && app.accent) writeFileSync(pubTokens, readFileSync(pubTokens, "utf8") + "\n" + css);
+  if (existsSync(pubTokens) && app.accent) writeFileSync(pubTokens, `${readFileSync(pubTokens, "utf8")}\n${css}`);
 }
 
 // UI languages (forge-app-shell → i18n): bundle only the languages in app.config, English first.

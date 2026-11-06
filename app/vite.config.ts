@@ -9,8 +9,8 @@ const BASE = `/${app.id}/`;
 
 // Manifest screenshots for the richer install dialog (Chrome/Edge) — made by `pnpm screenshots`
 // (tests/screenshots) before a release and committed; skipped until they exist.
-const shot = (file: string, sizes: string, form_factor: "narrow" | "wide", label: string) =>
-  existsSync(new URL(`./public/screenshots/${file}`, import.meta.url)) ? [{ src: `screenshots/${file}`, sizes, type: "image/png", form_factor, label }] : [];
+const shot = (file: string, sizes: string, formFactor: "narrow" | "wide", label: string) =>
+  existsSync(new URL(`./public/screenshots/${file}`, import.meta.url)) ? [{ src: `screenshots/${file}`, sizes, type: "image/png", form_factor: formFactor, label }] : [];
 const screenshots = [
   ...shot("narrow.png", "780x1688", "narrow", `${app.name} on a phone`),
   ...shot("wide.png", "1280x800", "wide", `${app.name} on a computer`),

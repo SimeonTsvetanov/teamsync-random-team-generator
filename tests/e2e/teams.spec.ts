@@ -139,7 +139,7 @@ test("WhatsApp: pasting a chat list keeps only the names; shared text arrives vi
   await expect(area).toHaveValue("Ana\nBoris\nVesko");
   }
 
-  await page.goto("./?share-target=1&title=&text=" + encodeURIComponent("- Gergana\n- Dimitar\n- Elena\n- Fani") + "&url=");
+  await page.goto(`./?share-target=1&title=&text=${encodeURIComponent("- Gergana\n- Dimitar\n- Elena\n- Fani")}&url=`);
   await expect(area).toHaveValue("Gergana\nDimitar\nElena\nFani");
   await expect(page.getByText("4 names added from the shared text")).toBeVisible();
   await expect.poll(() => page.evaluate(() => location.search)).not.toContain("share-target");

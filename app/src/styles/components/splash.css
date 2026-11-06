@@ -1,0 +1,76 @@
+/* Launch splash: logo + tagline over the page, once per session (theme-init.js sets [data-splash]). */
+@layer components {
+  /* || Components: splash */
+  .splash {
+    /* Above everything, header and toasts included, while it is shown. */
+    --splash-z: 100;
+    --splash-logo-size: 88px;
+    --splash-text-enter-y: 8px;
+
+    display: none;
+
+    :root[data-splash] & {
+      display: grid;
+      place-content: center;
+      justify-items: center;
+      gap: var(--space-4);
+      position: fixed;
+      inset: 0;
+      z-index: var(--splash-z);
+      padding: var(--space-6);
+      background: var(--color-bg);
+      text-align: center;
+      pointer-events: none;
+      animation: splash-out var(--duration-sheet) var(--ease-out) 1100ms forwards;
+
+      @media (prefers-reduced-motion: reduce) {
+        animation: splash-out 1ms linear 700ms forwards;
+      }
+    }
+
+    & img {
+      width: var(--splash-logo-size);
+      height: var(--splash-logo-size);
+      animation: splash-logo 700ms var(--ease-spring) both;
+
+      @media (prefers-reduced-motion: reduce) {
+        animation: none;
+      }
+    }
+
+    & p {
+      margin: 0;
+      max-width: 22ch;
+      font-size: var(--text-2xl);
+      font-weight: var(--weight-semibold);
+      letter-spacing: var(--tracking-tight);
+      text-wrap: balance;
+      animation: splash-text 600ms var(--ease-out) 150ms both;
+
+      @media (prefers-reduced-motion: reduce) {
+        animation: none;
+      }
+    }
+  }
+
+  @keyframes splash-out {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  @keyframes splash-logo {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+  }
+
+  @keyframes splash-text {
+    from {
+      opacity: 0;
+      transform: translateY(var(--splash-text-enter-y));
+    }
+  }
+}

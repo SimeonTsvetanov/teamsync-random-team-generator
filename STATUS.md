@@ -4,7 +4,9 @@
 
 ## Done
 - Intake (DECISIONS 2026-11-05) · SPEC approved 2026-11-06 · accent + logo approved.
-- Forge template 0.5.0 merged (i18n EN default + BG; confirm modal, equal buttons, grouped Settings); `pnpm verify` + e2e (38) green.
+- Forge template 0.8.1 merged 2026-11-06: code-quality ESLint rules, layered mobile-first CSS
+  (teams CSS → components/teams-*.css), view.ts split into 6 modules with TSDoc, docs tooling
+  (docs:check, docs:images). verify green (52 unit), e2e 72/72 (chromium + mobile), no visual change.
 
 ## Next
 - T-01–T-09 done: core + MCP (39 unit tests), main screen EN/BG, remember list, ?teams, embed, Copy/Share, texts + legal filled, e2e 62 pass (AC1, AC3–AC7, dark-mode axe).

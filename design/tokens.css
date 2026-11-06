@@ -5,148 +5,154 @@
  * generated from app.config.ts, and re-run `node scripts/color.mjs check` on the result.
  * Colors are OKLCH; the hex each one was derived from is noted for traceability.
  * Contrast (WCAG 2.2 AA) is verified by scripts/color.mjs — keep it passing.
- * Version: forge-stack 0.1.0 · 2026-11-05
+ * Everything is inside `@layer tokens` (forge-design → css-architecture §1): the first layer, so any
+ * app or page rule wins over it; the generated per-app accent appends to the same layer later.
+ * Version: forge-stack 0.8.0 · 2026-11-06 (in @layer tokens)
  */
 
-:root {
-  color-scheme: light dark; /* "System" theme: follows the OS */
-
-  /* ---------- Color: neutrals ---------- */
-  --color-bg: light-dark(oklch(97.1% 0.003 286.4), oklch(0% 0 0)); /* #F5F5F7 / #000000 */
-  --color-surface: light-dark(oklch(100% 0 0), oklch(22.7% 0.004 286.1)); /* #FFFFFF / #1C1C1E */
-  --color-surface-raised: light-dark(oklch(100% 0 0), oklch(29.4% 0.004 286.2)); /* dialogs, menus: #FFFFFF / #2C2C2E */
-  --color-fill: light-dark(oklch(93.2% 0.007 286.3), oklch(35.9% 0.004 286.2)); /* inputs, segmented bg, secondary buttons: #E8E8ED / #3A3A3C — dark must differ from surface-raised (#2C2C2E) or buttons vanish in dialogs (2026-11-06) */
-  --color-fill-hover: light-dark(oklch(90% 0.007 286.3), oklch(41.5% 0.004 286.2)); /* #48484A dark */
-  --color-thumb: light-dark(oklch(100% 0 0), oklch(51.6% 0.009 286.1)); /* selected segment: #FFFFFF / #636366 — lighter than the track, as on iOS */
-  --color-separator: light-dark(oklch(23.2% 0.004 286.1 / 0.1), oklch(100% 0 0 / 0.12)); /* hairline inside lists only, never a box border */
-
-  /* ---------- Color: text ---------- */
-  --color-text: light-dark(oklch(23.2% 0.004 286.1), oklch(97.1% 0.003 286.4)); /* #1D1D1F / #F5F5F7 */
-  --color-text-secondary: light-dark(oklch(54% 0.008 286.1), oklch(71.1% 0.007 286.2)); /* #6E6E73 / #A1A1A6 */
-  --color-text-tertiary: light-dark(oklch(62.2% 0.007 286.2), oklch(62.2% 0.007 286.2)); /* #86868B: placeholders, disabled, meta — never body text */
-
-  /* ---------- Color: accent (one per app) ---------- */
-  --color-accent: light-dark(oklch(56.3% 0.193 256.2), oklch(56.3% 0.193 256.2)); /* #0071E3: filled buttons, selected state */
-  --color-accent-pressed: light-dark(oklch(52.2% 0.177 255.8), oklch(52.2% 0.177 255.8)); /* #0066CC */
-  --color-accent-text: light-dark(oklch(52.2% 0.177 255.8), oklch(66.9% 0.181 251.8)); /* links, plain buttons: #0066CC / #2997FF */
-  --color-accent-tint: light-dark(oklch(56.3% 0.193 256.2 / 0.1), oklch(66.9% 0.181 251.8 / 0.16)); /* selected rows, tinted buttons */
-  --color-on-accent: light-dark(oklch(100% 0 0), oklch(100% 0 0));
-
-  /* ---------- Color: status ---------- */
-  --color-danger: light-dark(oklch(55.3% 0.225 27.3), oklch(55.3% 0.225 27.3)); /* #D70015: destructive buttons */
-  --color-on-danger: light-dark(oklch(100% 0 0), oklch(100% 0 0));
-  --color-danger-text: light-dark(oklch(55.3% 0.225 27.3), oklch(66.3% 0.224 28.3)); /* #D70015 / #FF453A */
-  --color-success-text: light-dark(oklch(51.1% 0.134 147.4), oklch(75.6% 0.208 147)); /* #1F7A35 / #30D158 */
-  --color-warning-text: light-dark(oklch(55.2% 0.192 35.3), oklch(78.2% 0.171 67.2)); /* #C93400 / #FF9F0A */
-  --color-focus: light-dark(oklch(56.3% 0.193 256.2), oklch(66.9% 0.181 251.8));
-
-  /* ---------- Frosted header ---------- */
-  --header-bg: light-dark(oklch(97.1% 0.003 286.4 / 0.72), oklch(0% 0 0 / 0.72));
-  --header-blur: saturate(180%) blur(20px);
-  --backdrop: oklch(0% 0 0 / 0.28); /* behind every modal (sheet, menu on phones, alert) */
-  --backdrop-blur: blur(8px) saturate(120%); /* the page behind a modal is softly blurred (Moni 2026-11-06) */
-
-  /* ---------- Elevation (shadows, no borders) ---------- */
-  --shadow-color: light-dark(oklch(0% 0 0 / 0.08), oklch(0% 0 0 / 0.5));
-  --shadow-soft: light-dark(oklch(0% 0 0 / 0.04), oklch(0% 0 0 / 0.3));
-  --shadow-1: 0 1px 2px var(--shadow-soft), 0 1px 3px var(--shadow-color); /* resting cards */
-  --shadow-2: 0 2px 4px var(--shadow-soft), 0 6px 16px var(--shadow-color); /* hover "lift", scrolled header */
-  --shadow-3: 0 8px 24px var(--shadow-color), 0 24px 64px var(--shadow-soft); /* dialogs, menus, sheets, toasts */
-  --lift: translateY(-1px);
-
-  /* ---------- Typography ---------- */
-  /* SF on Apple devices (system font, never shipped), self-hosted Inter elsewhere, then OS UI font. */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Inter Variable", "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  /* Scale modelled on Apple text styles; rem so user font settings scale it. */
-  --text-xs: 0.75rem; /* 12 caption */
-  --text-sm: 0.8125rem; /* 13 footnote */
-  --text-md: 0.9375rem; /* 15 subhead */
-  --text-base: 1.0625rem; /* 17 body — inputs ≥ 16px (iOS zoom rule) */
-  --text-lg: 1.25rem; /* 20 title 3 */
-  --text-xl: 1.375rem; /* 22 title 2 */
-  --text-2xl: 1.75rem; /* 28 title 1 */
-  --text-3xl: clamp(1.75rem, 1.2rem + 2.4vw, 2.125rem); /* 34 large title */
-  --leading-tight: 1.2;
-  --leading-normal: 1.47;
-  --weight-regular: 400;
-  --weight-medium: 500;
-  --weight-semibold: 600;
-  --weight-bold: 700;
-  --tracking-tight: -0.022em; /* large titles only */
-  --measure: 68ch; /* max line length for reading text */
-
-  /* ---------- Space (4px grid) ---------- */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
-
-  /* ---------- Radius ---------- */
-  --radius-sm: 6px; /* chips, small controls */
-  --radius-md: 10px; /* buttons, inputs */
-  --radius-lg: 14px; /* cards */
-  --radius-xl: 20px; /* dialogs, sheets */
-  --radius-full: 999px; /* pills, switches */
-
-  /* ---------- Sizes ---------- */
-  --tap-target: 44px; /* main controls (Apple HIG); never below 24px (WCAG 2.5.8) */
-  --header-height: 52px;
-  --content-max: 960px;
-  --content-narrow: 640px;
-
-  /* ---------- Motion ---------- */
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
-  --duration-slow: 350ms;
-  --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
-  /* Apple-like motion (2026-11-06): iOS sheet/navigation curve and a gentle spring (~5 % overshoot). */
-  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
-  --ease-spring: linear(0, 0.157, 0.484 9.5%, 0.763, 0.929 19.4%, 1.012 24.6%, 1.043 29.3%, 1.046 33.4%, 1.032 39.2%, 1.009 47.6%, 0.997 58.2%, 1);
-  --duration-sheet: 480ms; /* sheets, side menu, screen changes */
-  --duration-alert: 300ms; /* alerts, popovers, toasts */
-
-  /* ---------- Layers ---------- */
-  --z-header: 10;
-  --z-toast: 30;
-
-  /* ---------- Safe areas (apply each once — APP-STANDARD §12.1) ---------- */
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-right: env(safe-area-inset-right, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px);
-}
-
-/* Explicit theme choice (Settings → Theme) overrides "System". Set on <html data-theme>. */
-:root[data-theme="light"] { color-scheme: light; }
-:root[data-theme="dark"] { color-scheme: dark; }
-
-@media (prefers-reduced-motion: reduce) {
+@layer tokens {
   :root {
-    --duration-fast: 0ms;
-    --duration-base: 0ms;
-    --duration-slow: 0ms;
-    --duration-sheet: 0ms;
-    --duration-alert: 0ms;
-    --lift: none;
-  }
-}
+    color-scheme: light dark; /* "System" theme: follows the OS */
 
-@media (prefers-contrast: more) {
-  :root {
-    --color-text-secondary: light-dark(oklch(40% 0.008 286.1), oklch(85% 0.007 286.2));
-    --color-separator: light-dark(oklch(23.2% 0.004 286.1 / 0.3), oklch(100% 0 0 / 0.35));
-  }
-}
+    /* ---------- Color: neutrals ---------- */
+    --color-bg: light-dark(oklch(97.1% 0.003 286.4), oklch(0% 0 0)); /* #F5F5F7 / #000000 */
+    --color-surface: light-dark(oklch(100% 0 0), oklch(22.7% 0.004 286.1)); /* #FFFFFF / #1C1C1E */
+    --color-surface-raised: light-dark(oklch(100% 0 0), oklch(29.4% 0.004 286.2)); /* dialogs, menus: #FFFFFF / #2C2C2E */
+    --color-fill: light-dark(oklch(93.2% 0.007 286.3), oklch(35.9% 0.004 286.2)); /* inputs, segmented bg, secondary buttons: #E8E8ED / #3A3A3C — dark must differ from surface-raised (#2C2C2E) or buttons vanish in dialogs (2026-11-06) */
+    --color-fill-hover: light-dark(oklch(90% 0.007 286.3), oklch(41.5% 0.004 286.2)); /* #48484A dark */
+    --color-thumb: light-dark(oklch(100% 0 0), oklch(51.6% 0.009 286.1)); /* selected segment: #FFFFFF / #636366 — lighter than the track, as on iOS */
+    --color-separator: light-dark(oklch(23.2% 0.004 286.1 / 0.1), oklch(100% 0 0 / 0.12)); /* hairline inside lists only, never a box border */
 
-/* Users who ask for less transparency get a solid, darker backdrop instead of blur. */
-@media (prefers-reduced-transparency: reduce) {
-  :root { --backdrop: oklch(0% 0 0 / 0.5); --backdrop-blur: none; }
+    /* ---------- Color: text ---------- */
+    --color-text: light-dark(oklch(23.2% 0.004 286.1), oklch(97.1% 0.003 286.4)); /* #1D1D1F / #F5F5F7 */
+    --color-text-secondary: light-dark(oklch(54% 0.008 286.1), oklch(71.1% 0.007 286.2)); /* #6E6E73 / #A1A1A6 */
+    --color-text-tertiary: light-dark(oklch(62.2% 0.007 286.2), oklch(62.2% 0.007 286.2)); /* #86868B: placeholders, disabled, meta — never body text */
+
+    /* ---------- Color: accent (one per app) ---------- */
+    --color-accent: light-dark(oklch(56.3% 0.193 256.2), oklch(56.3% 0.193 256.2)); /* #0071E3: filled buttons, selected state */
+    --color-accent-pressed: light-dark(oklch(52.2% 0.177 255.8), oklch(52.2% 0.177 255.8)); /* #0066CC */
+    --color-accent-text: light-dark(oklch(52.2% 0.177 255.8), oklch(66.9% 0.181 251.8)); /* links, plain buttons: #0066CC / #2997FF */
+    --color-accent-tint: light-dark(oklch(56.3% 0.193 256.2 / 0.1), oklch(66.9% 0.181 251.8 / 0.16)); /* selected rows, tinted buttons */
+    --color-on-accent: light-dark(oklch(100% 0 0), oklch(100% 0 0));
+
+    /* ---------- Color: status ---------- */
+    --color-danger: light-dark(oklch(55.3% 0.225 27.3), oklch(55.3% 0.225 27.3)); /* #D70015: destructive buttons */
+    --color-on-danger: light-dark(oklch(100% 0 0), oklch(100% 0 0));
+    --color-danger-text: light-dark(oklch(55.3% 0.225 27.3), oklch(66.3% 0.224 28.3)); /* #D70015 / #FF453A */
+    --color-success-text: light-dark(oklch(51.1% 0.134 147.4), oklch(75.6% 0.208 147)); /* #1F7A35 / #30D158 */
+    --color-warning-text: light-dark(oklch(55.2% 0.192 35.3), oklch(78.2% 0.171 67.2)); /* #C93400 / #FF9F0A */
+    --color-focus: light-dark(oklch(56.3% 0.193 256.2), oklch(66.9% 0.181 251.8));
+
+    /* ---------- Frosted header ---------- */
+    --header-bg: light-dark(oklch(97.1% 0.003 286.4 / 0.72), oklch(0% 0 0 / 0.72));
+    --header-blur: saturate(180%) blur(20px);
+    --backdrop: oklch(0% 0 0 / 0.28); /* behind every modal (sheet, menu on phones, alert) */
+    --backdrop-blur: blur(8px) saturate(120%); /* the page behind a modal is softly blurred (Moni 2026-11-06) */
+
+    /* ---------- Elevation (shadows, no borders) ---------- */
+    --shadow-color: light-dark(oklch(0% 0 0 / 0.08), oklch(0% 0 0 / 0.5));
+    --shadow-soft: light-dark(oklch(0% 0 0 / 0.04), oklch(0% 0 0 / 0.3));
+    --shadow-1: 0 1px 2px var(--shadow-soft), 0 1px 3px var(--shadow-color); /* resting cards */
+    --shadow-2: 0 2px 4px var(--shadow-soft), 0 6px 16px var(--shadow-color); /* hover "lift", scrolled header */
+    --shadow-3: 0 8px 24px var(--shadow-color), 0 24px 64px var(--shadow-soft); /* dialogs, menus, sheets, toasts */
+    --lift: translateY(-1px);
+
+    /* ---------- Typography ---------- */
+    /* SF on Apple devices (system font, never shipped), self-hosted Inter elsewhere, then OS UI font. */
+    --font-sans: -apple-system, BlinkMacSystemFont, "Inter Variable", "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    /* Scale modelled on Apple text styles; rem so user font settings scale it. */
+    --text-xs: 0.75rem; /* 12 caption */
+    --text-sm: 0.8125rem; /* 13 footnote */
+    --text-md: 0.9375rem; /* 15 subhead */
+    --text-base: 1.0625rem; /* 17 body — inputs ≥ 16px (iOS zoom rule) */
+    --text-lg: 1.25rem; /* 20 title 3 */
+    --text-xl: 1.375rem; /* 22 title 2 */
+    --text-2xl: 1.75rem; /* 28 title 1 */
+    --text-3xl: clamp(1.75rem, 1.2rem + 2.4vw, 2.125rem); /* 34 large title */
+    --leading-tight: 1.2;
+    --leading-normal: 1.47;
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+    --tracking-tight: -0.022em; /* large titles only */
+    --measure: 68ch; /* max line length for reading text */
+
+    /* ---------- Space (4px grid) ---------- */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+
+    /* ---------- Radius ---------- */
+    --radius-sm: 6px; /* chips, small controls */
+    --radius-md: 10px; /* buttons, inputs */
+    --radius-lg: 14px; /* cards */
+    --radius-xl: 20px; /* dialogs, sheets */
+    --radius-full: 999px; /* pills, switches */
+
+    /* ---------- Sizes ---------- */
+    --tap-target: 44px; /* main controls (Apple HIG); never below 24px (WCAG 2.5.8) */
+    --header-height: 52px;
+    --content-max: 960px;
+    --content-narrow: 640px;
+    --focus-ring-width: 2px; /* keyboard focus outline (base :focus-visible, segmented control) */
+    --focus-ring-offset: 2px;
+
+    /* ---------- Motion ---------- */
+    --duration-fast: 150ms;
+    --duration-base: 250ms;
+    --duration-slow: 350ms;
+    --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* Apple-like motion (2026-11-06): iOS sheet/navigation curve and a gentle spring (~5 % overshoot). */
+    --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-spring: linear(0, 0.157, 0.484 9.5%, 0.763, 0.929 19.4%, 1.012 24.6%, 1.043 29.3%, 1.046 33.4%, 1.032 39.2%, 1.009 47.6%, 0.997 58.2%, 1);
+    --duration-sheet: 480ms; /* sheets, side menu, screen changes */
+    --duration-alert: 300ms; /* alerts, popovers, toasts */
+
+    /* ---------- Layers ---------- */
+    --z-header: 10;
+    --z-toast: 30;
+
+    /* ---------- Safe areas (apply each once — APP-STANDARD §12.1) ---------- */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+  }
+
+  /* Explicit theme choice (Settings → Theme) overrides "System". Set on <html data-theme>. */
+  :root[data-theme="light"] { color-scheme: light; }
+  :root[data-theme="dark"] { color-scheme: dark; }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --duration-fast: 0ms;
+      --duration-base: 0ms;
+      --duration-slow: 0ms;
+      --duration-sheet: 0ms;
+      --duration-alert: 0ms;
+      --lift: none;
+    }
+  }
+
+  @media (prefers-contrast: more) {
+    :root {
+      --color-text-secondary: light-dark(oklch(40% 0.008 286.1), oklch(85% 0.007 286.2));
+      --color-separator: light-dark(oklch(23.2% 0.004 286.1 / 0.3), oklch(100% 0 0 / 0.35));
+    }
+  }
+
+  /* Users who ask for less transparency get a solid, darker backdrop instead of blur. */
+  @media (prefers-reduced-transparency: reduce) {
+    :root { --backdrop: oklch(0% 0 0 / 0.5); --backdrop-blur: none; }
+  }
 }

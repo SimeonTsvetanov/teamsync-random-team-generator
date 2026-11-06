@@ -1,0 +1,27 @@
+/* What menu, sheet and alert share: the blurred backdrop and the open/close motion. */
+@layer components {
+  /* || Components: modal (shared by menu, sheet, alert) */
+  /* Motion — Apple-like (forge-design → design-system §9): sheets slide up on phones / scale in on
+     desktop with the iOS curve; the side menu slides in; alerts pop from 1.08 with a spring;
+     backdrops fade. Closing animates too (overlay/display are allow-discrete; dialog.ts removes
+     the element after --duration-sheet). Durations are 0 under prefers-reduced-motion (tokens).
+     Each component sets its own closed/entry state. */
+  .menu,
+  .sheet,
+  .alert {
+    transition: opacity var(--duration-alert) var(--ease-out), transform var(--duration-sheet) var(--ease-ios), overlay var(--duration-sheet) allow-discrete, display var(--duration-sheet) allow-discrete;
+
+    &::backdrop {
+      background: var(--backdrop);
+      -webkit-backdrop-filter: var(--backdrop-blur);
+      backdrop-filter: var(--backdrop-blur);
+      transition: opacity var(--duration-sheet) var(--ease-out), overlay var(--duration-sheet) allow-discrete, display var(--duration-sheet) allow-discrete;
+    }
+
+    &[open]::backdrop {
+      @starting-style {
+        opacity: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+/* Toast: a short pill message (with optional action) that drops in from the screen edge. */
+@layer components {
+  /* || Components: toast */
+  .toast {
+    /* Phones: the region sits under the header, so toasts drop in from above. */
+    --toast-enter-offset: 16px;
+    --toast-enter-y: calc(-1 * var(--toast-enter-offset));
+
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    white-space: nowrap;
+    max-width: calc(100vw - 2 * var(--space-4));
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+    background: var(--color-surface-raised);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-3);
+    animation: toast-in var(--duration-alert) var(--ease-spring);
+    -webkit-user-select: none;
+    user-select: none;
+
+    & button {
+      color: var(--color-accent-text);
+      font-weight: var(--weight-semibold);
+    }
+
+    /* Desktop: the region sits at the bottom, so toasts rise from below. */
+    @media (width > 600px) {
+      --toast-enter-y: var(--toast-enter-offset);
+    }
+  }
+
+  /* No opacity: text keeps full contrast at every frame. */
+  @keyframes toast-in {
+    from {
+      transform: translateY(var(--toast-enter-y)) scale(0.98);
+    }
+  }
+}

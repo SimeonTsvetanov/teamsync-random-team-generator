@@ -1,0 +1,151 @@
+/* TeamSync results (PLAN T-06/T-07): one card per team, then Shuffle again / Share / Copy and the
+   quiet "Clear and start over". */
+@layer components {
+  /* || Components: results */
+  .results {
+    scroll-margin-top: calc(var(--header-height) + var(--space-4));
+    /* Phones: room under the last team for the sticky action bar's fade. */
+    padding-bottom: var(--space-4);
+
+    @media (width > 600px) {
+      padding-bottom: 0;
+    }
+  }
+
+  /* Results start level with the names card (no visible title — Moni 2026-11-06); phones keep
+     only the "‹ Names" back link in this row. */
+  .results-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-3);
+
+    @media (width > 600px) {
+      margin-bottom: 0;
+    }
+
+    & h2 {
+      font-size: var(--text-xl);
+      margin: 0;
+    }
+  }
+
+  .results-back {
+    display: inline-flex;
+    align-items: center;
+
+    /* Desktop shows names and teams side by side: nothing to go back to. */
+    @media (width > 600px) {
+      display: none;
+      align-items: normal;
+    }
+  }
+
+  /* || Components: teams grid */
+  .teams-grid {
+    /* Two cards side by side from about 32rem of width. */
+    --team-card-min-width: 15rem;
+
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--team-card-min-width)), 1fr));
+  }
+
+  /* || Components: team card */
+  .team-card {
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-1);
+    view-transition-class: team;
+  }
+
+  .team-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+
+    & h3 {
+      margin: 0;
+      font-size: var(--text-md);
+      color: var(--color-accent-text);
+    }
+  }
+
+  .chip {
+    /* A slim pill: the space scale starts at 4px, too tall for a count badge. */
+    --chip-padding-block: 2px;
+
+    padding: var(--chip-padding-block) var(--space-2);
+    border-radius: var(--radius-full);
+    background: var(--color-fill);
+    /* Only --color-text on fill keeps the contrast. */
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .team-list {
+    /* Room for two-digit list numbers. */
+    --team-list-indent: 2.6ch;
+
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding-inline-start: var(--team-list-indent);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+
+  /* || Components: results actions */
+  /* Phones: the actions stay in the thumb zone while long teams scroll under them. */
+  .results-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    grid-template-columns: 1fr 1fr;
+    margin-top: var(--space-4);
+    margin-inline: calc(-1 * var(--space-2));
+    padding: var(--space-6) var(--space-2) calc(var(--space-3) + var(--safe-bottom));
+    /* The teams fade out under the bar instead of ending at a hard edge. */
+    background: linear-gradient(to top, var(--color-bg) 70%, color-mix(in oklch, var(--color-bg) 0%, transparent));
+
+    @media (width > 600px) {
+      position: static;
+      bottom: auto;
+      z-index: auto;
+      margin-inline: 0;
+      padding: 0;
+      background-image: none;
+    }
+
+    /* The button stack's own :has() column rules are (0,2,0); this one must match them. */
+    &.button-stack {
+      @media (width >= 900px) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    & .button {
+      white-space: nowrap;
+      padding-inline: var(--space-3);
+    }
+
+    /* Phones: Shuffle again on its own row, then Share | Copy. */
+    & > :first-child {
+      grid-column: 1 / -1;
+
+      @media (width > 600px) {
+        grid-column: auto;
+      }
+    }
+
+    /* "Clear and start over": always the last row, full width, quiet (red text, no fill). */
+    & > .results-clear {
+      grid-column: 1 / -1;
+    }
+  }
+}

@@ -1,0 +1,122 @@
+/* Settings sheet: segmented controls and iOS-style grouped sections with label/value rows. */
+@layer components {
+  /* || Components: segmented control */
+  .segmented {
+    display: flex;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    margin: var(--space-4) 0;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: var(--color-fill);
+    -webkit-user-select: none;
+    user-select: none;
+
+    & legend {
+      padding: 0 0 var(--space-2);
+      font-weight: var(--weight-semibold);
+    }
+
+    & label {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      min-height: var(--tap-target);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+
+      &:has(input:checked) {
+        background: var(--color-thumb);
+        box-shadow: var(--shadow-1);
+        font-weight: var(--weight-semibold);
+      }
+
+      &:has(input:focus-visible) {
+        outline: var(--focus-ring-width) solid var(--color-focus);
+        outline-offset: var(--focus-ring-offset);
+      }
+    }
+
+    & input {
+      position: absolute;
+      opacity: 0;
+    }
+  }
+
+  /* || Components: settings group */
+  /* iOS-style grouped sections — small title above a card, label/value rows inside. */
+  .group {
+    margin-block: var(--space-5);
+  }
+
+  .group-title {
+    margin: 0 0 var(--space-2);
+    padding-inline: var(--space-1);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-secondary);
+  }
+
+  .group-card {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-1);
+
+    & > .segmented {
+      margin: 0;
+    }
+
+    /* A lone segmented control is its own card. */
+    &:has(> .segmented:only-child) {
+      padding: 0;
+      background: none;
+      box-shadow: none;
+    }
+  }
+
+  .group-note {
+    margin: calc(-1 * var(--space-3)) var(--space-1) 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .row {
+    /* Info rows are read, not tapped, so they may be shorter than --tap-target. */
+    --row-min-height: 32px;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
+    min-height: var(--row-min-height);
+    padding-inline: var(--space-1);
+  }
+
+  .row-label {
+    color: var(--color-text);
+  }
+
+  .row-value {
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* || Components: diagnostics */
+  .diag {
+    & summary {
+      cursor: pointer;
+      min-height: var(--tap-target);
+      display: flex;
+      align-items: center;
+      font-weight: var(--weight-medium);
+    }
+
+    &[open] summary {
+      margin-bottom: var(--space-2);
+    }
+  }
+}
