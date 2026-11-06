@@ -1,6 +1,6 @@
 import { MAX_TEAMS, MIN_TEAMS, expandFollowers, formatTeams, makeTeams, namesFromSharedText, parseNames, type FormatLabels } from "@simeonts/teamsync-random-team-generator-core";
 import { onShared } from "../ui/share-target.ts";
-import { openDialog } from "../ui/dialog.ts";
+import { shareText } from "../ui/share.ts";
 import { app } from "../config.ts";
 import { t } from "../i18n/index.ts";
 import { h } from "../ui/dom.ts";
@@ -163,18 +163,7 @@ export function initTeams(): void {
   document.querySelector("[data-share]")?.addEventListener("click", () => {
     if (!last) return;
     const text = formatTeams(last, labels());
-    // ONE Share button (forge-app-shell → app-shell §8): the phone's own share sheet (WhatsApp,
-    // Viber, Messages…); where there is none (most desktops) a small sheet with WhatsApp + Copy.
-    const fallback = (): void => {
-      const wa = h("a", { class: "button button--primary", href: `https://wa.me/?text=${encodeURIComponent(text)}`, target: "_blank", rel: "noopener" }, icon("message"), "WhatsApp");
-      const copy = h("button", { class: "button", type: "button" }, icon("copy"), t("app.copy"));
-      copy.addEventListener("click", () => { void navigator.clipboard.writeText(text).then(() => { showToast({ message: t("app.copied") }); }); });
-      openDialog("share-teams", t("app.shareTitle"), [h("div", { class: "button-stack" }, wa, copy)]);
-    };
-    if (typeof navigator.share !== "function") { fallback(); return; }
-    navigator.share({ title: app.name, text }).catch((e: unknown) => {
-      if (!(e instanceof DOMException && e.name === "AbortError")) fallback();
-    });
+    void shareText(text); // one Share button: native sheet, else WhatsApp + Copy (template ui/share.ts)
   });
 
   initEmbed((names, n) => { area.value = names.join("\n"); setTeams(n); renderCount(); generate(); });

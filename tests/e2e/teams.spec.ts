@@ -146,7 +146,7 @@ test("WhatsApp: pasting a chat list keeps only the names; shared text arrives vi
   // One Share button: without a native share sheet it offers WhatsApp + Copy.
   await page.evaluate(() => { Object.defineProperty(navigator, "share", { value: undefined, configurable: true }); });
   await page.getByRole("button", { name: "Share", exact: true }).click();
-  const href = await page.locator('dialog[data-dialog="share-teams"] a').getAttribute("href");
+  const href = await page.locator('dialog[data-dialog="share"] a').getAttribute("href");
   expect(href?.startsWith("https://wa.me/?text=")).toBe(true);
   expect(decodeURIComponent(href ?? "")).toContain("🏆 Team 1 | Members - 2");
 });

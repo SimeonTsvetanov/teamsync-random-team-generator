@@ -16,6 +16,7 @@ export const bg: Messages = {
     close: "Затвори",
     copy: "Копирай",
     copied: "Копирано ✓",
+    shareTitle: "Сподели",
     codeExample: "Примерен код",
     rights: "Всички права запазени.",
     policies: "Правила",

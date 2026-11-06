@@ -14,6 +14,7 @@ export const en = {
     close: "Close",
     copy: "Copy",
     copied: "Copied ✓",
+    shareTitle: "Share",
     codeExample: "Code example",
     rights: "All rights reserved.",
     policies: "Policies",
