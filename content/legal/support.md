@@ -1,6 +1,6 @@
 <!-- Template (forge-app-shell 0.2.0, 2026-11-05). Public "Support" page — app stores and Google ask for a support URL. -->
 
-**Support** — {App}
+**Support** — {App} · Last updated: 7 November 2026
 
 - **Help:** the in-app Help explains every feature and usage mode: {app url}#help
 - **Report a problem or suggest an idea:** {app url}#report (opens GitHub — a free account is needed) or

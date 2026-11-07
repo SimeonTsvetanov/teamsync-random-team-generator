@@ -131,8 +131,8 @@ test("works offline after the first visit", async ({ page, context }) => {
   await context.setOffline(false);
 });
 
-test("SEO and agent files are real files", async ({ request }) => {
-  for (const [path, type] of [["robots.txt", "text/plain"], ["sitemap.xml", "xml"], ["llms.txt", "text/plain"], ["llms-full.txt", "text/plain"], ["og-image.png", "image/png"], ["pwa-192x192.png", "image/png"], ["pwa-512x512.png", "image/png"], ["apple-touch-icon-180x180.png", "image/png"]] as const) {
+test("SEO, agent and licence files are real files", async ({ request }) => {
+  for (const [path, type] of [["robots.txt", "text/plain"], ["sitemap.xml", "xml"], ["llms.txt", "text/plain"], ["llms-full.txt", "text/plain"], ["third-party-licenses.txt", "text/plain"], ["og-image.png", "image/png"], ["pwa-192x192.png", "image/png"], ["pwa-512x512.png", "image/png"], ["apple-touch-icon-180x180.png", "image/png"]] as const) {
     const res = await request.get(`./${path}`);
     expect(res.ok(), path).toBe(true);
     expect(res.headers()["content-type"], path).toContain(type);

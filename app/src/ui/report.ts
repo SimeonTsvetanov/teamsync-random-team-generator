@@ -3,7 +3,7 @@ import { prefs } from "../storage/index.ts";
 import { h } from "./dom.ts";
 import { openDialog } from "./dialog.ts";
 import { confirmAction } from "./confirm.ts";
-import { keepDraft } from "./draft.ts";
+import { keepDraft, savedOnDeviceHint } from "./draft.ts";
 import { t } from "../i18n/index.ts";
 
 /** How the app is running: installed, inside an iframe embed, or a normal tab. */
@@ -70,6 +70,7 @@ export function openReport(): void {
   if (!app.feedback.webhook) send.hidden = true;
   const form = h("form", { class: "form" },
     h("p", { class: "hint" }, t("shell.report.public"), ...(app.feedback.webhook ? [] : [" ", t("shell.report.githubOnly")])),
+    savedOnDeviceHint([type, title, text, email]), // before the fields it describes
     h("label", {}, t("shell.report.type"), type), h("label", {}, t("shell.report.shortTitle"), title), h("label", {}, t("shell.report.text"), text),
     ...(app.feedback.webhook ? [h("label", {}, t("shell.report.email"), email)] : []), trap, // email only when it can really be sent
     h("details", { class: "diag" }, h("summary", {}, t("shell.report.diagnosticsSummary", { count: checks.length })),

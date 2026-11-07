@@ -19,6 +19,8 @@ export function openAbout(): void {
     h("p", {}, t("shell.about.builtBy", { author: app.author.name }), ...people.flatMap((a, i) => (i ? [dot(), a] : [a]))),
     h("p", { class: "hint" }, t("shell.about.version", { version: app.version }), link(app.repo, t("shell.about.source")), " · ", h("a", { href: "#whats-new" }, t("shell.menu.whatsNew"))),
     h("h3", {}, t("shell.about.credits")),
+    // Full licence texts (MIT/Apache-2.0/OFL require them with every copy — legal-pages §5).
+    h("p", { class: "hint" }, h("a", { href: "./third-party-licenses.txt", target: "_blank", rel: "noopener" }, t("shell.about.licenses"))),
     h("ul", { class: "credits" }, ...credits.map((c) => h("li", {},
       h("a", { href: c.url, target: "_blank", rel: "noopener" }, c.title),
       ` — ${isKind(c.kind) ? t(`shell.credit.${c.kind}`) : c.what}`,

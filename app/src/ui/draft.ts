@@ -1,4 +1,6 @@
+import { t } from "../i18n/index.ts";
 import { prefs } from "../storage/index.ts";
+import { h } from "./dom.ts";
 
 type Field = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
 
@@ -28,4 +30,18 @@ export function keepDraft(id: string, fields: readonly Field[]): { clear: () => 
     clear: () => { clearTimeout(timer); prefs.remove(key); },
     isEmpty: () => fields.every((f) => f instanceof HTMLSelectElement || !f.value.trim()),
   };
+}
+
+let hintCount = 0;
+
+/**
+ * Returns the small in-context "Saved on this device only." hint for fields whose input persists
+ * (legal-pages §3, WP29 04/2012: storage stays exempt from consent but is never hidden). Links it to
+ * every field with `aria-describedby`, so screen readers announce it too; place it before the fields.
+ */
+export function savedOnDeviceHint(fields: readonly Field[]): HTMLParagraphElement {
+  hintCount += 1;
+  const id = `saved-on-device-${String(hintCount)}`;
+  for (const f of fields) f.setAttribute("aria-describedby", [f.getAttribute("aria-describedby"), id].filter(Boolean).join(" "));
+  return h("p", { class: "hint", id }, t("shell.draft.saved"));
 }

@@ -2,7 +2,8 @@
  * Generates everything user-facing from app.config.ts (APP-STANDARD §0). Run: `pnpm generate`
  * (also runs before dev/build). Writes into app/public/: robots.txt, sitemap.xml, llms.txt,
  * 404.html + error-page assets, tokens.css, standalone policy pages from content/legal/*.md,
- * and LICENSE (current year) at the repo root. Never hand-edit the outputs.
+ * third-party-licenses.txt (full licence texts of everything shipped), and LICENSE (current
+ * year) at the repo root. Never hand-edit the outputs.
  */
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -10,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import { marked } from "marked";
 import sharp from "sharp";
 import { app as config, type AppConfig } from "../app.config.ts";
+import { shippedPackages, thirdPartyLicensesTxt } from "./licenses.ts";
 import { POLICY_PAGES, lastUpdatedDate, latestReleaseDate, llmsTxt, perAppRobotsTxt, privacySummary, sitemapXml } from "./seo.ts";
 
 // Widen the `as const` literal types so optional modes (null today) type-check when enabled.
@@ -168,6 +170,17 @@ const credits = [...depNames].sort().map((name) => {
   return { name, title: KNOWN[name]?.title ?? name, kind: KNOWN[name]?.kind ?? "", what: "", url: `https://www.npmjs.com/package/${name}`, license: "see package" };
 });
 writeFileSync(join(gen, "credits.json"), `${JSON.stringify(credits, null, 2)}\n`);
+
+// third-party-licenses.txt — full licence (+ NOTICE) of every package and font the web app ships
+// (legal-pages §5: MIT/Apache-2.0/OFL need the text, not just the name); linked from About → Credits.
+{
+  const shipped = shippedPackages(join(root, "app"));
+  if (shipped.missing.length) throw new Error(`third-party-licenses.txt: not installed — run pnpm i: ${shipped.missing.join(", ")}`);
+  if (shipped.withoutLicense.length) {
+    console.warn(`\n!!! generate: no LICENSE file in ${shipped.withoutLicense.join(", ")} — add the licence text to third-party-licenses.txt by hand (compliance-check FAILs for MIT/Apache-2.0/OFL).\n`);
+  }
+  write("third-party-licenses.txt", thirdPartyLicensesTxt(app.name, shipped.packages));
+}
 
 // og-image.png 1200×630 (logo + name + tagline on the light background).
 const esc = (t: string): string => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

@@ -89,3 +89,11 @@ Format: `date · decision · reason`. Newest last.
   `workflow_run` guard (dd06144). security-check: 66 checks, 0 code FAIL — remaining: GitHub
   settings for Moni (Dependabot security updates, private vulnerability reporting, ruleset on
   main). verify green (82 unit), e2e 82/82.
+- **2026-11-07 · Forge 0.14.0 compliance merged: generated `third-party-licenses.txt` (full licence +
+  NOTICE texts of every shipped package incl. Workbox, linked from About → Credits and the Legal
+  notice), "Saved on this device only." hint in Report a problem, Privacy rewritten for the real
+  storage (local storage only; IndexedDB/OPFS not used; service-worker offline copy;
+  `storage.persist()` via Settings → Storage; who is responsible; GitHub IP logging; contact-email
+  use), AI notice + Support dated. `compliance-check.mjs`: 0 FAIL, 0 WARN.** · legal-pages §2–§5
+  (docs/RESEARCH-LEGAL-2026-11-07 in the forge). Retention of contact emails is "no longer than
+  needed" — Moni to confirm a fixed period. Not legal advice.

@@ -129,8 +129,10 @@ export const en = {
       version: "Version {{version}} · free and open source (MIT) · ",
       credits: "Made with these open-source projects",
       notice: "{{name}} licence notice",
+      licenses: "Full licence texts",
     },
     whatsNew: { title: "What's new" },
+    draft: { saved: "Saved on this device only." },
     credit: {
       font: "the font",
       icons: "the icons",

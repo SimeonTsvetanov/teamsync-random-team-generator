@@ -131,8 +131,10 @@ export const bg: Messages = {
       version: "Версия {{version}} · безплатно и с отворен код (MIT) · ",
       credits: "Направено с тези проекти с отворен код",
       notice: "Лицензна бележка на {{name}}",
+      licenses: "Пълни текстове на лицензите",
     },
     whatsNew: { title: "Какво ново" },
+    draft: { saved: "Пази се само на това устройство." },
     credit: {
       font: "шрифтът",
       icons: "иконите",
