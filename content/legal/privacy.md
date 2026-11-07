@@ -32,5 +32,6 @@
 - **Hosting:** the site is hosted on GitHub Pages. GitHub logs visitor IP addresses for security
   purposes — see the GitHub Privacy Statement.
 - **Email to the contact address:** if you write to {email}, your message and address are used
-  only to answer you, are not shared with anyone, and are kept no longer than needed for that.
+  only to answer you, are not shared with anyone, and are deleted at the latest one month after
+  the conversation ends.
 - **Contact:** {email}

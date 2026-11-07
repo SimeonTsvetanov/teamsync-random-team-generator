@@ -97,3 +97,5 @@ Format: `date · decision · reason`. Newest last.
   use), AI notice + Support dated. `compliance-check.mjs`: 0 FAIL, 0 WARN.** · legal-pages §2–§5
   (docs/RESEARCH-LEGAL-2026-11-07 in the forge). Retention of contact emails is "no longer than
   needed" — Moni to confirm a fixed period. Not legal advice.
+- **2026-11-07 · Moni: emails to the contact address are kept at most one month** after the
+  conversation ends, then deleted (GDPR storage limitation). Privacy updated.
