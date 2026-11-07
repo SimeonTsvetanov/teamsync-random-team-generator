@@ -79,3 +79,8 @@ Format: `date · decision · reason`. Newest last.
   JSON-LD as entity data (no ratings), sitemap lastmod from policy "Last updated" dates (app URL gets
   one at the first CHANGELOG release), FAQ visible on phones collapsed in `<details>`. verify green
   (63 unit), e2e 76/76 chromium+mobile. Live `seo-check` after deploy; host-root items wait for the hub repo.
+- **2026-11-07 · Forge 0.12.0 PWA merged.** Fixes the live bug where the service worker showed
+  "This page doesn't exist" for non-saved addresses while online (e.g. sitemap.xml): now online
+  goes to the network, our page only when offline (Moni approved). Safe multi-tab updates, hourly
+  update check, reload-once after a deploy removes old chunks, lighter precache, shortcut icons.
+  verify green (82 unit), e2e 82/82 chromium+mobile.

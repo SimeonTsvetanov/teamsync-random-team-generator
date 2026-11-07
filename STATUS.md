@@ -8,6 +8,7 @@
   (teams CSS → components/teams-*.css), view.ts split into 6 modules with TSDoc, docs tooling
   (docs:check, docs:images). verify green (52 unit), e2e 72/72 (chromium + mobile), no visual change.
 - Forge 0.10.0 SEO merged 2026-11-07 (no hreflang, full OG, spec llms.txt, FAQ collapsed on phones); e2e 76/76.
+- Forge 0.12.0 PWA merged 2026-11-07 (offline-only fallback, safe updates); e2e 82/82.
 
 ## Next
 - T-01–T-09 done: core + MCP (39 unit tests), main screen EN/BG, remember list, ?teams, embed, Copy/Share, texts + legal filled, e2e 62 pass (AC1, AC3–AC7, dark-mode axe).
