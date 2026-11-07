@@ -36,6 +36,15 @@ export default tseslint.config(
       "max-depth": ["error", 3],
       "max-lines-per-function": ["error", { max: 60, skipBlankLines: true, skipComments: true }],
       "no-console": ["error", { allow: ["warn", "error"] }],
+      // Security §1: no HTML/code sinks (string timers: @typescript-eslint/no-implied-eval, in strict)
+      "no-eval": "error",
+      "no-new-func": "error",
+      "no-script-url": "error",
+      "no-restricted-properties": [
+        "error",
+        ...["innerHTML", "outerHTML", "insertAdjacentHTML", "srcdoc"].map((property) => ({ property, message: "HTML sink — use textContent or h() (forge-engineering → security §1)." })),
+        ...["write", "writeln"].map((property) => ({ object: "document", property, message: "HTML sink — use textContent or h() (forge-engineering → security §1)." })),
+      ],
       // Naming (code-quality §1); object keys stay free for i18n keys, headers and JSON shapes
       "@typescript-eslint/naming-convention": [
         "error",

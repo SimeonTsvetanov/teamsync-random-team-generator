@@ -33,6 +33,8 @@ function appHtml(): Plugin {
       // Replacer functions everywhere config text goes in: "$&", "$'" in a string would be expanded.
       return html
         .replace("style-src 'self'", dev ? "style-src 'self' 'unsafe-inline'" : "style-src 'self'")
+        // Least privilege: WebAssembly compilation only for apps that ship .wasm (security §1).
+        .replace("script-src 'self'", () => (app.csp?.wasm ? "script-src 'self' 'wasm-unsafe-eval'" : "script-src 'self'"))
         .replaceAll("%APP_NAME%", () => escapeHtml(app.name))
         .replaceAll("%APP_TAGLINE%", () => escapeHtml(app.tagline))
         .replaceAll("%APP_DESCRIPTION%", () => escapeHtml(app.description))

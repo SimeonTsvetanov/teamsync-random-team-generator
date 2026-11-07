@@ -84,3 +84,8 @@ Format: `date · decision · reason`. Newest last.
   goes to the network, our page only when offline (Moni approved). Safe multi-tab updates, hourly
   update check, reload-once after a deploy removes old chunks, lighter precache, shortcut icons.
   verify green (82 unit), e2e 82/82 chromium+mobile.
+- **2026-11-07 · Forge 0.13.0 security merged.** CSP without `'wasm-unsafe-eval'` (no WASM here),
+  sink lint rules, referrer meta on policy/404 pages, SECURITY.md, CodeQL workflow; deploy
+  `workflow_run` guard (dd06144). security-check: 66 checks, 0 code FAIL — remaining: GitHub
+  settings for Moni (Dependabot security updates, private vulnerability reporting, ruleset on
+  main). verify green (82 unit), e2e 82/82.
