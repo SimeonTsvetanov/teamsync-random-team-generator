@@ -59,6 +59,7 @@ export interface AppConfig {
   /** "More free tools" link (footer, 404). Until the hub site simeontsvetanov.github.io exists: the GitHub list. */
   readonly moreTools: string;
   readonly author: { readonly name: string; readonly country: string; readonly linkedin?: string; readonly github?: string }; // Legal notice, About, Support, JSON-LD
+  readonly seo?: { readonly googleVerification?: string }; // Search Console meta token (forge-growth → seo-geo §3); omit when unused
   readonly faq: readonly { readonly q: string; readonly a: string }[]; // 5–10, also FAQPage JSON-LD
   readonly shortcuts?: readonly { readonly name: string; readonly url: string }[];
 }

@@ -74,3 +74,8 @@ Format: `date · decision · reason`. Newest last.
   in forge 0.8.1. Kept for later: rename the `has-results` state class to `data-state`; result
   buttons are required screen elements (always in index.html, covered by e2e). Behaviour and
   rendering unchanged (130 computed-style dumps identical).
+- **2026-11-07 · Forge 0.10.0 SEO merged.** One English URL (hreflang and `?lang=` alternates
+  removed — Moni 2026-11-06), full Open Graph/X tags, `rel=describedby` llms.txt in spec format,
+  JSON-LD as entity data (no ratings), sitemap lastmod from policy "Last updated" dates (app URL gets
+  one at the first CHANGELOG release), FAQ visible on phones collapsed in `<details>`. verify green
+  (63 unit), e2e 76/76 chromium+mobile. Live `seo-check` after deploy; host-root items wait for the hub repo.

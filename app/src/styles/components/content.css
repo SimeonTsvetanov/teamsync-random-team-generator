@@ -46,17 +46,19 @@
   /* || Components: steps and FAQ */
   .steps,
   .faq-list {
-    /* Phone = app: how-it-works, FAQ, agent docs and the footer move to Help and the menu on phones
-       and in the installed app. Desktop browsers still show them below the tool. */
-    display: none;
     margin-top: var(--space-8);
 
     & h2 {
-      font-size: var(--text-xl);
+      font-size: var(--text-lg);
+
+      @media (width > 600px) {
+        font-size: var(--text-xl);
+      }
     }
 
-    @media (width > 600px) and (not (display-mode: standalone)) {
-      display: block;
+    /* Installed app and embeds are the tool only: Help and the menu carry these texts there. */
+    @media (display-mode: standalone) {
+      display: none;
     }
 
     .is-embed & {
@@ -64,18 +66,61 @@
     }
   }
 
+  .steps {
+    /* Phone = app: how-it-works lives in Help on phones; desktop browsers show it below the tool. */
+    display: none;
+
+    @media (width > 600px) and (not (display-mode: standalone)) {
+      display: block;
+    }
+  }
+
   .faq-list {
+    /* The FAQ stays on phones, every answer collapsed: Google indexes the phone layout and the
+       FAQPage JSON-LD must match visible text (seo-geo §4, DECISIONS 2026-11-06). */
+    --chevron-size: 8px;
+    --chevron-stroke: 2px;
+
     & details {
       padding: var(--space-3) 0;
       box-shadow: inset 0 -1px 0 var(--color-separator);
     }
 
+    /* Same chevron as the Help sections (help.css), so a collapsed answer reads as "tap to open". */
     & summary {
       cursor: pointer;
       font-weight: var(--weight-semibold);
       min-height: var(--tap-target);
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &::after {
+        content: "";
+        flex: none;
+        width: var(--chevron-size);
+        height: var(--chevron-size);
+        border-inline-end: var(--chevron-stroke) solid var(--color-text-tertiary);
+        border-block-end: var(--chevron-stroke) solid var(--color-text-tertiary);
+        transform: rotate(45deg);
+        transition: transform var(--duration-fast) var(--ease-standard);
+        margin-inline-end: var(--space-2);
+      }
+    }
+
+    & details[open] summary::after {
+      transform: rotate(-135deg);
+    }
+
+    & p {
+      margin: var(--space-2) 0 0;
+      color: var(--color-text-secondary);
     }
   }
 

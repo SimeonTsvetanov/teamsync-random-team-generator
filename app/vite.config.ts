@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { defineConfig, type Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { app as config, type AppConfig } from "../app.config.ts";
+import { OG_IMAGE, escapeHtml, ogImageAlt, ogImageUrl, siteVerificationTag, structuredData } from "../scripts/seo.ts";
 
 const app: AppConfig = config;
 
@@ -16,48 +17,38 @@ const screenshots = [
   ...shot("wide.png", "1280x800", "wide", `${app.name} on a computer`),
 ];
 
-/** Fills %APP_*% placeholders and the JSON-LD block in index.html from app.config.ts. */
+/** Fills %APP_*% placeholders, the head tags and the JSON-LD block in index.html from app.config.ts (seo-geo §2–§5). */
 function appHtml(): Plugin {
-  const jsonLd = [
-    {
-      "@context": "https://schema.org", "@type": "WebApplication", name: app.name, url: app.url,
-      description: app.description, applicationCategory: "UtilitiesApplication",
-      operatingSystem: "Any — runs in the browser", offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-      author: { "@type": "Person", name: app.author.name, url: app.author.github ?? "https://github.com/SimeonTsvetanov", sameAs: [app.author.linkedin, app.author.github].filter(Boolean) },
-      softwareVersion: app.version, sameAs: [app.repo],
-    },
-    {
-      "@context": "https://schema.org", "@type": "FAQPage",
-      mainEntity: app.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
-    },
-  ];
-  const esc = (t: string): string => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const verification = siteVerificationTag(app);
   const origin = (u: string | null | undefined): string => (u ? new URL(u).origin : "");
   const connect = ["'self'", origin(app.feedback.webhook), origin(app.modes.api?.baseUrl)].filter(Boolean).join(" ");
-  // Multilingual apps: hreflang alternates (?lang=xx) + x-default (forge-app-shell → i18n §4).
-  const hreflang = app.languages.length > 1
-    ? [...app.languages.map((l) => `<link rel="alternate" hreflang="${l}" href="${app.url}${l === "en" ? "" : `?lang=${l}`}" />`),
-      `<link rel="alternate" hreflang="x-default" href="${app.url}" />`].join("\n    ")
-    : "";
+  // One English URL per app: no hreflang or ?lang= alternates (DECISIONS 2026-11-06); other UI
+  // languages are client-side translations only.
   return {
     name: "forge-app-html",
     transformIndexHtml(html, ctx) {
       // Vite's dev server injects inline <style> tags; allow them ONLY in dev. Production keeps style-src 'self'.
       const dev = ctx.server !== undefined;
+      // Replacer functions everywhere config text goes in: "$&", "$'" in a string would be expanded.
       return html
         .replace("style-src 'self'", dev ? "style-src 'self' 'unsafe-inline'" : "style-src 'self'")
-        .replaceAll("%APP_NAME%", app.name)
-        .replaceAll("%APP_TAGLINE%", app.tagline)
-        .replaceAll("%APP_DESCRIPTION%", app.description)
-        .replaceAll("%APP_URL%", app.url)
-        .replaceAll("%APP_MORE_TOOLS%", app.moreTools.replaceAll("&", "&amp;"))
-        .replaceAll("%APP_LANG%", app.languages[0] ?? "en")
-        .replaceAll("%BUILD_YEAR%", String(new Date().getFullYear()))
-        .replace("%APP_JSONLD%", JSON.stringify(jsonLd).replace(/</g, "\\u003c")) // never "</script>" inside the block
-        .replace("connect-src 'self'", `connect-src ${connect}`)
-        .replace("%APP_HREFLANG%", hreflang)
-        .replace("%APP_STEPS%", app.help.steps.map((t) => `<li>${esc(t)}</li>`).join(""))
-        .replace("%APP_FAQ%", app.faq.map((f) => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join(""));
+        .replaceAll("%APP_NAME%", () => escapeHtml(app.name))
+        .replaceAll("%APP_TAGLINE%", () => escapeHtml(app.tagline))
+        .replaceAll("%APP_DESCRIPTION%", () => escapeHtml(app.description))
+        .replaceAll("%APP_URL%", () => app.url)
+        .replaceAll("%APP_OG_IMAGE_ALT%", () => escapeHtml(ogImageAlt(app)))
+        .replaceAll("%OG_IMAGE_WIDTH%", () => String(OG_IMAGE.width))
+        .replaceAll("%OG_IMAGE_HEIGHT%", () => String(OG_IMAGE.height))
+        .replaceAll("%OG_IMAGE_TYPE%", () => OG_IMAGE.type)
+        .replaceAll("%OG_IMAGE_URL%", () => ogImageUrl(app))
+        .replace(/^ *%APP_SITE_VERIFICATION%\n/m, () => verification ? `    ${verification}\n` : "") // no empty line when unset
+        .replaceAll("%APP_MORE_TOOLS%", () => app.moreTools.replaceAll("&", "&amp;"))
+        .replaceAll("%APP_LANG%", () => app.languages[0] ?? "en")
+        .replaceAll("%BUILD_YEAR%", () => String(new Date().getFullYear()))
+        .replace("%APP_JSONLD%", () => JSON.stringify(structuredData(app)).replace(/</g, "\\u003c")) // never "</script>" inside the block
+        .replace("connect-src 'self'", () => `connect-src ${connect}`)
+        .replace("%APP_STEPS%", () => app.help.steps.map((t) => `<li>${escapeHtml(t)}</li>`).join(""))
+        .replace("%APP_FAQ%", () => app.faq.map((f) => `<details><summary>${escapeHtml(f.q)}</summary><p>${escapeHtml(f.a)}</p></details>`).join(""));
     },
   };
 }

@@ -8,17 +8,24 @@
     <title>%APP_NAME% — %APP_TAGLINE%</title>
     <meta name="description" content="%APP_DESCRIPTION%" />
     <link rel="canonical" href="%APP_URL%" />
-    <link rel="alternate" type="text/plain" href="./llms.txt" title="Docs for AI agents (llms.txt)" />
-    %APP_HREFLANG%
+    <link rel="describedby" type="text/plain" href="%APP_URL%llms.txt" title="Docs for AI agents (llms.txt)" />
+    %APP_SITE_VERIFICATION%
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F5F5F7" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
     <meta name="apple-mobile-web-app-title" content="%APP_NAME%" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="%APP_NAME%" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="%APP_NAME% — %APP_TAGLINE%" />
     <meta property="og:description" content="%APP_DESCRIPTION%" />
     <meta property="og:url" content="%APP_URL%" />
-    <meta property="og:image" content="%APP_URL%og-image.png" />
+    <meta property="og:image" content="%OG_IMAGE_URL%" />
+    <meta property="og:image:alt" content="%APP_OG_IMAGE_ALT%" />
+    <meta property="og:image:width" content="%OG_IMAGE_WIDTH%" />
+    <meta property="og:image:height" content="%OG_IMAGE_HEIGHT%" />
+    <meta property="og:image:type" content="%OG_IMAGE_TYPE%" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image:alt" content="%APP_OG_IMAGE_ALT%" />
     <script type="application/ld+json">%APP_JSONLD%</script>
     <script src="./theme-init.js"></script>
   </head>

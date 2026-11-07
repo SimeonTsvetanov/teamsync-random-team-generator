@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import { marked } from "marked";
 import sharp from "sharp";
 import { app as config, type AppConfig } from "../app.config.ts";
+import { POLICY_PAGES, lastUpdatedDate, latestReleaseDate, llmsTxt, perAppRobotsTxt, privacySummary, sitemapXml } from "./seo.ts";
 
 // Widen the `as const` literal types so optional modes (null today) type-check when enabled.
 const app: AppConfig = config;
@@ -19,7 +20,6 @@ const pub = join(root, "app", "public");
 const assets = join(root, "scripts", "page-assets");
 const base = `/${app.id}/`;
 const year = String(new Date().getFullYear());
-const today = new Date().toISOString().slice(0, 10);
 const write = (rel: string, text: string): void => {
   const path = join(pub, rel);
   mkdirSync(dirname(path), { recursive: true });
@@ -37,34 +37,34 @@ const fill = (text: string): string =>
     .replaceAll("APP_ID", app.id)
     .replaceAll("BUILD_YEAR", year);
 
-// robots.txt — AI crawlers welcome (forge-growth).
-write("robots.txt", readFileSync(join(assets, "robots.txt"), "utf8").replaceAll("<app-id>", app.id));
+// robots.txt — the hub's host-root policy, kept per app as documentation only (seo-geo §6).
+write("robots.txt", perAppRobotsTxt(readFileSync(join(assets, "robots.txt"), "utf8"), app));
 
-// sitemap.xml — app + policy pages.
-const pages = ["", "terms/", "privacy/", "ai-notice/", "legal-notice/", "support/"];
+// sitemap.xml — app + policy pages; lastmod = each page's real last change, never the build date
+// (seo-geo §6): app = latest CHANGELOG release, policy = its "Last updated" date, else omitted.
+const changelogText = readFileSync(join(root, "CHANGELOG.md"), "utf8");
+const releaseDate = latestReleaseDate(changelogText);
+const policyDate = (slug: string): string | undefined =>
+  lastUpdatedDate(readFileSync(join(root, "content", "legal", `${slug}.md`), "utf8")); // no date → no lastmod (never borrow the app's)
 write(
   "sitemap.xml",
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages
-    .map((p) => `  <url><loc>${app.url}${p}</loc><lastmod>${today}</lastmod></url>`)
-    .join("\n")}\n</urlset>\n`,
+  sitemapXml(app.url, [
+    { path: "", ...(releaseDate ? { lastmod: releaseDate } : {}) },
+    ...POLICY_PAGES.map((slug) => {
+      const lastmod = policyDate(slug);
+      return { path: `${slug}/`, ...(lastmod ? { lastmod } : {}) };
+    }),
+  ]),
 );
 
-// llms.txt — agent docs (forge-growth seo-geo §5).
+// llms.txt — llmstxt.org format for agents (seo-geo §8); details go to llms-full.txt below.
+write("llms.txt", llmsTxt(app));
 const modes = [
   `- Browser: ${app.url} (installable PWA, works offline after first visit)`,
   app.modes.mcp ? `- MCP (local): npx -y ${app.modes.mcp.npm}` : "",
   app.modes.mcp?.url ? `- MCP (remote): ${app.modes.mcp.url}` : "",
   app.modes.api ? `- HTTP API: ${app.modes.api.baseUrl} (OpenAPI: ${app.modes.api.openapi})` : "",
 ].filter(Boolean);
-write(
-  "llms.txt",
-  [
-    `# ${app.name}`, "", `> ${app.tagline}`, "", app.description, "", "## Use it", ...modes, "",
-    "## FAQ", ...app.faq.map((f) => `- ${f.q} ${f.a}`), "",
-    "## About", `- Licence: MIT · Source: ${app.repo} · Author: Simeon Tsvetanov`,
-    `- Policies: ${app.url}terms/ · ${app.url}privacy/ · ${app.url}ai-notice/`, "",
-  ].join("\n"),
-);
 
 // Error page + shared page assets (forge-app-shell error-pages / pages).
 write("404.html", fill(readFileSync(join(assets, "404.html"), "utf8")));
@@ -116,7 +116,7 @@ write(
     "## Limits", `- Max file size: ${app.limits.maxFileMB ? `${String(app.limits.maxFileMB)} MB` : "n/a"} · Max items: ${app.limits.maxItems ? String(app.limits.maxItems) : "n/a"}`, "",
     "## How to use (steps)", ...app.help.steps.map((t, i) => `${String(i + 1)}. ${t}`), "",
     "## FAQ", ...app.faq.map((f) => `### ${f.q}\n${f.a}`), "",
-    "## Privacy", "- Browser mode: files never leave the device. No accounts, cookies, tracking or analytics.", "",
+    "## Privacy", `- ${privacySummary(app)}`, "",
     "## About", `- Licence: MIT · Source: ${app.repo} · Author: ${app.author.name} · Support: ${app.support.buyMeACoffee}`, "",
   ].join("\n"),
 );
@@ -124,7 +124,7 @@ write(
 // What's new + Credits data for the app (generated, never hand-edited).
 const gen = join(root, "app", "src", "generated");
 mkdirSync(gen, { recursive: true });
-const changelog = readFileSync(join(root, "CHANGELOG.md"), "utf8")
+const changelog = changelogText
   .split(/^## /m).slice(1)
   .map((block) => {
     const [head = "", ...lines] = block.split("\n");

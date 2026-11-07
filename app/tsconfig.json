@@ -21,7 +21,8 @@
     "src/generated/*.json",
     "vite.config.ts",
     "pwa-assets.config.ts",
-    "../app.config.ts"
+    "../app.config.ts",
+    "../scripts/seo.ts"
   ],
   "references": [
     {

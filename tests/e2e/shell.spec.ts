@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { app } from "../../app.config.ts";
 
 // App-shell e2e (APP-STANDARD §14): dialogs, theme, storage namespacing, offline, policy + error pages.
 const serious = async (page: Page): Promise<string[]> => {
@@ -136,6 +137,27 @@ test("SEO and agent files are real files", async ({ request }) => {
     expect(res.ok(), path).toBe(true);
     expect(res.headers()["content-type"], path).toContain(type);
   }
+});
+
+test("static head: one English URL, describedby llms.txt, complete social tags (seo-geo §2–§3)", async ({ request }) => {
+  const html = await (await request.get("./")).text();
+  expect(html).not.toMatch(/hreflang|\?lang=/);
+  expect(html).toContain(`<link rel="canonical" href="${app.url}" />`);
+  expect(html).toContain(`rel="describedby" type="text/plain" href="${app.url}llms.txt"`);
+  for (const tag of ["og:site_name", "og:locale", "og:image:alt", "og:image:width", "og:image:height", "og:image:type", "twitter:image:alt"]) {
+    expect(html, tag).toMatch(new RegExp(`(property|name)="${tag}" content="[^"]+"`));
+  }
+});
+
+test("FAQ is on the page on every screen size, answers collapsed (seo-geo §4)", async ({ page }) => {
+  await page.goto("./");
+  const items = page.locator(".faq-list details");
+  await expect(page.locator(".faq-list")).toBeVisible();
+  await expect(items).toHaveCount(app.faq.length);
+  await expect(items.first()).not.toHaveAttribute("open");
+  await expect(items.first().locator("p")).toBeHidden();
+  await items.first().locator("summary").click();
+  await expect(items.first().locator("p")).toBeVisible();
 });
 
 test("policy pages render and keep the email out of the HTML source", async ({ page, request }) => {
