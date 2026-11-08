@@ -47,6 +47,7 @@ function appHtml(): Plugin {
         .replace(/^ *%APP_SITE_VERIFICATION%\n/m, () => verification ? `    ${verification}\n` : "") // no empty line when unset
         .replaceAll("%APP_MORE_TOOLS%", () => app.moreTools.replaceAll("&", "&amp;"))
         .replaceAll("%APP_LANG%", () => app.languages[0] ?? "en")
+        .replaceAll("%APP_VERSION%", () => escapeHtml(app.version)) // no-JS footer too; = package.json (generate.ts checks)
         .replaceAll("%BUILD_YEAR%", () => String(new Date().getFullYear()))
         .replace("%APP_JSONLD%", () => JSON.stringify(structuredData(app)).replace(/</g, "\\u003c")) // never "</script>" inside the block
         .replace("connect-src 'self'", () => `connect-src ${connect}`)

@@ -1,0 +1,56 @@
+# Docs → Wiki: mirrors the user docs (docs/) into the repository's GitHub Wiki (forge-engineering →
+# user-docs §1). The repo is the source; the wiki is a generated copy — never edit it by hand.
+# Needs once: Settings → General → Features → Wikis on, and the first wiki page created (any text).
+name: Docs → Wiki
+on:
+  push:
+    branches: [main]
+    paths: ["docs/**", "scripts/docs-to-wiki.mjs", ".github/workflows/docs-wiki.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: docs-wiki
+  cancel-in-progress: false
+jobs:
+  wiki:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # push to <repo>.wiki.git
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Clone the wiki
+        id: clone
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          if git clone --quiet --depth 1 "https://x-access-token:${TOKEN}@github.com/${REPO}.wiki.git" wiki 2> clone.err; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          elif grep -qi "not found" clone.err; then
+            echo "::warning title=Wiki not set up::Enable Wikis and create the first page once (Settings → General → Features → Wikis, then the Wiki tab → Create the first page). Skipping the mirror."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            sed "s/${TOKEN}/***/g" clone.err >&2
+            exit 1
+          fi
+      - name: Mirror docs/ into the wiki
+        if: steps.clone.outputs.ready == 'true'
+        run: node scripts/docs-to-wiki.mjs docs wiki --repo "${{ github.repository }}"
+      - name: Commit and push (only when something changed)
+        if: steps.clone.outputs.ready == 'true'
+        working-directory: wiki
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          git add -A
+          if git diff --cached --quiet; then echo "Wiki already up to date."; exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit --quiet -m "Mirror docs/ from ${SHA}"
+          git push --quiet

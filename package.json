@@ -2,7 +2,7 @@
   "name": "teamsync-random-team-generator",
   "private": true,
   "type": "module",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "packageManager": "pnpm@12.18.0",
   "engines": {
     "node": ">=24"
@@ -12,7 +12,7 @@
     "dev": "pnpm generate && pnpm -F app dev",
     "lint": "eslint .",
     "typecheck": "tsc -b",
-    "test": "vitest run",
+    "test": "vitest run && node --test scripts/*.test.mjs",
     "build": "pnpm generate && pnpm -r build",
     "verify": "pnpm generate && pnpm lint && pnpm typecheck && pnpm test && pnpm docs:check && pnpm -r build",
     "docs:check": "node scripts/check-docs.ts",

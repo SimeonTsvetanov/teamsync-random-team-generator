@@ -13,7 +13,7 @@ import sharp from "sharp";
 import { app as config, type AppConfig } from "../app.config.ts";
 import { accentCss, deriveAccent } from "./accent.ts";
 import { shippedPackages, thirdPartyLicensesTxt } from "./licenses.ts";
-import { POLICY_PAGES, lastUpdatedDate, latestReleaseDate, llmsTxt, perAppRobotsTxt, privacySummary, sitemapXml } from "./seo.ts";
+import { POLICY_PAGES, agentReference, lastUpdatedDate, latestReleaseDate, llmsFullTxt, llmsTxt, perAppRobotsTxt, sitemapXml } from "./seo.ts";
 
 // Widen the `as const` literal types so optional modes (null today) type-check when enabled.
 const app: AppConfig = config;
@@ -23,6 +23,9 @@ const pub = join(root, "app", "public");
 const assets = join(root, "scripts", "page-assets");
 const base = `/${app.id}/`;
 const year = String(new Date().getFullYear());
+// One version: root package.json = app.config.version (the build injects it into HTML + JSON-LD).
+const pkgVersion = (JSON.parse(readFileSync(join(root, "package.json"), "utf8")) as { version?: string }).version;
+if (pkgVersion !== app.version) throw new Error(`app.config.version (${app.version}) must equal package.json version (${String(pkgVersion)}).`);
 const write = (rel: string, text: string): void => {
   const path = join(pub, rel);
   mkdirSync(dirname(path), { recursive: true });
@@ -62,13 +65,6 @@ write(
 
 // llms.txt — llmstxt.org format for agents (seo-geo §8); details go to llms-full.txt below.
 write("llms.txt", llmsTxt(app));
-const modes = [
-  `- Browser: ${app.url} (installable PWA, works offline after first visit)`,
-  app.modes.mcp ? `- MCP (local): npx -y ${app.modes.mcp.npm}` : "",
-  app.modes.mcp?.url ? `- MCP (remote): ${app.modes.mcp.url}` : "",
-  app.modes.api ? `- HTTP API: ${app.modes.api.baseUrl} (OpenAPI: ${app.modes.api.openapi})` : "",
-].filter(Boolean);
-
 // Error page + shared page assets (forge-app-shell error-pages / pages).
 write("404.html", fill(readFileSync(join(assets, "404.html"), "utf8")));
 for (const f of ["error-page.css", "error-page.js", "page.css", "year.js"]) {
@@ -104,25 +100,10 @@ for (const file of readdirSync(legalDir).filter((f) => f.endsWith(".md"))) {
   write(join(slug, "index.html"), fill(html));
 }
 
-// llms-full.txt — complete reference for agents (APP-STANDARD §10).
-const m = app.modes;
-write(
-  "llms-full.txt",
-  [
-    `# ${app.name} — full reference`, "", `> ${app.tagline}`, "", app.description, "",
-    "## Usage modes", ...modes, "",
-    "## URL params", ...(m.urlParams.length ? m.urlParams.map((u) => `- ${u.name} = ${u.values} (default ${u.default}) — ${u.meaning}`) : ["- none"]), "",
-    "## Embed (iframe + postMessage)",
-    m.postMessage ? `- <iframe src="${app.url}?embed=1"> · events: ${["ready", "progress", "result", "error"].map((e) => `${m.postMessage?.prefix ?? ""}:${e}`).join(", ")}` : "- not available", "",
-    "## HTTP API", m.api ? `- Base: ${m.api.baseUrl} · OpenAPI: ${m.api.baseUrl}/${m.api.openapi} · errors: {"error":{"code","message","requestId"}} · 429 = rate limited` : "- not available (browser-only app)", "",
-    "## MCP", m.mcp ? `- Local: npx -y ${m.mcp.npm}${m.mcp.url ? `\n- Remote: ${m.mcp.url}` : ""}` : "- not available", "",
-    "## Limits", `- Max file size: ${app.limits.maxFileMB ? `${String(app.limits.maxFileMB)} MB` : "n/a"} · Max items: ${app.limits.maxItems ? String(app.limits.maxItems) : "n/a"}`, "",
-    "## How to use (steps)", ...app.help.steps.map((t, i) => `${String(i + 1)}. ${t}`), "",
-    "## FAQ", ...app.faq.map((f) => `### ${f.q}\n${f.a}`), "",
-    "## Privacy", `- ${privacySummary(app)}`, "",
-    "## About", `- Licence: MIT · Source: ${app.repo} · Author: ${app.author.name} · Support: ${app.support.buyMeACoffee}`, "",
-  ].join("\n"),
-);
+// llms-full.txt — complete reference for agents (APP-STANDARD §10): exact MCP tool schemas and the
+// embed contract come from app.config.modes, never from hand-written text.
+write("llms-full.txt", llmsFullTxt(app));
+if (app.modes.mcp && !app.modes.mcp.tools.length) console.warn("generate: app.config.modes.mcp.tools is empty — document every tool the MCP server registers.");
 
 // What's new + Credits data for the app (generated, never hand-edited).
 const gen = join(root, "app", "src", "generated");
@@ -194,6 +175,7 @@ const ogSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"
 </svg>`;
 await sharp(Buffer.from(ogSvg)).png().toFile(join(pub, "og-image.png"));
 
+const m = app.modes;
 // README: generated "For AI agents" + usage section between markers (no drift).
 const readmePath = join(root, "README.md");
 const readme = readFileSync(readmePath, "utf8");
@@ -207,6 +189,14 @@ const usage = [
 ].join("\n");
 if (readme.includes("<!-- forge:usage:start -->")) {
   writeFileSync(readmePath, readme.replace(/<!-- forge:usage:start -->[\s\S]*?<!-- forge:usage:end -->/, usage));
+}
+
+// docs/API.md: the exact machine reference between markers (same renderer as llms-full.txt).
+const apiPath = join(root, "docs", "API.md");
+if (existsSync(apiPath)) {
+  const apiMd = readFileSync(apiPath, "utf8");
+  const block = ["<!-- forge:api:start — generated from app.config.ts by scripts/generate.ts; do not edit -->", ...agentReference(app), "<!-- forge:api:end -->"].join("\n");
+  if (apiMd.includes("<!-- forge:api:start")) writeFileSync(apiPath, apiMd.replace(/<!-- forge:api:start[\s\S]*?<!-- forge:api:end -->/, () => block));
 }
 
 // n8n block (hosted apps): app/src/n8n-workflow.json → public, read by Help → "Copy n8n nodes".

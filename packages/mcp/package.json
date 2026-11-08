@@ -1,6 +1,6 @@
 {
   "name": "@simeonts/teamsync-random-team-generator-mcp",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "TeamSync as a local MCP server (stdio) \u2014 run with npx.",
   "type": "module",
   "license": "MIT",

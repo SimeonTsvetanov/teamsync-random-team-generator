@@ -1,6 +1,6 @@
 {
   "name": "@simeonts/teamsync-random-team-generator-core",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Create fair, random teams in seconds \u2014 core library (pure TypeScript, no DOM).",
   "type": "module",
   "license": "MIT",

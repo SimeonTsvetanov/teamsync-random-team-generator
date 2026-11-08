@@ -12,9 +12,9 @@ const list = (items: readonly string[], ordered = false): HTMLElement =>
   h(ordered ? "ol" : "ul", {}, ...items.map((i) => h("li", {}, i)));
 
 /** "Events: a, b, c." with each event name as code (identifiers, not text in the UI language). */
-function eventsLine(prefix: string): HTMLParagraphElement {
+function eventsLine(prefix: string, events: readonly { readonly type: string }[]): HTMLParagraphElement {
   const [before = "", after = ""] = t("shell.help.events", { list: "\u0000" }).split("\u0000");
-  const names = ["ready", "progress", "result", "error"].flatMap((e, i) => [...(i ? [", "] : []), h("code", {}, `${prefix}:${e}`)]);
+  const names = events.flatMap((e, i) => [...(i ? [", "] : []), h("code", {}, `${prefix}:${e.type}`)]);
   return h("p", {}, before, ...names, after);
 }
 
@@ -22,15 +22,16 @@ export function openHelp(): void {
   const m = app.modes;
   const at = text();
   const service: Node[] = [];
-  if (m.urlParams.length) {
+  const params = m.urlParams.filter((u) => !u.internal); // internal ones (e.g. share-target) are only in llms-full.txt
+  if (params.length) {
     service.push(h("h3", {}, t("shell.help.urlParams")),
       h("table", {}, h("thead", {}, h("tr", {}, ...[t("shell.help.colName"), t("shell.help.colValues"), t("shell.help.colDefault"), t("shell.help.colMeaning")].map((c) => h("th", {}, c)))),
-        h("tbody", {}, ...m.urlParams.map((u) => h("tr", {}, h("td", {}, h("code", {}, u.name)), h("td", {}, u.values), h("td", {}, u.default), h("td", { lang: "en" }, u.meaning))))),
-      copyBlock(`${app.url}?${m.urlParams.map((u) => `${u.name}=${u.default}`).join("&")}`));
+        h("tbody", {}, ...params.map((u) => h("tr", {}, h("td", {}, h("code", {}, u.name)), h("td", {}, u.values), h("td", {}, u.default), h("td", { lang: "en" }, u.meaning))))),
+      copyBlock(`${app.url}?${params.map((u) => `${u.name}=${u.default}`).join("&")}`));
   }
   if (m.postMessage) {
     service.push(h("h3", {}, t("shell.help.embed")), copyBlock(`<iframe src="${app.url}?embed=1" title="${app.name}" loading="lazy"></iframe>`),
-      eventsLine(m.postMessage.prefix));
+      eventsLine(m.postMessage.prefix, m.postMessage.events));
   }
   if (m.api) service.push(h("h3", {}, t("shell.help.api")), copyBlock(`curl ${m.api.baseUrl}/`), p(`OpenAPI: ${m.api.baseUrl}/${m.api.openapi}`));
   if (m.n8n) {

@@ -10,6 +10,34 @@ export interface UrlParam {
   readonly values: string; // human description of allowed values, e.g. "0.1–1.0"
   readonly default: string;
   readonly meaning: string;
+  /** Set by the app or the OS, not for links people write (e.g. "share-target"); listed apart in llms-full.txt, hidden in Help. */
+  readonly internal?: boolean;
+}
+
+/** One field of an MCP tool's input/output or of an embed message (documented in llms-full.txt and docs/API.md). */
+export interface FieldDoc {
+  readonly name: string; // "names"
+  readonly type: string; // TypeScript-like: "string[] | string", "number (integer)"
+  readonly required?: boolean; // default true
+  readonly limits?: string; // "≤ 1,000 items, each ≤ 100 characters"
+  readonly meaning: string;
+}
+
+/** One MCP tool, exactly as the server registers it (forge-engineering → mcp). */
+export interface McpToolDoc {
+  readonly name: string; // "make_teams"
+  readonly description: string;
+  readonly input: readonly FieldDoc[];
+  readonly output: readonly FieldDoc[]; // fields of structuredContent
+  readonly errors?: string; // how a failure looks + its stable codes
+  readonly example: { readonly arguments: string; readonly result: string }; // JSON text
+}
+
+/** One embed message (without the prefix): a request the host page sends, or an event the app posts. */
+export interface EmbedMessageDoc {
+  readonly type: string; // "make" → "<prefix>:make"
+  readonly meaning: string;
+  readonly payload: readonly FieldDoc[]; // fields next to `type`; [] = none
 }
 
 /** Texts shown to users that also exist in another UI language (forge-app-shell → i18n §3). */
@@ -28,7 +56,7 @@ export interface AppConfig {
   readonly description: string; // 1–2 sentences, ≤ 155 chars for <meta description>
   readonly url: string; // https://simeontsvetanov.github.io/<id>/
   readonly repo: string; // https://github.com/SimeonTsvetanov/<id>
-  readonly version: string; // injected from package.json at build time
+  readonly version: string; // = root package.json "version" (generate.ts fails on a mismatch); build injects it into HTML + JSON-LD
   readonly languages: readonly ("en" | "bg")[]; // English first and default; /new-service asks
   /** One entry per extra language in `languages`, same number of steps/features/FAQ (generate.ts checks). */
   readonly l10n?: { readonly bg?: AppText };
@@ -41,13 +69,16 @@ export interface AppConfig {
   readonly ads: { readonly enabled: boolean }; // only with a recorded decision
   readonly analytics: { readonly umami: boolean }; // off by default
   readonly storage: { readonly tiers: readonly ("prefs" | "indexeddb" | "opfs")[]; readonly stores: readonly string[] }; // what is saved — feeds Terms/Privacy
-  readonly limits: { readonly maxFileMB?: number; readonly maxItems?: number }; // shown in Help, llms.txt, API
+  /** Shown in Help, llms.txt, API. Set maxFileMB only for apps that take files: it also switches the privacy text to "files never leave the device". */
+  readonly limits: { readonly maxFileMB?: number; readonly maxItems?: number };
   readonly feedback: { readonly webhook: string | null }; // shared microapp-feedback n8n webhook
   readonly modes: {
     readonly urlParams: readonly UrlParam[];
-    readonly postMessage: { readonly prefix: string } | null;
+    /** iframe contract: every request and event with its payload (llms-full.txt, docs/API.md, Help). */
+    readonly postMessage: { readonly prefix: string; readonly requests: readonly EmbedMessageDoc[]; readonly events: readonly EmbedMessageDoc[] } | null;
     readonly api: { readonly baseUrl: string; readonly openapi: string } | null;
-    readonly mcp: { readonly url: string | null; readonly npm: string } | null;
+    /** `tools` = what the server registers, documented exactly in llms.txt/llms-full.txt (generate warns when empty). */
+    readonly mcp: { readonly url: string | null; readonly npm: string; readonly tools: readonly McpToolDoc[] } | null;
     readonly n8n: { readonly workflow: string } | null;
     /** Receive text/links shared from other apps (Android "Share → app"); see ui/share-target.ts. */
     readonly shareTarget?: boolean;
@@ -73,7 +104,7 @@ export const app = {
   description: "Split any list of names into fair, random teams in seconds. Free, private and works offline — everything runs in your browser.",
   url: "https://simeontsvetanov.github.io/teamsync-random-team-generator/",
   repo: "https://github.com/SimeonTsvetanov/teamsync-random-team-generator",
-  version: "0.1.0",
+  version: "1.0.0",
   languages: ["en", "bg"],
   accent: "#3DDC97", // Moni 2026-11-06: fresh mint green; dark text on it (9.5:1), chosen automatically by generate.ts
   categories: ["utilities", "productivity", "sports", "education"],
@@ -87,10 +118,42 @@ export const app = {
   limits: { maxItems: 1000 },
   feedback: { webhook: null },
   modes: {
-    urlParams: [{ name: "teams", values: "2–10", default: "2", meaning: "Number of teams to make (names are never put in the link)" }],
-    postMessage: { prefix: "teamsync" },
+    urlParams: [
+      { name: "teams", values: "2–10", default: "2", meaning: "Number of teams to make (names are never put in the link)" },
+      { name: "lang", values: "en | bg", default: "en", meaning: "Interface language for this visit (without it: your saved choice, else English); it is not saved" },
+      { name: "share-target", values: "1 (+ title, text, url)", default: "-", meaning: "Android “Share → TeamSync”: the shared text becomes the names list; the parameters are removed from the address bar right away", internal: true },
+    ],
+    postMessage: {
+      prefix: "teamsync",
+      requests: [{
+        type: "make", meaning: "Make teams from these names (the names box shows them, then the result is posted back).",
+        payload: [
+          { name: "names", type: "string[]", limits: "≤ 1,000 names, each ≤ 100 characters; blank entries are ignored; whole message ≤ 120,000 characters", meaning: "The people to split." },
+          { name: "teams", type: "number (integer)", limits: "2–10", meaning: "How many teams to make." },
+        ],
+      }],
+      events: [
+        { type: "ready", meaning: "TeamSync is loaded and listening for teamsync:make.", payload: [] },
+        { type: "result", meaning: "The teams were made (after teamsync:make or a tap on Generate teams / Shuffle again).", payload: [{ name: "teams", type: "string[][]", meaning: "One array of names per team; sizes differ by at most one, bigger teams first." }] },
+        { type: "error", meaning: "The teams could not be made.", payload: [{ name: "code", type: "string", meaning: "NAMES_EMPTY | NAMES_TOO_MANY | NAME_TOO_LONG | NAMES_INVALID | TEAMS_OUT_OF_RANGE | TEAMS_MORE_THAN_NAMES" }] },
+      ],
+    },
     api: null,
-    mcp: { url: null, npm: "@simeonts/teamsync-random-team-generator-mcp" },
+    mcp: {
+      url: null,
+      npm: "@simeonts/teamsync-random-team-generator-mcp",
+      tools: [{
+        name: "make_teams",
+        description: "Split a list of people into 2–10 fair, random teams (sizes differ by at most 1; unbiased crypto shuffle). Read-only, no network.",
+        input: [
+          { name: "names", type: "string[] | string", limits: "array: ≤ 1,000 names, each ≤ 100 characters · text: ≤ 110,000 characters, one name per line; numbers, bullets and chat prefixes are removed", meaning: "People to split: an array of names, or text with one name per line." },
+          { name: "teams", type: "number (integer)", limits: "2–10, not more than the number of names", meaning: "Number of teams." },
+        ],
+        output: [{ name: "teams", type: "string[][]", meaning: "One array of names per team (the text content has the same teams ready to paste into a chat)." }],
+        errors: "isError: true with text content {\"code\",\"message\"}; codes INPUT_INVALID, NAMES_EMPTY, NAMES_TOO_MANY, NAME_TOO_LONG, NAMES_INVALID, TEAMS_OUT_OF_RANGE, TEAMS_MORE_THAN_NAMES.",
+        example: { arguments: '{"names":["Maria","Liam","Aisha","Kenji","Elena"],"teams":2}', result: '{"teams":[["Kenji","Maria","Elena"],["Aisha","Liam"]]}' },
+      }],
+    },
     n8n: null,
     shareTarget: true, // Android: Share → TeamSync from WhatsApp/Viber/notes (Moni 2026-11-06)
   },
@@ -140,7 +203,7 @@ export const app = {
         { q: "Работи ли без интернет?", a: "Да, след първото посещение. Можете и да го инсталирате на телефона или компютъра, за да се отваря като приложение." },
         { q: "Как да изпратя отборите в чата?", a: "Натиснете „WhatsApp“ за ново съобщение с отборите, „Сподели“, за да изберете друго приложение, или „Копирай“ и поставете текста където искате." },
         { q: "Мога ли да взема списъка от WhatsApp?", a: "Да. Копирайте съобщението със списъка и го поставете — TeamSync оставя само имената. На Android: инсталирайте TeamSync, после в WhatsApp изберете Сподели → TeamSync." },
-        { q: "Може ли AI агент да прави отбори с TeamSync?", a: "Да. Локалният MCP сървър (npx -y @simeonts/teamsync-random-team-generator-mcp) дава инструмента make_teams; документацията е в llms.txt." },
+        { q: "Може ли AI агент да прави отбори с TeamSync?", a: "Да. Локалният MCP сървър (npx -y @simeonts/teamsync-random-team-generator-mcp) дава инструмента make_teams: подавате имената и броя отбори и получавате отборите." },
       ],
     },
   },
@@ -154,7 +217,7 @@ export const app = {
     { q: "Does it work offline?", a: "Yes, after the first visit. You can also install it on your phone or computer to open it like an app." },
     { q: "How do I send the teams to my group chat?", a: "Tap WhatsApp for a new message with the teams, Share to pick any other app, or Copy and paste the text anywhere." },
     { q: "Can I take the list from WhatsApp?", a: "Yes. Copy the message with the list and paste it — TeamSync keeps only the names. On Android: install TeamSync, then in WhatsApp choose Share → TeamSync." },
-    { q: "Can an AI agent make teams with TeamSync?", a: "Yes. The local MCP server (npx -y @simeonts/teamsync-random-team-generator-mcp) provides the make_teams tool; docs are in llms.txt." },
+    { q: "Can an AI agent make teams with TeamSync?", a: "Yes. The local MCP server (npx -y @simeonts/teamsync-random-team-generator-mcp) provides the make_teams tool: give it the names and the number of teams, and it returns the teams." },
   ],
   shortcuts: [{ name: "Make 2 teams", url: "./?teams=2" }, { name: "Make 3 teams", url: "./?teams=3" }],
 } as const satisfies AppConfig;

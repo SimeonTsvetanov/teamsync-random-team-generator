@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { app as config, type AppConfig } from "../app.config.ts";
-import { lastUpdatedDate, latestReleaseDate, llmsTxt, perAppRobotsTxt, siteVerificationTag, sitemapXml, structuredData } from "./seo.ts";
+import { lastUpdatedDate, latestReleaseDate, llmsFullTxt, llmsTxt, perAppRobotsTxt, privacySummary, siteVerificationTag, sitemapXml, structuredData } from "./seo.ts";
 
 const app: AppConfig = config;
 
@@ -39,12 +39,56 @@ describe("sitemapXml", () => {
 });
 
 describe("perAppRobotsTxt", () => {
-  it("says it is ignored and fills <app-id> outside comments only", () => {
-    const template = "# Crawlers ignore robots.txt inside /<app-id>/\nUser-agent: *\nAllow: /\nSitemap: https://h/<app-id>/sitemap.xml\n";
+  it("says it is ignored, drops the template's notes and fills <app-id>", () => {
+    const template = "# HOST ROOT ONLY. Crawlers ignore robots.txt inside /<app-id>/. Replace <app-id>.\n# Re-checked by /stack-check.\nUser-agent: *\nAllow: /\n\n# Search crawlers\nUser-agent: Bingbot\nAllow: /\n# Replace <app-id> below.\nSitemap: https://h/<app-id>/sitemap.xml\n";
     const robots = perAppRobotsTxt(template, app);
     expect(robots.split("\n")[0]).toMatch(/^# .*crawlers ignore robots\.txt below the host root/);
-    expect(robots).toContain("# Crawlers ignore robots.txt inside /<app-id>/");
+    expect(robots).not.toMatch(/HOST ROOT ONLY|stack-check|Replace|<app-id>/);
+    expect(robots).toContain("# Search crawlers");
     expect(robots).toContain(`Sitemap: https://h/${app.id}/sitemap.xml`);
+  });
+});
+
+describe("agent docs", () => {
+  const withModes = (modes: Partial<AppConfig["modes"]>, limits: AppConfig["limits"] = {}): AppConfig => ({ ...app, limits, modes: { ...app.modes, ...modes } });
+  const tool = {
+    name: "make_x", description: "Makes x.",
+    input: [{ name: "items", type: "string[]", limits: "≤ 10 items", meaning: "What to use." }, { name: "mode", type: "string", required: false, meaning: "How." }],
+    output: [{ name: "x", type: "string", meaning: "The x." }],
+    errors: "isError with { code, message }",
+    example: { arguments: '{"items":["a"]}', result: '{"x":"a"}' },
+  };
+
+  it("documents every MCP tool exactly: input types/limits, output, an example call", () => {
+    const a = withModes({ mcp: { url: null, npm: "@s/x-mcp", tools: [tool] } });
+    const full = llmsFullTxt(a);
+    expect(full).toContain("Tool `make_x`");
+    expect(full).toContain("- `items` (string[], required, ≤ 10 items): What to use.");
+    expect(full).toContain("- `mode` (string, optional): How.");
+    expect(full).toContain('- arguments: {"items":["a"]}');
+    expect(llmsTxt(a)).toContain("MCP tool `make_x`(items: string[], mode?: string) → { x: string }");
+  });
+
+  it("documents the embed contract: origin rules, every request and event with its payload", () => {
+    const a = withModes({ postMessage: { prefix: "x", requests: [{ type: "make", meaning: "Make it.", payload: [{ name: "n", type: "number", meaning: "N." }] }], events: [{ type: "ready", meaning: "Loaded.", payload: [] }] } });
+    const full = llmsFullTxt(a);
+    expect(full).toMatch(/event\.origin equals that origin/);
+    expect(full).toContain("- `x:make`: Make it.");
+    expect(full).toContain("  - `n` (number, required): N.");
+    expect(full).toContain("- `x:ready`: Loaded.");
+  });
+
+  it("lists internal URL params apart and has no file wording or file limit for apps without files", () => {
+    const a = withModes({ urlParams: [{ name: "q", values: "text", default: "none", meaning: "Q." }, { name: "share-target", values: "1", default: "-", meaning: "Set by the OS.", internal: true }] });
+    const full = llmsFullTxt(a);
+    expect(full).toMatch(/Internal[^\n]*\n- `share-target`/);
+    expect(full + llmsTxt(a)).not.toMatch(/files never leave|Max file size/);
+    expect(llmsFullTxt(withModes({}, { maxFileMB: 50 }))).toContain("Max file size: 50 MB");
+    expect(privacySummary(withModes({}, { maxFileMB: 50 }))).toContain("files never leave the device");
+  });
+
+  it("never points the FAQ at llms.txt inside llms.txt (no circular reference)", () => {
+    for (const f of app.faq) expect(f.a).not.toMatch(/llms(-full)?\.txt/);
   });
 });
 

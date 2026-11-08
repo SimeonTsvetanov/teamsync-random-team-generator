@@ -1,27 +1,33 @@
-# robots.txt — AI crawlers and agents are welcome (Moni's decision 2026-11-05, APP-STANDARD §10).
-# Re-check the AI user-agent list in /stack-check. Replace <app-id>.
+# robots.txt — HOST ROOT ONLY (https://simeontsvetanov.github.io/robots.txt, hub repo).
+# Crawlers ignore robots.txt inside /<app-id>/ (Google Search Central, robots_txt). Policy: everyone
+# allowed, AI search and AI training included (Moni 2026-11-05). Named groups document intent and
+# keep a future "*" Disallow from silently applying to them (a named group does not inherit "*").
+# Bot meanings: forge-growth → seo-geo §7. Re-checked by /stack-check.
 User-agent: *
 Allow: /
 
-User-agent: GPTBot
-Allow: /
+# Search and answer crawlers
+User-agent: Googlebot
+User-agent: Bingbot
 User-agent: OAI-SearchBot
-Allow: /
-User-agent: ChatGPT-User
-Allow: /
-User-agent: ClaudeBot
-Allow: /
-User-agent: Claude-User
-Allow: /
 User-agent: Claude-SearchBot
-Allow: /
 User-agent: PerplexityBot
+User-agent: Applebot
 Allow: /
+
+# User-triggered fetchers (may not follow robots.txt)
+User-agent: ChatGPT-User
+User-agent: Claude-User
+User-agent: Perplexity-User
+Allow: /
+
+# Training tokens (Google-Extended and Applebot-Extended don't crawl; they control model use only)
+User-agent: GPTBot
+User-agent: ClaudeBot
 User-agent: Google-Extended
-Allow: /
 User-agent: Applebot-Extended
-Allow: /
 User-agent: CCBot
 Allow: /
 
+# One line per app sitemap (absolute URLs)
 Sitemap: https://simeontsvetanov.github.io/<app-id>/sitemap.xml

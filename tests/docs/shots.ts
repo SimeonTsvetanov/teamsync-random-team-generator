@@ -2,6 +2,16 @@
 // one entry per image a page needs; `pnpm docs:images` writes docs/images/<page>/<name>-{light,dark}.png.
 import type { Locator, Page } from "@playwright/test";
 
+/** Sample names only (user-docs §5: real-looking, mixed). */
+const SAMPLE_NAMES = ["Maria", "Liam", "Aisha", "Kenji", "Elena", "Diego", "Priya", "Tom", "Fatima", "Lucas", "Ana", "Noah"];
+
+/** Types the sample list and picks 3 teams. */
+async function fillForm(page: Page): Promise<void> {
+  await page.locator("#names").fill(SAMPLE_NAMES.join("\n"));
+  await page.getByRole("button", { name: "More teams" }).click();
+  await page.locator("[data-teams-value]").filter({ hasText: "3" }).waitFor();
+}
+
 /** One docs image: where it goes, how to reach the state, and what to crop to. */
 export interface DocsShot {
   /** Page folder under docs/images/, e.g. "create-teams" for docs/how-to/create-teams.md. */
@@ -25,4 +35,36 @@ export interface DocsShot {
  * uses fails `pnpm docs:check`). Example:
  * `{ page: "create-teams", name: "result", device: "phone", setUp: async (page: Page): Promise<void> => { … }, crop: (page) => page.locator(".results") }`
  */
-export const DOCS_SHOTS: readonly DocsShot[] = [];
+export const DOCS_SHOTS: readonly DocsShot[] = [
+  {
+    page: "create-teams", name: "form", device: "phone",
+    setUp: async (page: Page): Promise<void> => {
+      await fillForm(page);
+      // On a phone the card fills the screen and the names box stretches with it; for the picture the
+      // card hugs the sample list, so the image shows no tall empty box.
+      await page.addStyleTag({ content: ".tool { min-height: auto; } #names { field-sizing: content; height: auto; }" });
+    },
+    crop: (page) => page.locator(".tool"),
+  },
+  {
+    page: "create-teams", name: "result", device: "phone",
+    setUp: async (page: Page): Promise<void> => {
+      await fillForm(page);
+      await page.getByRole("button", { name: "Generate teams" }).click();
+      await page.locator("[data-results]").waitFor();
+    },
+    crop: (page) => page.locator("[data-results]"),
+  },
+  {
+    page: "share-results", name: "share-sheet", device: "desktop",
+    setUp: async (page: Page): Promise<void> => {
+      await fillForm(page);
+      await page.getByRole("button", { name: "Generate teams" }).click();
+      // Most desktop browsers have no share sheet: TeamSync then offers WhatsApp and Copy.
+      await page.evaluate(() => { Object.defineProperty(navigator, "share", { value: undefined, configurable: true }); });
+      await page.locator("[data-share]").click();
+      await page.locator("dialog[data-dialog=share]").waitFor();
+    },
+    crop: (page) => page.locator("dialog[data-dialog=share]"),
+  },
+];

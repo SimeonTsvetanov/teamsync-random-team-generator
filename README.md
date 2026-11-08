@@ -14,6 +14,9 @@ Split any list of names into fair, random teams in seconds. Free, private and wo
 - **For AI agents:** [llms.txt](https://simeontsvetanov.github.io/teamsync-random-team-generator/llms.txt) · [llms-full.txt](https://simeontsvetanov.github.io/teamsync-random-team-generator/llms-full.txt)
 <!-- forge:usage:end -->
 
+## Documentation
+How-to guides, settings and privacy details: [user documentation](docs/index.md).
+
 ## Privacy
 Runs in your browser — your files never leave your device. No accounts, no tracking, no cookies.
 Details: [Privacy](https://simeontsvetanov.github.io/teamsync-random-team-generator/privacy/).
