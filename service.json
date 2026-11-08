@@ -10,5 +10,5 @@
   "mcp": null,
   "llms": "https://simeontsvetanov.github.io/teamsync-random-team-generator/llms.txt",
   "status": "draft",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

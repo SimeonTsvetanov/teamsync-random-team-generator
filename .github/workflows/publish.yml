@@ -1,0 +1,41 @@
+# Publish the npm packages (core + mcp) when Moni publishes a GitHub Release (forge-engineering →
+# security §5). npm trusted publishing (OIDC): no token in the repo; provenance is added
+# automatically. One-time setup per package on npmjs.com → Settings → Trusted publishing:
+# GitHub Actions, owner SimeonTsvetanov, this repository, workflow "publish.yml".
+name: Publish npm
+on:
+  release:
+    types: [published]
+permissions:
+  contents: read
+concurrency:
+  group: publish-npm
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write # OIDC token for npm trusted publishing
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false # never cache in release builds (npm docs)
+      - run: pnpm install --frozen-lockfile
+      - name: Tag matches the package versions
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          for p in packages/core packages/mcp; do
+            v="v$(node -p "require('./$p/package.json').version")"
+            if [ "$v" != "$TAG" ]; then echo "::error::$p is $v but the release tag is $TAG"; exit 1; fi
+          done
+      - run: pnpm verify
+      # -r publishes only versions not yet on npm (core before mcp). The release checks out a tag
+      # (detached HEAD), so pnpm's branch check is skipped; the tag check above replaces it.
+      - run: pnpm -r publish --access public --no-git-checks

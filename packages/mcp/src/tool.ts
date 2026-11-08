@@ -1,7 +1,7 @@
 // The `make_teams` MCP tool: input schema and a pure handler (tested without a transport).
 // Registered by index.ts.
 import * as z from "zod";
-import { MAX_TEAMS, MIN_TEAMS, englishLabels, formatTeams, makeTeams, parseNames } from "@simeonts/teamsync-random-team-generator-core";
+import { MAX_TEAMS, MIN_TEAMS, englishLabels, formatTeams, makeTeams, namesFromSharedText, parseNames } from "@simeonts/teamsync-random-team-generator-core";
 
 /** The live app, named in the attribution line of every result. */
 export const APP_URL = "https://simeontsvetanov.github.io/teamsync-random-team-generator/";
@@ -30,7 +30,8 @@ function toolError(code: string, message: string): ToolResult {
 export function makeTeamsTool(args: z.input<typeof makeTeamsInput>): ToolResult {
   const input = makeTeamsInput.safeParse(args);
   if (!input.success) return toolError("INPUT_INVALID", "names must be an array of names or one-per-line text; teams 2–10.");
-  const text = Array.isArray(input.data.names) ? input.data.names.join("\n") : input.data.names;
+  // Text is cleaned like a paste in the app (numbers, bullets, emoji, chat prefixes); arrays are taken as given.
+  const text = Array.isArray(input.data.names) ? input.data.names.join("\n") : namesFromSharedText(input.data.names);
   const names = parseNames(text);
   if (!names.ok) return toolError(names.error.code, names.error.message);
   const teams = makeTeams({ names: names.value, teams: input.data.teams });

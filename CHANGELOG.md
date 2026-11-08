@@ -4,6 +4,10 @@ All notable user-facing changes. Format: Keep a Changelog · SemVer.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-08
+### Fixed
+- AI agents: names pasted as text (numbered lists, bullets, emoji, chat messages) are cleaned like in the app.
+
 ## [1.0.0] - 2026-11-08
 ### Added
 - TeamSync is rebuilt from scratch as a fast app you can install, and it works offline.
@@ -16,5 +20,6 @@ All notable user-facing changes. Format: Keep a Changelog · SemVer.
 - Links like ?teams=3 open TeamSync with 3 teams selected.
 - AI agents can make teams too, with the local MCP tool make_teams.
 
-[Unreleased]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/releases/tag/v1.0.0

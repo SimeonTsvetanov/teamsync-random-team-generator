@@ -2,7 +2,7 @@
   "name": "teamsync-random-team-generator",
   "private": true,
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "pnpm@12.18.0",
   "engines": {
     "node": ">=24"

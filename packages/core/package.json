@@ -1,12 +1,23 @@
 {
   "name": "@simeonts/teamsync-random-team-generator-core",
-  "version": "1.0.0",
-  "description": "Create fair, random teams in seconds \u2014 core library (pure TypeScript, no DOM).",
+  "version": "1.0.1",
+  "description": "Create fair, random teams in seconds — core library (pure TypeScript, no DOM).",
   "type": "module",
   "license": "MIT",
+  "keywords": [
+    "teams",
+    "team-generator",
+    "random",
+    "shuffle",
+    "fair"
+  ],
+  "homepage": "https://simeontsvetanov.github.io/teamsync-random-team-generator/",
   "repository": {
     "type": "git",
     "url": "https://github.com/SimeonTsvetanov/teamsync-random-team-generator"
+  },
+  "bugs": {
+    "url": "https://github.com/SimeonTsvetanov/teamsync-random-team-generator/issues"
   },
   "exports": {
     ".": {
@@ -24,5 +35,11 @@
   },
   "dependencies": {
     "zod": "^4.6.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

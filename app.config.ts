@@ -104,7 +104,7 @@ export const app = {
   description: "Split any list of names into fair, random teams in seconds. Free, private and works offline — everything runs in your browser.",
   url: "https://simeontsvetanov.github.io/teamsync-random-team-generator/",
   repo: "https://github.com/SimeonTsvetanov/teamsync-random-team-generator",
-  version: "1.0.0",
+  version: "1.0.1",
   languages: ["en", "bg"],
   accent: "#3DDC97", // Moni 2026-11-06: fresh mint green; dark text on it (9.5:1), chosen automatically by generate.ts
   categories: ["utilities", "productivity", "sports", "education"],

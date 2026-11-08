@@ -14,6 +14,14 @@ describe("make_teams tool", () => {
     const r = makeTeamsTool({ names: "Ana\nthe followers", teams: 3 });
     expect(r.structuredContent?.teams.flat().sort()).toEqual(["Ana", ...FOLLOWERS].sort());
   });
+  it("cleans pasted chat text: numbers, bullets, emoji and chat prefixes are removed", () => {
+    const r = makeTeamsTool({ names: "1. Ana\n2) Boris\n• Chen\n⚽ Emil\n[06.11.26, 18:03] Moni: Dana", teams: 2 });
+    expect(r.structuredContent?.teams.flat().sort()).toEqual(["Ana", "Boris", "Chen", "Dana", "Emil"]);
+  });
+  it("keeps array entries as given (names are not cleaned)", () => {
+    const r = makeTeamsTool({ names: ["1. Ana", "Boris"], teams: 2 });
+    expect(r.structuredContent?.teams.flat().sort()).toEqual(["1. Ana", "Boris"]);
+  });
   it.each([
     [{ names: ["Ana"], teams: 2 }, "TEAMS_MORE_THAN_NAMES"],
     [{ names: "  \n ", teams: 2 }, "NAMES_EMPTY"],
