@@ -31,3 +31,4 @@ app/public/ai-notice/
 app/public/legal-notice/
 app/public/support/
 packages/*/LICENSE
+package-lock.json
