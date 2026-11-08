@@ -74,14 +74,15 @@ test("storage is namespaced and Clear my data keeps other apps' data", async ({ 
 test("closing Report a problem with typed text asks before discarding it", async ({ page }) => {
   await page.goto("./#report");
   await page.getByLabel("What happened / your idea").fill("The button does nothing");
-  await page.locator('dialog[data-dialog="report"] .sheet-head button').click();
+  const report = page.locator('dialog[data-dialog="report"]');
+  await report.getByRole("button", { name: "Close", exact: true }).click();
   const alert = page.getByRole("alertdialog");
   await expect(alert).toBeVisible();
   await alert.getByRole("button", { name: "Keep editing" }).click();
   await expect(page.getByLabel("What happened / your idea")).toHaveValue("The button does nothing");
-  await page.locator('dialog[data-dialog="report"] .sheet-head button').click();
+  await report.getByRole("button", { name: "Close", exact: true }).click();
   await page.getByRole("alertdialog").getByRole("button", { name: "Discard" }).click();
-  await expect(page.locator('dialog[data-dialog="report"]')).toHaveCount(0);
+  await expect(report).toHaveCount(0);
 });
 
 test("Report with typed text survives Escape ×4 (close-watcher rule, accessibility §4)", async ({ page }) => {
@@ -90,7 +91,8 @@ test("Report with typed text survives Escape ×4 (close-watcher rule, accessibil
   await text.fill("Typed before the Escapes");
   for (let i = 0; i < 4; i++) {
     await page.keyboard.press("Escape");
-    await page.waitForTimeout(300); // let the confirm alert open/close between presses
+    // Odd presses open the confirm alert, even presses cancel it (keep editing).
+    await expect(page.getByRole("alertdialog")).toHaveCount(i % 2 === 0 ? 1 : 0);
   }
   await expect(page.locator('dialog[data-dialog="report"][open]')).toBeVisible();
   await expect(text).toHaveValue("Typed before the Escapes");
@@ -108,16 +110,16 @@ test.describe("toasts and sheets", () => {
     await page.locator('dialog[data-menu] [data-action="share"]').click();
     const sheet = page.locator('dialog[data-dialog="share"][open]');
     await sheet.getByRole("button", { name: "Copy" }).click();
-    const toast = sheet.locator(".toast");
+    const toast = sheet.getByRole("status").getByText("Copied ✓");
     await expect(toast).toBeVisible();
-    await toast.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
+    await sheet.getByRole("status").evaluate((el) => Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished)));
     expect(await toast.evaluate((el) => {
       const r = el.getBoundingClientRect();
-      return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2));
+      return el.closest('[role="status"]')?.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)) ?? false;
     })).toBe(true);
     // Closing the sheet must not take the toast with it: it moves back to the page region.
-    await sheet.locator(".sheet-head button").click();
-    await expect(page.locator("body > [data-toasts] .toast")).toBeVisible();
+    await sheet.getByRole("button", { name: "Close", exact: true }).click();
+    await expect(page.locator("body > [data-toasts]").getByText("Copied ✓")).toBeVisible();
   });
 });
 
@@ -141,7 +143,8 @@ test("reduced motion: menu, sheet and alert fade without moving (accessibility �
 test("a draft in Report a problem survives a reload", async ({ page }) => {
   await page.goto("./#report");
   await page.getByLabel("Short title").fill("Draft title");
-  await page.waitForTimeout(500); // debounce
+  // The draft is saved after a debounce: wait for it to land in storage, then reload.
+  await expect.poll(() => page.evaluate(() => Object.keys(localStorage).some((k) => k.endsWith("draft:report") && (localStorage.getItem(k) ?? "").includes("Draft title")))).toBe(true);
   await page.reload();
   await expect(page.getByLabel("Short title")).toHaveValue("Draft title");
 });
@@ -154,7 +157,8 @@ test("a tap outside a sheet closes it (light dismiss)", async ({ page }) => {
   await expect(page.locator('dialog[data-dialog="about"]')).toHaveCount(0);
 });
 
-test("offline: an address that isn't saved shows our offline page, not the browser's", async ({ page, context }) => {
+test("offline: an address that isn't saved shows our offline page, not the browser's", async ({ page, context, browserName }) => {
+  test.skip(browserName !== "chromium", "Service workers are Chromium-only in Playwright");
   await page.goto("./");
   await page.evaluate(async () => { await window.navigator.serviceWorker.ready; });
   await page.reload();
@@ -169,19 +173,20 @@ test("offline: an address that isn't saved shows our offline page, not the brows
 test("print shows content only", async ({ page }) => {
   await page.goto("./");
   await page.emulateMedia({ media: "print" });
-  await expect(page.locator(".app-header")).toBeHidden();
-  await expect(page.locator(".app-footer")).toBeHidden();
+  await expect(page.getByRole("banner")).toBeHidden();
+  await expect(page.getByRole("contentinfo")).toBeHidden();
   await expect(page.locator("main h1")).toBeVisible();
 });
 
-test("works offline after the first visit", async ({ page, context }) => {
+test("works offline after the first visit", async ({ page, context, browserName }) => {
+  test.skip(browserName !== "chromium", "Service workers are Chromium-only in Playwright");
   await page.goto("./");
   await page.evaluate(async () => { await window.navigator.serviceWorker.ready; });
   await page.reload();
   await context.setOffline(true);
   await page.reload();
   await expect(page.locator("h1")).toBeVisible();
-  await expect(page.locator(".offline-pill")).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "Offline — still works" })).toBeVisible();
   await context.setOffline(false);
 });
 
@@ -205,8 +210,9 @@ test("static head: one English URL, describedby llms.txt, complete social tags (
 
 test("FAQ is on the page on every screen size, answers collapsed (seo-geo §4)", async ({ page }) => {
   await page.goto("./");
-  const items = page.locator(".faq-list details");
-  await expect(page.locator(".faq-list")).toBeVisible();
+  const faq = page.locator("section", { has: page.getByRole("heading", { name: "FAQ", exact: true }) });
+  const items = faq.getByRole("group");
+  await expect(faq).toBeVisible();
   await expect(items).toHaveCount(app.faq.length);
   await expect(items.first()).not.toHaveAttribute("open");
   await expect(items.first().locator("p")).toBeHidden();

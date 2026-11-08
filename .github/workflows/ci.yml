@@ -51,7 +51,7 @@ jobs:
       - run: pnpm exec playwright install-deps chromium webkit firefox
         timeout-minutes: 10
       - run: pnpm build
-      - run: pnpm e2e
+      - run: pnpm e2e --fail-on-flaky-tests
         timeout-minutes: 15
       # Lighthouse budgets (lighthouserc.json). Moni's decision 2026-11-05: run the pinned CLI in CI only,
       # outside the project lockfile (its chromium-bidi dep fails our trustPolicy; it never ships to users).

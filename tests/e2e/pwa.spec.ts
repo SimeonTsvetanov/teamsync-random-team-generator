@@ -35,7 +35,8 @@ test("shared text arrives once and the address bar is cleaned", async ({ page })
   await expect.poll(() => page.evaluate(() => location.search)).toBe("");
 });
 
-test("online: a file the service worker didn't save comes from the network, not our 404 page", async ({ page }) => {
+test("online: a file the service worker didn't save comes from the network, not our 404 page", async ({ page, browserName }) => {
+  test.skip(browserName !== "chromium", "Service workers are Chromium-only in Playwright");
   await openControlled(page);
   const response = await page.goto("./sitemap.xml");
   expect(response?.headers()["content-type"]).toContain("xml");
@@ -47,7 +48,8 @@ test("online: a file the service worker didn't save comes from the network, not 
   await expect(page.locator("[data-ep-offline]").first()).toBeHidden();
 });
 
-test("offline: an unsaved address shows our offline page; saved pages reload with any query", async ({ page, context }) => {
+test("offline: an unsaved address shows our offline page; saved pages reload with any query", async ({ page, context, browserName }) => {
+  test.skip(browserName !== "chromium", "Service workers are Chromium-only in Playwright");
   await openControlled(page);
   await context.setOffline(true);
   await page.goto("./no-such-page");

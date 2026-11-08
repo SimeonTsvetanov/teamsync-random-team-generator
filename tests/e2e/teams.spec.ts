@@ -25,17 +25,17 @@ test("AC1: 10 names → 2 teams of 5; 11 names → 4/4/3; every name once", asyn
   await page.locator("#names").fill(names(10));
   await setTeams(page, 2);
   await generate(page);
-  const cards = page.locator(".team-card");
+  const cards = page.getByRole("article");
   await expect(cards).toHaveCount(2);
-  for (const c of await cards.all()) await expect(c.locator("li")).toHaveCount(5);
+  for (const c of await cards.all()) await expect(c.getByRole("listitem")).toHaveCount(5);
   await backToNames(page);
   await page.locator("#names").fill(names(11));
   await setTeams(page, 3);
   await generate(page);
   await expect(cards).toHaveCount(3);
-  const sizes = await Promise.all((await cards.all()).map((c) => c.locator("li").count()));
+  const sizes = await Promise.all((await cards.all()).map((c) => c.getByRole("listitem").count()));
   expect(sizes).toEqual([4, 4, 3]);
-  const all = (await page.locator(".team-card li").allTextContents()).sort();
+  const all = (await page.getByRole("article").getByRole("listitem").allTextContents()).sort();
   expect(all).toEqual(names(11).split("\n").sort());
   expect(await serious(page)).toEqual([]);
 });
@@ -59,7 +59,7 @@ test("AC4: more teams than names shows a clear message; ?teams=4 pre-selects 4",
   await page.locator("#names").fill("Ana\nBoris\nVesko");
   await generate(page);
   await expect(page.getByRole("alert")).toContainText("You have 3 names");
-  await expect(page.locator(".team-card")).toHaveCount(0);
+  await expect(page.getByRole("article")).toHaveCount(0);
   expect(await serious(page)).toEqual([]);
   await page.getByRole("button", { name: "More teams" }).click();
   await expect(page).toHaveURL(/teams=5/);
@@ -106,7 +106,7 @@ test("AC7: English first; Bulgarian via Settings is remembered; ?lang=bg for one
   await expect(page.getByRole("button", { name: "Направи отбори" })).toBeVisible();
   await page.locator("#names").fill("Ана\nБорис");
   await page.getByRole("button", { name: "Направи отбори" }).click();
-  await expect(page.locator(".team-card h3").first()).toHaveText("Отбор 1");
+  await expect(page.getByRole("article", { name: "Отбор 1" })).toBeVisible();
 });
 
 test("dark mode: results and errors keep WCAG AA contrast", async ({ browser }) => {
@@ -115,7 +115,7 @@ test("dark mode: results and errors keep WCAG AA contrast", async ({ browser }) 
   await page.goto("./?teams=3");
   await page.locator("#names").fill(names(9));
   await generate(page);
-  await expect(page.locator(".team-card")).toHaveCount(3);
+  await expect(page.getByRole("article")).toHaveCount(3);
   expect(await serious(page)).toEqual([]);
   await backToNames(page);
   await page.locator("#names").fill("Ana");
@@ -160,7 +160,7 @@ test("Clear and start over asks first, then empties the list and returns to the 
   await page.getByRole("button", { name: "Clear and start over" }).click();
   const alert = page.getByRole("alertdialog");
   await alert.getByRole("button", { name: "Cancel" }).click();
-  await expect(page.locator(".team-card")).toHaveCount(2);
+  await expect(page.getByRole("article")).toHaveCount(2);
   await page.getByRole("button", { name: "Clear and start over" }).click();
   await page.getByRole("alertdialog").getByRole("button", { name: "Clear", exact: true }).click();
   await expect(page.locator("[data-results]")).toBeHidden();
