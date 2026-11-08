@@ -26,6 +26,6 @@ export function openAbout(): void {
       ` — ${isKind(c.kind) ? t(`shell.credit.${c.kind}`) : c.what}`,
       h("span", { class: "hint" }, ` · ${c.license}`)))),
     ...credits.filter((c): c is typeof c & { notice: string } => "notice" in c && typeof c.notice === "string")
-      .map((c) => h("details", { class: "notice" }, h("summary", {}, t("shell.about.notice", { name: c.title })), h("pre", { class: "code", tabindex: "0" }, c.notice))),
+      .map((c) => h("details", { class: "notice" }, h("summary", {}, t("shell.about.notice", { name: c.title })), h("pre", { class: "code", tabindex: "0", lang: "en" }, c.notice))),
   ]);
 }

@@ -108,6 +108,7 @@ export const app = {
       { name: "Bring a list from a chat", text: "Paste a list from WhatsApp, Viber or notes — numbers, bullets, emoji and “[time] Name:” prefixes are removed automatically. On Android you can also select the message, tap Share and choose TeamSync (after installing it)." },
       { name: "Link with the number of teams", text: "Links like ?teams=3 open TeamSync with 3 teams selected. Names are never part of a link." },
       { name: "Works offline", text: "After the first visit TeamSync works without internet; install it to open it like an app." },
+      { name: "Keyboard", text: "Ctrl+Enter (⌘+Enter on a Mac) in the names box makes the teams; Tab moves through every control." },
     ],
   },
   l10n: {
@@ -128,6 +129,7 @@ export const app = {
           { name: "Списък от чат", text: "Поставете списък от WhatsApp, Viber или бележки — номерата, тиретата, емоджитата и „[час] Име:“ се махат автоматично. На Android можете и да маркирате съобщението, да натиснете Сподели и да изберете TeamSync (след като го инсталирате)." },
           { name: "Линк с броя отбори", text: "Линк като ?teams=3 отваря TeamSync с избрани 3 отбора. Имената никога не са част от линк." },
           { name: "Работи без интернет", text: "След първото посещение TeamSync работи без интернет; инсталирайте го, за да се отваря като приложение." },
+          { name: "Клавиатура", text: "Ctrl+Enter (⌘+Enter на Mac) в полето с имената прави отборите; Tab минава през всички бутони." },
         ],
       },
       faq: [

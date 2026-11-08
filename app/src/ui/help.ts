@@ -11,6 +11,13 @@ const p = (s: string): HTMLParagraphElement => h("p", {}, s);
 const list = (items: readonly string[], ordered = false): HTMLElement =>
   h(ordered ? "ol" : "ul", {}, ...items.map((i) => h("li", {}, i)));
 
+/** "Events: a, b, c." with each event name as code (identifiers, not text in the UI language). */
+function eventsLine(prefix: string): HTMLParagraphElement {
+  const [before = "", after = ""] = t("shell.help.events", { list: "\u0000" }).split("\u0000");
+  const names = ["ready", "progress", "result", "error"].flatMap((e, i) => [...(i ? [", "] : []), h("code", {}, `${prefix}:${e}`)]);
+  return h("p", {}, before, ...names, after);
+}
+
 export function openHelp(): void {
   const m = app.modes;
   const at = text();
@@ -18,12 +25,12 @@ export function openHelp(): void {
   if (m.urlParams.length) {
     service.push(h("h3", {}, t("shell.help.urlParams")),
       h("table", {}, h("thead", {}, h("tr", {}, ...[t("shell.help.colName"), t("shell.help.colValues"), t("shell.help.colDefault"), t("shell.help.colMeaning")].map((c) => h("th", {}, c)))),
-        h("tbody", {}, ...m.urlParams.map((u) => h("tr", {}, h("td", {}, u.name), h("td", {}, u.values), h("td", {}, u.default), h("td", {}, u.meaning))))),
+        h("tbody", {}, ...m.urlParams.map((u) => h("tr", {}, h("td", {}, h("code", {}, u.name)), h("td", {}, u.values), h("td", {}, u.default), h("td", { lang: "en" }, u.meaning))))),
       copyBlock(`${app.url}?${m.urlParams.map((u) => `${u.name}=${u.default}`).join("&")}`));
   }
   if (m.postMessage) {
     service.push(h("h3", {}, t("shell.help.embed")), copyBlock(`<iframe src="${app.url}?embed=1" title="${app.name}" loading="lazy"></iframe>`),
-      p(t("shell.help.events", { list: ["ready", "progress", "result", "error"].map((e) => `${m.postMessage?.prefix ?? ""}:${e}`).join(", ") })));
+      eventsLine(m.postMessage.prefix));
   }
   if (m.api) service.push(h("h3", {}, t("shell.help.api")), copyBlock(`curl ${m.api.baseUrl}/`), p(`OpenAPI: ${m.api.baseUrl}/${m.api.openapi}`));
   if (m.n8n) {

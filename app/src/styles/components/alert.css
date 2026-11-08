@@ -3,6 +3,8 @@
   /* || Components: alert */
   .alert {
     --alert-max-width: 380px;
+    --alert-enter-transform: scale(1.08);
+    --alert-exit-transform: scale(0.94);
 
     border: 0;
     padding: var(--space-5);
@@ -18,14 +20,21 @@
 
     &:not([open]) {
       opacity: 0;
-      transform: scale(0.94);
+      transform: var(--alert-exit-transform);
     }
 
     &[open] {
       @starting-style {
         opacity: 0;
-        transform: scale(1.08);
+        transform: var(--alert-enter-transform);
       }
+    }
+
+    /* Reduced motion: fade only, no scale (accessibility §8). */
+    @media (prefers-reduced-motion: reduce) {
+      --alert-enter-transform: none;
+      --alert-exit-transform: none;
+      transition-duration: var(--duration-fade);
     }
   }
 

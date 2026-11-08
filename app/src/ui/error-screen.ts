@@ -55,14 +55,16 @@ export function show(error: Error, lastAction = getLastAction()): void {
   });
   const status = el("p", { className: "es-status", "aria-live": "polite" });
   const report = button(t("shell.error.send"), false, async () => {
-    report.disabled = true;
+    // aria-disabled, not disabled: a disabled button drops keyboard focus to <body> (accessibility §3).
+    if (report.getAttribute("aria-disabled") === "true") return;
+    report.setAttribute("aria-disabled", "true");
     status.textContent = t("shell.error.sending");
     try {
       const { issue } = await sendErrorReport({ message: error.message, stack: error.stack ?? "", lastAction });
       status.textContent = t("shell.error.sent", { issue });
     } catch {
       status.textContent = t("shell.error.failed");
-      report.disabled = false;
+      report.removeAttribute("aria-disabled");
     }
   });
   const copy = button(t("shell.error.copy"), false, async () => {

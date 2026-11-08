@@ -17,6 +17,7 @@ import { flushReportQueue, openReport } from "./ui/report.ts";
 import { initInstall, openInstall, updateMenuLabel } from "./ui/install.ts";
 import { initPwa } from "./pwa.ts";
 import { initShareTarget } from "./ui/share-target.ts";
+import { relocateToasts } from "./ui/toast.ts";
 import { initTeams } from "./teams/view.ts";
 
 initI18n(); // first: every later module (incl. the error screen) uses t()
@@ -72,6 +73,7 @@ openFromHash();
 
 document.querySelector("[data-menu-open]")?.addEventListener("click", () => {
   menu?.showModal();
+  relocateToasts(); // a visible toast (e.g. the update offer) moves into the menu, not under it
 });
 document.querySelector("[data-menu-close]")?.addEventListener("click", () => { menu?.close(); });
 // Light dismiss: a tap outside the menu closes it.

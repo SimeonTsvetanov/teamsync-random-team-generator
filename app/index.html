@@ -66,7 +66,7 @@
             <span id="teams-label" class="field-label" data-i18n="app.teamsLabel">Teams</span>
             <div class="stepper" role="group" aria-labelledby="teams-label">
               <button type="button" class="stepper-button" data-teams-dec aria-label="Fewer teams" data-i18n-aria-label="app.fewerTeams"></button>
-              <output class="stepper-value" data-teams-value aria-live="polite">2</output>
+              <output class="stepper-value" data-teams-value aria-labelledby="teams-label" aria-live="polite">2</output>
               <button type="button" class="stepper-button" data-teams-inc aria-label="More teams" data-i18n-aria-label="app.moreTeams"></button>
             </div>
           </div>
@@ -79,7 +79,7 @@
       <section class="results" data-results hidden aria-labelledby="results-title">
         <div class="results-head">
           <button type="button" class="link-button results-back" data-results-back data-i18n="app.editNames">‹ Names</button>
-          <h2 id="results-title" class="visually-hidden" data-i18n="app.yourTeams">Your teams</h2>
+          <h2 id="results-title" class="visually-hidden" tabindex="-1" data-i18n="app.yourTeams">Your teams</h2>
         </div>
         <p class="visually-hidden" role="status" data-results-status></p>
         <div class="teams-grid" data-teams-grid></div>

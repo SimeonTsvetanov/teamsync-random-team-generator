@@ -1,6 +1,7 @@
 import { t } from "../i18n/index.ts";
 import { h } from "./dom.ts";
 import { closeDelay } from "./dialog.ts";
+import { relocateToasts } from "./toast.ts";
 
 export interface ConfirmOptions {
   readonly title: string; // the question with the action: "Delete all data?" — never "Are you sure?"
@@ -30,6 +31,7 @@ export function confirmAction(o: ConfirmOptions): Promise<boolean> {
     dialog.addEventListener("close", () => { resolve(result); setTimeout(() => { dialog.remove(); }, closeDelay()); });
     document.body.append(dialog);
     dialog.showModal();
+    relocateToasts(); // a visible toast stays perceivable above the alert
     cancel.focus();
   });
 }

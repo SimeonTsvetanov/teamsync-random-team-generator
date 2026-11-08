@@ -1,0 +1,6 @@
+[
+  { "name": "results (Generate)", "actions": [{ "fill": "#names", "text": "Ana\nBoris\nVesko\nGergana" }, { "focus": "role=button[name=\"Generate teams\"]" }, { "press": "Enter" }, { "wait": 800 }] },
+  { "name": "results → Back", "actions": [{ "fill": "#names", "text": "Ana\nBoris\nVesko\nGergana" }, { "focus": "role=button[name=\"Generate teams\"]" }, { "press": "Enter" }, { "wait": 800 }, { "focus": "[data-results-back]" }, { "press": "Enter" }, { "wait": 600 }] },
+  { "name": "stepper at min", "actions": [{ "focus": "role=button[name=\"Fewer teams\"]" }, { "press": "Enter" }, { "press": "Enter" }, { "press": "Enter" }, { "press": "Enter" }] },
+  { "name": "Clear → Undo", "actions": [{ "fill": "#names", "text": "Ana\nBoris" }, { "click": "role=button[name=\"Clear\"s]" }], "undoToast": true }
+]

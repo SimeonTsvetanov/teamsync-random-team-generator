@@ -55,6 +55,11 @@
       margin: revert-layer;
       border-radius: var(--radius-xl);
     }
+    /* Reduced motion: fade in place (after the desktop values, so it wins on every screen). */
+    @media (prefers-reduced-motion: reduce) {
+      --sheet-enter-opacity: 0;
+      --sheet-enter-transform: none;
+    }
   }
 
   /* Small sheets (a few buttons) are compact bottom sheets on phones, not full-screen. */

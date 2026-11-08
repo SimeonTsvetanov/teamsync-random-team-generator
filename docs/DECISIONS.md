@@ -99,3 +99,11 @@ Format: `date · decision · reason`. Newest last.
   needed" — Moni to confirm a fixed period. Not legal advice.
 - **2026-11-07 · Moni: emails to the contact address are kept at most one month** after the
   conversation ends, then deleted (GDPR storage limitation). Privacy updated.
+- **2026-11-08 · Forge 0.15.0 a11y merged + TeamSync a11y fixes** (forge a11y-check findings):
+  focus ring = darker accent-text in light mode (≥ 3:1, checked at build); Generate on phones moves
+  focus to the results heading; stepper ends use `aria-disabled` (focus stays) and the `<output>` is
+  labelled; Undo toast ≥ 10 s, pauses while hovered/focused, returns focus; toasts render inside an
+  open sheet; desktop toast never covers the focused element (scroll-padding, C43); English-only
+  passages carry `lang="en"` in the BG UI; Ctrl/Cmd+Enter generates (Help → Features). The names box
+  keeps the default Enter key (no `enterkeyhint="go"`): Enter must add a new line in a one-name-per-line
+  list. `tests/a11y-screens.json` = flows for `a11y-check.mjs --screens`. · forge-design accessibility.

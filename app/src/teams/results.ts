@@ -24,6 +24,12 @@ function teamCard(members: readonly string[], index: number): HTMLElement {
     h("ol", { class: "team-list" }, ...members.map((member) => h("li", {}, member))));
 }
 
+/** True when the focused element is still on screen (not <body>, not inside hidden content). */
+function isFocusVisible(): boolean {
+  const focused = document.activeElement;
+  return focused instanceof HTMLElement && focused !== document.body && focused.checkVisibility();
+}
+
 /**
  * Shows the teams as cards; on phones this switches to the results screen. Also remembers them
  * as `screen.last`, which Copy, Share and relabelling read.
@@ -35,6 +41,10 @@ export function renderResults(screen: TeamsScreen, teams: string[][], { announce
     workspace.classList.add("has-results");
     grid.replaceChildren(...teams.map((members, index) => teamCard(members, index)));
     results.hidden = false;
+    // Phones swap to the results screen and hide the focused Generate button: move focus to the
+    // results heading instead of letting it drop to <body> (accessibility §3). Inside the
+    // transition callback, because that is when the swap happens.
+    if (announce && !isFocusVisible()) screen.el.resultsTitle.focus({ preventScroll: true });
   });
   if (!announce) return;
   status.textContent = t("app.ready", { count: teams.length });

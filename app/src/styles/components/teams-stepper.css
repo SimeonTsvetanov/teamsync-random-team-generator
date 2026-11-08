@@ -34,7 +34,7 @@
     }
 
     /* After :active so a disabled end of the range never looks pressable. */
-    &:disabled {
+    &[aria-disabled="true"] {
       opacity: var(--stepper-disabled-opacity);
       cursor: default;
       box-shadow: none;

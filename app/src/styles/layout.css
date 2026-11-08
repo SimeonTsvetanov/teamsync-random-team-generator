@@ -120,4 +120,16 @@
       justify-items: normal;
     }
   }
+
+  /* While a desktop toast shows, the page keeps room above it and focus scrolling stops above it,
+     so it never hides the focused element (WCAG 2.4.11, technique C43). */
+  @media (width > 600px) {
+    html:has(body > [data-toasts] .toast) {
+      scroll-padding-bottom: calc(var(--tap-target) + 2 * var(--space-4) + var(--safe-bottom));
+    }
+
+    body:has(> [data-toasts] .toast) {
+      padding-bottom: calc(var(--tap-target) + 2 * var(--space-4) + var(--safe-bottom));
+    }
+  }
 }

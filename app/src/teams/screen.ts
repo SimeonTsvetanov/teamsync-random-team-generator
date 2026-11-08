@@ -15,6 +15,7 @@ export interface TeamsElements {
   readonly results: HTMLElement;
   readonly grid: HTMLElement;
   readonly status: HTMLElement;
+  readonly resultsTitle: HTMLElement;
   readonly back: HTMLButtonElement;
   readonly regenerate: HTMLButtonElement;
   readonly copy: HTMLButtonElement;
@@ -58,6 +59,7 @@ export function findTeamsElements(): TeamsElements | null {
     results: document.querySelector<HTMLElement>("[data-results]"),
     grid: document.querySelector<HTMLElement>("[data-teams-grid]"),
     status: document.querySelector<HTMLElement>("[data-results-status]"),
+    resultsTitle: document.querySelector<HTMLElement>("#results-title"),
     back: document.querySelector<HTMLButtonElement>("[data-results-back]"),
     regenerate: document.querySelector<HTMLButtonElement>("[data-regenerate]"),
     copy: document.querySelector<HTMLButtonElement>("[data-copy]"),

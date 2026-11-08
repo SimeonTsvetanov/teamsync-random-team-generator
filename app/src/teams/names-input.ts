@@ -80,6 +80,12 @@ export function initNamesInput(screen: TeamsScreen): void {
   clear.addEventListener("click", () => {
     onClear(screen);
   });
+  // Desktop shortcut for the main action (accessibility §6; documented in Help → Features).
+  area.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || !(event.ctrlKey || event.metaKey)) return;
+    event.preventDefault();
+    screen.el.form.requestSubmit();
+  });
   area.addEventListener("paste", (event) => {
     onPaste(screen, event);
   });

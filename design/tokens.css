@@ -117,6 +117,8 @@
     --ease-spring: linear(0, 0.157, 0.484 9.5%, 0.763, 0.929 19.4%, 1.012 24.6%, 1.043 29.3%, 1.046 33.4%, 1.032 39.2%, 1.009 47.6%, 0.997 58.2%, 1);
     --duration-sheet: 480ms; /* sheets, side menu, screen changes */
     --duration-alert: 300ms; /* alerts, popovers, toasts */
+    /* Reduced motion keeps this one: movement becomes a short opacity fade, still a cue (HIG). */
+    --duration-fade: 200ms;
 
     /* ---------- Layers ---------- */
     --z-header: 10;

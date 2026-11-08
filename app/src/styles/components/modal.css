@@ -4,8 +4,9 @@
   /* Motion — Apple-like (forge-design → design-system §9): sheets slide up on phones / scale in on
      desktop with the iOS curve; the side menu slides in; alerts pop from 1.08 with a spring;
      backdrops fade. Closing animates too (overlay/display are allow-discrete; dialog.ts removes
-     the element after --duration-sheet). Durations are 0 under prefers-reduced-motion (tokens).
-     Each component sets its own closed/entry state. */
+     the element after --duration-sheet). Under prefers-reduced-motion movement and scaling become
+     an opacity fade (--duration-fade; accessibility §8): each component sets its own closed/entry
+     state and drops its transform there; the blur itself never animates. */
   .menu,
   .sheet,
   .alert {
@@ -21,6 +22,12 @@
     &[open]::backdrop {
       @starting-style {
         opacity: 0;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      transition: opacity var(--duration-fade) var(--ease-out), overlay var(--duration-fade) allow-discrete, display var(--duration-fade) allow-discrete;
+      &::backdrop {
+        transition: opacity var(--duration-fade) var(--ease-out), overlay var(--duration-fade) allow-discrete, display var(--duration-fade) allow-discrete;
       }
     }
   }

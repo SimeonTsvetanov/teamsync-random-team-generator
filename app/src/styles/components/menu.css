@@ -123,5 +123,10 @@
         display: none;
       }
     }
+    /* Reduced motion: fade in place (after the desktop values, so it wins on every screen). */
+    @media (prefers-reduced-motion: reduce) {
+      --menu-enter-opacity: 0;
+      --menu-enter-transform: none;
+    }
   }
 }

@@ -27,12 +27,15 @@ export function renderCount(screen: TeamsScreen): void {
   clear.hidden = !area.value.trim();
 }
 
-/** Shows the number of teams and disables − / + at the ends of the range. */
+/**
+ * Shows the number of teams and marks − / + unavailable at the ends of the range with
+ * `aria-disabled` — still focusable, so keyboard focus never drops to <body> (accessibility §3).
+ */
 export function renderStepper(screen: TeamsScreen): void {
   const { teamsValue, decrease, increase } = screen.el;
   teamsValue.textContent = String(screen.teams);
-  decrease.disabled = screen.teams <= MIN_TEAMS;
-  increase.disabled = screen.teams >= MAX_TEAMS;
+  decrease.setAttribute("aria-disabled", String(screen.teams <= MIN_TEAMS));
+  increase.setAttribute("aria-disabled", String(screen.teams >= MAX_TEAMS));
 }
 
 /** Sets the number of teams (clamped), remembers it and keeps `?teams=` in the address bar. */

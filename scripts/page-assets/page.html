@@ -24,12 +24,15 @@
     </header>
     <main class="page">
       <article class="page-body">PAGE_BODY</article>
-      <nav class="page-nav" aria-label="Policies">
-        <a href="/APP_BASE/terms/">Terms</a> · <a href="/APP_BASE/privacy/">Privacy</a> ·
-        <a href="/APP_BASE/ai-notice/">AI notice</a> · <a href="/APP_BASE/legal-notice/">Legal notice</a> ·
-        <a href="/APP_BASE/support/">Support</a>
-      </nav>
-      <p class="page-foot">© <span data-year>BUILD_YEAR</span> Simeon Tsvetanov · <a href="/APP_BASE/">Back to APP_NAME</a></p>
+      <!-- Same help/contact links in the same order as the app footer (WCAG 3.2.6 Consistent Help). -->
+      <footer class="page-footer">
+        <nav class="page-nav" aria-label="Policies">
+          <a href="/APP_BASE/terms/">Terms</a> · <a href="/APP_BASE/privacy/">Privacy</a> · <a href="/APP_BASE/ai-notice/">AI notice</a> ·
+          <a href="/APP_BASE/legal-notice/">Legal notice</a> · <a href="/APP_BASE/support/">Contact</a> ·
+          <a href="https://buymeacoffee.com/simeontsvetanov" target="_blank" rel="noopener">Support ☕</a>
+        </nav>
+        <p class="page-foot">© <span data-year>BUILD_YEAR</span> Simeon Tsvetanov · <a href="/APP_BASE/">Back to APP_NAME</a></p>
+      </footer>
     </main>
   </body>
 </html>

@@ -28,12 +28,23 @@
     @media (width > 600px) {
       --toast-enter-y: var(--toast-enter-offset);
     }
+
+    /* Reduced motion: a short fade instead of the drop-in (accessibility §8). */
+    @media (prefers-reduced-motion: reduce) {
+      animation: toast-fade var(--duration-fade) var(--ease-out);
+    }
   }
 
   /* No opacity: text keeps full contrast at every frame. */
   @keyframes toast-in {
     from {
       transform: translateY(var(--toast-enter-y)) scale(0.98);
+    }
+  }
+
+  @keyframes toast-fade {
+    from {
+      opacity: 0;
     }
   }
 }

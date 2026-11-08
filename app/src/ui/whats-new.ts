@@ -8,7 +8,7 @@ import { t } from "../i18n/index.ts";
 export function openWhatsNew(): void {
   prefs.set("last-seen-version", app.version);
   openDialog("whats-new", t("shell.whatsNew.title"), changelog.map((v) =>
-    h("section", {}, h("h3", {}, `${v.version}${v.date ? ` · ${v.date}` : ""}`), h("ul", {}, ...v.items.map((i) => h("li", {}, i))))));
+    h("section", {}, h("h3", {}, `${v.version}${v.date ? ` · ${v.date}` : ""}`), h("ul", { lang: "en" }, ...v.items.map((i) => h("li", {}, i))))));
 }
 
 /** Shown once automatically after an update (not on the very first visit). */

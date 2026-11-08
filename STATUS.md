@@ -1,6 +1,6 @@
 # STATUS — TeamSync
 
-**Updated:** 2026-11-07 · **Phase:** 3 · T-01–T-11 done (reviews fixed); next T-12 release v1.0.0 — needs Moni "release approved"
+**Updated:** 2026-11-08 · **Phase:** 3 · T-01–T-11 done (reviews fixed); next T-12 release v1.0.0 — needs Moni "release approved"
 
 ## Done
 - Intake (DECISIONS 2026-11-05) · SPEC approved 2026-11-06 · accent + logo approved.
@@ -10,6 +10,7 @@
 - Forge 0.10.0 SEO merged 2026-11-07 (no hreflang, full OG, spec llms.txt, FAQ collapsed on phones); e2e 76/76.
 - Forge 0.12.0 PWA merged 2026-11-07 (offline-only fallback, safe updates); e2e 82/82.
 - Forge 0.14.0 compliance merged 2026-11-07 (licence texts, Privacy/AI notice/Support updated); compliance-check 0 FAIL; e2e 82/82. Live licence file 404 until deploy.
+- Forge 0.15.0 a11y merged 2026-11-08 + TeamSync a11y fixes (DECISIONS 2026-11-08); a11y-check 0 FAIL with `tests/a11y-screens.json`, EN + BG.
 
 ## Next
 - T-01–T-09 done: core + MCP (39 unit tests), main screen EN/BG, remember list, ?teams, embed, Copy/Share, texts + legal filled, e2e 62 pass (AC1, AC3–AC7, dark-mode axe).

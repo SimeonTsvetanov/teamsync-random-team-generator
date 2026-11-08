@@ -41,6 +41,9 @@ body { margin: 0; min-height: 100dvh; display: flex; flex-direction: column; }
 .ep-support { margin: var(--space-8) 0 0; padding: var(--space-3) var(--space-5); border-radius: var(--radius-lg); text-wrap: balance; background: var(--color-surface); box-shadow: var(--shadow-1); font-size: var(--text-md); color: var(--color-text-secondary); }
 .ep-support a { color: var(--color-accent-text); font-weight: var(--weight-semibold); text-decoration: none; }
 .ep-meta { margin: var(--space-4) 0 0; font-size: var(--text-sm); color: var(--color-text-tertiary); }
+/* Footer: the app footer's help/contact links, same order (WCAG 3.2.6). */
+.ep-footer { padding: 0 var(--space-5) calc(var(--space-6) + var(--safe-bottom)); text-align: center; font-size: var(--text-sm); color: var(--color-text-secondary); }
+.ep-footer a { color: var(--color-accent-text); font-weight: var(--weight-semibold); text-decoration: none; }
 .ep-meta a { color: var(--color-accent-text); font-weight: var(--weight-semibold); text-decoration: none; }
 @media (forced-colors: active) { .ep-button { border: 1px solid CanvasText; } }
 
