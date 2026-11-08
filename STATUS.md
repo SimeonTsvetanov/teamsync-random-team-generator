@@ -1,6 +1,6 @@
 # STATUS — TeamSync
 
-**Updated:** 2026-11-08 · **Phase:** 3 · T-01–T-11 done (reviews fixed); next T-12 release v1.0.0 — needs Moni "release approved"
+**Updated:** 2026-11-08 · **Phase:** 4 (live) · v1.0.1 released: Pages, wiki, npm core+mcp via trusted publishing (provenance)
 
 ## Done
 - Intake (DECISIONS 2026-11-05) · SPEC approved 2026-11-06 · accent + logo approved.
@@ -13,6 +13,8 @@
 - Forge 0.15.0 a11y merged 2026-11-08 + TeamSync a11y fixes (DECISIONS 2026-11-08); a11y-check 0 FAIL with `tests/a11y-screens.json`, EN + BG.
 
 ## Next
+- Dependabot PR (minor/patch group) + 9 build-time alerts; lawyer review items; evals variance (forge).
+- Next release: publish a GitHub Release → `publish.yml` publishes npm (no Codespace needed).
 - T-01–T-09 done: core + MCP (39 unit tests), main screen EN/BG, remember list, ?teams, embed, Copy/Share, texts + legal filled, e2e 62 pass (AC1, AC3–AC7, dark-mode axe).
 
 ## Blockers / open
