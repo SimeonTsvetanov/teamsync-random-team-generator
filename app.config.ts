@@ -2,7 +2,7 @@
  * app.config.ts — the single source of truth for a micro-app (APP-STANDARD §0).
  * Menu, Help, legal pages, llms.txt, JSON-LD, manifest, sitemap, README service sections and the
  * n8n block are GENERATED from this object. Never duplicate these values elsewhere.
- * Scaffolded by forge-workflow. Fill __PLACEHOLDERS__ during /new-service.
+ * Scaffolded by forge. Fill __PLACEHOLDERS__ during /new-app.
  */
 
 export interface UrlParam {

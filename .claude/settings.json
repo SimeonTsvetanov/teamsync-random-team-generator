@@ -1,6 +1,6 @@
 {
   "enabledPlugins": {
-    "forge-workflow@microapp-forge": true
+    "forge@microapp-forge": true
   },
   "extraKnownMarketplaces": {
     "microapp-forge": {

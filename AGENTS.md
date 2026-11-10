@@ -8,7 +8,7 @@ Create fair, random teams in seconds — a free micro-app by Simeon "Moni" Tsvet
 
 ## Rules
 - Talk to Moni in **Bulgarian**; every file, commit and issue in **English**.
-- Follow the forge plugin (`forge-workflow` + `forge-stack`). Cloud session without the plugin:
+- Follow the forge plugin (`forge` + `forge-standards`). Cloud session without the plugin:
   read `simeonts-microapp-forge/plugins/*/skills/*/SKILL.md` for the area, then only the chapters
   it points to; agents are in `plugins/*/agents/*.md`.
 - Run `pnpm verify` before saying "done"; keep working while it fails.
