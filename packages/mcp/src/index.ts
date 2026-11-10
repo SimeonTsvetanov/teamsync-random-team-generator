@@ -18,7 +18,7 @@ server.registerTool(
       "Split a list of people into 2–10 fair, random teams (sizes differ by at most 1; unbiased crypto shuffle). Accepts an array of names or one-per-line text. Returns the teams as data and as ready-to-share text.",
     inputSchema: makeTeamsInput,
     outputSchema: z.object({ teams: z.array(z.array(z.string())) }),
-    annotations: { readOnlyHint: true, openWorldHint: false },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   },
   (args) => makeTeamsTool(args),
 );

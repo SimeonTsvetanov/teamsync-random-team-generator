@@ -3,6 +3,8 @@
 All notable user-facing changes. Format: Keep a Changelog · SemVer.
 
 ## [Unreleased]
+### Changed
+- AI agents: the make_teams tool declares that it is read-only, safe to repeat and works offline, so agent apps can run it without extra warnings.
 
 ## [1.0.1] - 2026-11-08
 ### Fixed
