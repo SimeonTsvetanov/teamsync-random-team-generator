@@ -8,7 +8,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
 import * as z from "zod";
 import { makeTeamsInput, makeTeamsTool } from "./tool.js";
 
-const server = new McpServer({ name: "teamsync-random-team-generator", version: "1.0.1" });
+const server = new McpServer({ name: "teamsync-random-team-generator", version: "1.0.2" });
 
 server.registerTool(
   "make_teams",

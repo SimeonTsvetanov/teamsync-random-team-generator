@@ -3,6 +3,8 @@
 All notable user-facing changes. Format: Keep a Changelog · SemVer.
 
 ## [Unreleased]
+
+## [1.0.2] - 2026-11-10
 ### Changed
 - AI agents: the make_teams tool declares that it is read-only, safe to repeat and works offline, so agent apps can run it without extra warnings.
 
@@ -22,6 +24,7 @@ All notable user-facing changes. Format: Keep a Changelog · SemVer.
 - Links like ?teams=3 open TeamSync with 3 teams selected.
 - AI agents can make teams too, with the local MCP tool make_teams.
 
-[Unreleased]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/releases/tag/v1.0.0
