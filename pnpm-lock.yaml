@@ -227,8 +227,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.3
       i18next:
-        specifier: ^26.7.1
-        version: 26.7.1(typescript@6.0.3)
+        specifier: ^27.1.1
+        version: 27.1.1(typescript@6.0.3)
       lucide:
         specifier: ^1.70.0
         version: 1.70.0
@@ -2075,8 +2075,9 @@ packages:
   hookified@2.2.0:
     resolution: {integrity: sha512-p/LgFzRN5FeoD3DLS6bkUapeye6E4SI6yJs6KetENd18S+FBthqYq2amJUWpt5z0EQwwHemidjY5OqJGEKm5uA==}
 
-  i18next@26.7.1:
-    resolution: {integrity: sha512-cX+3RRVczel/V2kCMTACckSGSpqgtWYEA6beXNYVms7dOQiHojdPYHD26lT4IKimNeoGWrLvtPgjftbRvmZJVw==}
+  i18next@27.1.1:
+    resolution: {integrity: sha512-Qq3aJizS3RXQ30crhx9BKQLrHoa6GKpgrOJjVZ9vgj3EBxAddrmVfDNUrAMxSUimw5Jc+ld4SSZUAzf1q4nGyQ==}
+    engines: {node: '>=22'}
     peerDependencies:
       typescript: ^5 || ^6 || ^7
     peerDependenciesMeta:
@@ -4863,7 +4864,7 @@ snapshots:
 
   hookified@2.2.0: {}
 
-  i18next@26.7.1(typescript@6.0.3):
+  i18next@27.1.1(typescript@6.0.3):
     optionalDependencies:
       typescript: 6.0.3
 
