@@ -1,6 +1,6 @@
 # STATUS — TeamSync
 
-**Updated:** 2026-11-08 · **Phase:** 4 (live) · v1.0.1 released: Pages, wiki, npm core+mcp via trusted publishing (provenance)
+**Updated:** 2026-11-08 · **Phase:** 4 (live) · v1.0.2 released: Pages, wiki, npm core+mcp via trusted publishing (provenance)
 
 ## Done
 - Intake (DECISIONS 2026-11-05) · SPEC approved 2026-11-06 · accent + logo approved.
