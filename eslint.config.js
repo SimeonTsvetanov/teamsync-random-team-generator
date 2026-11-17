@@ -35,6 +35,7 @@ export default tseslint.config(
       "prefer-template": "error",
       "max-depth": ["error", 3],
       "max-lines-per-function": ["error", { max: 60, skipBlankLines: true, skipComments: true }],
+      "max-lines": ["error", { max: 300, skipBlankLines: true, skipComments: true }],
       "no-console": ["error", { allow: ["warn", "error"] }],
       // Security §1: no HTML/code sinks (string timers: @typescript-eslint/no-implied-eval, in strict)
       "no-eval": "error",
@@ -59,7 +60,11 @@ export default tseslint.config(
     },
   },
   { files: TOOL_CONFIG_FILES, rules: { "no-restricted-syntax": "off" } },
-  { files: TEST_FILES, rules: { "max-lines-per-function": "off" } },
+  { files: TEST_FILES, rules: { "max-lines-per-function": "off", "max-lines": "off" } },
+  // Layers (engineering → structure §1–2): dependencies point one way, other packages by name only.
+  { files: ["packages/core/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/app/**", "**/mcp/**", "**/service/**", "*-mcp", "*-mcp/*"], message: "core imports nothing of ours (structure §1)." }] }], "no-restricted-globals": ["error", "document", "window", "localStorage", "sessionStorage", "indexedDB", "navigator", "fetch"] } },
+  { files: ["packages/mcp/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/app/**", "**/service/**", "**/packages/core/**"], message: "mcp imports core by its package name only (structure §1–2)." }] }] } },
+  { files: ["app/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/packages/**", "**/service/**", "*-mcp", "*-mcp/*", "../../../*"], message: "app imports core by its package name; no deep relative chains (structure §1–2)." }] }] } },
   { files: ["**/*.js", "**/*.mjs"], ...tseslint.configs.disableTypeChecked },
   { files: ["**/*.js", "**/*.mjs"], rules: { "@typescript-eslint/explicit-module-boundary-types": "off", "@typescript-eslint/naming-convention": "off" } },
   { files: ["scripts/**", "packages/mcp/**"], rules: { "no-console": "off" } },
