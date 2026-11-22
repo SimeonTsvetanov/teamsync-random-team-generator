@@ -1,7 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { openApp } from "../support/entry.ts";
-import { confirmDialog, shareSheet, toasts } from "../support/host.ts";
+import { attribution, confirmDialog, shareSheet, toasts } from "../support/host.ts";
 
 // TeamSync's team screen — acceptance criteria from docs/SPEC.md §9. Runs on the standalone page
 // and inside Quizzard (`#/teams`): only the screen's root and the host services of the contract
@@ -56,7 +56,7 @@ test("AC3: Copy gives the team text with the attribution line", async ({ page, c
   expect(text.startsWith("✨ TEAMS GENERATED ✨")).toBe(true);
   expect(text).toContain("🏆 Team 1 | Members - 2");
   // The first shuffle of these names: count 1 fused to the name (DECISIONS 2026-11-22).
-  expect(text.trim().endsWith("— Made with TeamSync1 · https://simeontsvetanov.github.io/teamsync-random-team-generator/")).toBe(true);
+  expect(text.trim().endsWith(`— Made with ${attribution().name}1 · ${attribution().url}`)).toBe(true);
 });
 
 // The address following the stepper is the standalone page's: shell/teams-standalone.spec.ts.

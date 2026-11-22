@@ -12,6 +12,8 @@ interface HostUi {
   readonly confirmDialog: (page: Page) => Locator;
   /** The WhatsApp + Copy sheet `shell.share` opens where the device has no share sheet. */
   readonly shareSheet: (page: Page) => Locator;
+  /** The app the last line of copied and shared teams names: "— Made with <name><count> · <url>". */
+  readonly attribution: { readonly name: string; readonly url: string };
 }
 
 /**
@@ -19,13 +21,17 @@ interface HostUi {
  * Quizzard's app/src/ui (toast.ts, confirm.ts, dialog.ts + share.ts at Quizzard 9615996) builds the
  * same parts with the same hooks, so it shares this entry until one of them changes.
  */
-const FORGE_SHELL: HostUi = {
-  toasts: (page) => page.locator("[data-toasts]"),
-  confirmDialog: (page) => page.getByRole("alertdialog"),
-  shareSheet: (page) => page.locator('dialog[data-dialog="share"]'),
+const FORGE_SHELL = {
+  toasts: (page: Page) => page.locator("[data-toasts]"),
+  confirmDialog: (page: Page) => page.getByRole("alertdialog"),
+  shareSheet: (page: Page) => page.locator('dialog[data-dialog="share"]'),
 };
 
-const HOSTS = { standalone: FORGE_SHELL, quizzard: FORGE_SHELL } as const satisfies Record<string, HostUi>;
+const HOSTS = {
+  standalone: { ...FORGE_SHELL, attribution: { name: "TeamSync", url: "https://simeontsvetanov.github.io/teamsync-random-team-generator/" } },
+  // Quizzard names itself in the line (it passes `attribution-name` / `attribution-url` to the screen).
+  quizzard: { ...FORGE_SHELL, attribution: { name: "Quizzard", url: "https://simeontsvetanov.github.io/Quizzard/" } },
+} as const satisfies Record<string, HostUi>;
 
 function isHostName(name: string): name is keyof typeof HOSTS {
   return Object.hasOwn(HOSTS, name);
@@ -54,4 +60,9 @@ export function confirmDialog(page: Page): Locator {
 /** Returns the host's fallback share sheet (`context.shell.share` without a native share sheet). */
 export function shareSheet(page: Page): Locator {
   return hostUi().shareSheet(page);
+}
+
+/** Returns the app name and address the host puts in the last line of copied and shared teams. */
+export function attribution(): HostUi["attribution"] {
+  return hostUi().attribution;
 }
