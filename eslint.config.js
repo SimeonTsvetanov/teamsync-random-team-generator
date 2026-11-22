@@ -6,6 +6,8 @@ import globals from "globals";
 
 /** Files whose tool requires `export default` (code-quality §2). */
 const TOOL_CONFIG_FILES = ["**/*.config.{js,ts,mjs,mts}", "**/pw.*.config.ts"];
+/** The mini-app contract loads these modules' default export (`MiniAppEntry.load` / `.help`). */
+const CONTRACT_ENTRY_FILES = ["packages/miniapp/src/index.ts", "packages/miniapp/src/help.ts"];
 /** Tests read best as long `describe` blocks; size limits apply to source only. */
 const TEST_FILES = ["**/*.test.ts", "**/*.spec.ts", "tests/**"];
 
@@ -59,11 +61,13 @@ export default tseslint.config(
       ],
     },
   },
-  { files: TOOL_CONFIG_FILES, rules: { "no-restricted-syntax": "off" } },
+  { files: [...TOOL_CONFIG_FILES, ...CONTRACT_ENTRY_FILES], rules: { "no-restricted-syntax": "off" } },
   { files: TEST_FILES, rules: { "max-lines-per-function": "off", "max-lines": "off" } },
   // Layers (engineering → structure §1–2): dependencies point one way, other packages by name only.
-  { files: ["packages/core/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/app/**", "**/mcp/**", "**/service/**", "*-mcp", "*-mcp/*"], message: "core imports nothing of ours (structure §1)." }] }], "no-restricted-globals": ["error", "document", "window", "localStorage", "sessionStorage", "indexedDB", "navigator", "fetch"] } },
-  { files: ["packages/mcp/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/app/**", "**/service/**", "**/packages/core/**"], message: "mcp imports core by its package name only (structure §1–2)." }] }] } },
+  { files: ["packages/core/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/app/**", "**/mcp/**", "**/service/**", "*-mcp", "*-mcp/*", "*-miniapp", "*-miniapp/*"], message: "core imports nothing of ours (structure §1)." }] }], "no-restricted-globals": ["error", "document", "window", "localStorage", "sessionStorage", "indexedDB", "navigator", "fetch"] } },
+  { files: ["packages/mcp/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/app/**", "**/service/**", "**/packages/core/**", "*-miniapp", "*-miniapp/*"], message: "mcp imports core by its package name only (structure §1–2)." }] }] } },
+  // The mini-app body (Quizzard PLAN §1.1): core by name only; never the standalone shell, mcp or service.
+  { files: ["packages/miniapp/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/app/**", "**/mcp/**", "**/service/**", "**/packages/**", "*-mcp", "*-mcp/*", "../../../*", "**/app.config*"], message: "the mini-app imports core by its package name and nothing of app/ (structure §1–2)." }] }] } },
   { files: ["app/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/packages/**", "**/service/**", "*-mcp", "*-mcp/*", "../../../*"], message: "app imports core by its package name; no deep relative chains (structure §1–2)." }] }] } },
   { files: ["**/*.js", "**/*.mjs"], ...tseslint.configs.disableTypeChecked },
   { files: ["**/*.js", "**/*.mjs"], rules: { "@typescript-eslint/explicit-module-boundary-types": "off", "@typescript-eslint/naming-convention": "off" } },

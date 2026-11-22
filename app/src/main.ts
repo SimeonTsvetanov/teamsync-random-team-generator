@@ -18,7 +18,7 @@ import { initInstall, openInstall, updateMenuLabel } from "./ui/install.ts";
 import { initPwa } from "./pwa.ts";
 import { initShareTarget } from "./ui/share-target.ts";
 import { relocateToasts } from "./ui/toast.ts";
-import { initTeams } from "./teams/view.ts";
+import { initTeamsScreen } from "./miniapp/teams.ts";
 
 initI18n(); // first: every later module (incl. the error screen) uses t()
 installErrorScreen();
@@ -93,7 +93,7 @@ if (header && sentinel) {
 
 window.addEventListener("online", flushReportQueue);
 flushReportQueue();
-initTeams();
+initTeamsScreen();
 maybeShowWhatsNew();
 initPwa();
 // Launch splash: remove it once its fade-out ends (also after a timeout, belt and braces).

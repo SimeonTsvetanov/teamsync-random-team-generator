@@ -37,6 +37,8 @@
     "@playwright/test": "^1.65.0",
     "@axe-core/playwright": "^4.14.0",
     "marked": "^18.0.0",
-    "sharp": "^0.35.4"
+    "sharp": "^0.35.4",
+    "@simeonts/teamsync-random-team-generator-miniapp": "workspace:^",
+    "jsdom": "^31.0.1"
   }
 }

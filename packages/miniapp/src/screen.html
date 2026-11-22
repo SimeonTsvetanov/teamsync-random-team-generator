@@ -1,0 +1,41 @@
+<div class="workspace" data-workspace>
+<section class="tool">
+  <form class="tool-form" data-teams-form novalidate>
+    <div class="field">
+      <div class="field-head">
+        <label id="names-label" for="names" data-teams-i18n="namesLabel">Names</label>
+        <span class="field-meta"><span class="hint" data-names-count></span>
+          <button type="button" class="link-button" data-names-clear hidden data-teams-i18n="clear">Clear</button></span>
+      </div>
+      <textarea id="names" name="names" rows="8" spellcheck="false" autocomplete="off" autocapitalize="words" aria-describedby="names-hint" placeholder="One name per line…"></textarea>
+      <p id="names-hint" class="hint" data-teams-i18n="namesHint">One name per line. Blank lines are ignored.</p>
+    </div>
+    <div class="field field--row">
+      <span id="teams-label" class="field-label" data-teams-i18n="teamsLabel">Teams</span>
+      <div class="stepper" role="group" aria-labelledby="teams-label">
+        <button type="button" class="stepper-button" data-teams-dec aria-label="Fewer teams" data-teams-i18n-aria-label="fewerTeams"></button>
+        <output class="stepper-value" data-teams-value aria-labelledby="teams-label" aria-live="polite">2</output>
+        <button type="button" class="stepper-button" data-teams-inc aria-label="More teams" data-teams-i18n-aria-label="moreTeams"></button>
+      </div>
+    </div>
+    <p class="form-error" data-teams-error role="alert" hidden></p>
+    <div class="cta-bar">
+      <button type="submit" class="button button--primary button--large" data-icon="users"><span data-teams-i18n="generate">Generate teams</span></button>
+    </div>
+  </form>
+</section>
+<section class="results" data-results hidden aria-labelledby="results-title">
+  <div class="results-head">
+    <button type="button" class="link-button results-back" data-results-back data-teams-i18n="editNames">‹ Names</button>
+    <h2 id="results-title" class="visually-hidden" tabindex="-1" data-teams-i18n="yourTeams">Your teams</h2>
+  </div>
+  <p class="visually-hidden" role="status" data-results-status></p>
+  <div class="teams-grid" data-teams-grid></div>
+  <div class="button-stack results-actions">
+    <button type="button" class="button button--primary" data-regenerate data-icon="shuffle"><span data-teams-i18n="regenerate">Shuffle again</span></button>
+    <button type="button" class="button" data-share data-icon="share"><span data-teams-i18n="share">Share</span></button>
+    <button type="button" class="button" data-copy data-icon="copy"><span data-teams-i18n="copy">Copy</span></button>
+    <button type="button" class="button button--destructive results-clear" data-start-over data-icon="eraser"><span data-teams-i18n="startOver">Clear and start over</span></button>
+  </div>
+</section>
+</div>

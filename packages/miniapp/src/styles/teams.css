@@ -1,0 +1,10 @@
+/* Teams mini-app stylesheet (shared mode, Quizzard PLAN §1.3): only the screen's own components plus
+   its forced-colors/print overrides. No layer order line, tokens, accent or fonts — the host's
+   app.css declares `@layer tokens, base, layout, components, utilities, overrides;` first, and these
+   rules join its `components` and `overrides` layers after the host's own, in on-screen order. */
+@import "./teams-workspace.css";
+@import "./teams-form.css";
+@import "./teams-stepper.css";
+@import "./teams-generate.css";
+@import "./teams-results.css";
+@import "./teams-overrides.css";

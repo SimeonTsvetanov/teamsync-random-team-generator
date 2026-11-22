@@ -1,9 +1,9 @@
-// Form helpers of the main screen: names count, Clear link, teams stepper and the error line.
-// Used by view.ts, names-input.ts, results.ts and result-actions.ts.
+// Form helpers of the team screen: names count, Clear link, teams stepper and the error line.
+// Used by mount.ts, names-input.ts, results.ts and result-actions.ts.
 import { MAX_TEAMS, MIN_TEAMS, parseNames } from "@simeonts/teamsync-random-team-generator-core";
-import { t } from "../i18n/index.ts";
+import { emitTeamsEvent } from "../host-api.ts";
 import type { TeamsScreen } from "./screen.ts";
-import { clampTeams, saved, writeTeamsToUrl } from "./state.ts";
+import { clampTeams } from "./state.ts";
 
 /** Returns how many names the text holds after parsing (0 when it has none or is invalid). */
 export function countNames(text: string): number {
@@ -23,7 +23,7 @@ export function showError(screen: TeamsScreen, message: string | null): void {
 export function renderCount(screen: TeamsScreen): void {
   const { area, count, clear } = screen.el;
   const names = countNames(area.value);
-  count.textContent = names ? t("app.namesCount", { count: names }) : "";
+  count.textContent = names ? screen.t("namesCount", { count: names }) : "";
   clear.hidden = !area.value.trim();
 }
 
@@ -38,11 +38,14 @@ export function renderStepper(screen: TeamsScreen): void {
   increase.setAttribute("aria-disabled", String(screen.teams >= MAX_TEAMS));
 }
 
-/** Sets the number of teams (clamped), remembers it and keeps `?teams=` in the address bar. */
+/**
+ * Sets the number of teams (clamped) and remembers it; the host hears `teams:count` (the standalone
+ * site keeps `?teams=` in the address bar with it).
+ */
 export function setTeams(screen: TeamsScreen, teams: number): void {
   screen.teams = clampTeams(teams);
-  saved.setTeams(screen.teams);
-  writeTeamsToUrl(screen.teams);
+  screen.saved.setTeams(screen.teams);
+  emitTeamsEvent(screen.host, "teams:count", { teams: screen.teams });
   renderStepper(screen);
   showError(screen, null);
 }
@@ -50,6 +53,6 @@ export function setTeams(screen: TeamsScreen, teams: number): void {
 /** Replaces the names list, remembers it on this device and updates the count. */
 export function setNames(screen: TeamsScreen, text: string): void {
   screen.el.area.value = text;
-  saved.setNames(text);
+  screen.saved.setNames(text);
   renderCount(screen);
 }

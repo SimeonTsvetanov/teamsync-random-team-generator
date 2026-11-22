@@ -22,11 +22,15 @@
     "vite.config.ts",
     "pwa-assets.config.ts",
     "../app.config.ts",
-    "../scripts/seo.ts"
+    "../scripts/seo.ts",
+    "../scripts/screen-html.ts"
   ],
   "references": [
     {
       "path": "../packages/core"
+    },
+    {
+      "path": "../packages/miniapp"
     }
   ]
 }

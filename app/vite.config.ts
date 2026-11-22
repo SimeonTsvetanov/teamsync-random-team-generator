@@ -1,9 +1,11 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig, type Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { app as config, type AppConfig } from "../app.config.ts";
 import { OG_IMAGE, escapeHtml, ogImageAlt, ogImageUrl, siteVerificationTag, structuredData } from "../scripts/seo.ts";
+import { injectScreen } from "../scripts/screen-html.ts";
 
 const app: AppConfig = config;
 
@@ -58,6 +60,19 @@ function appHtml(): Plugin {
 }
 
 /**
+ * Puts the team screen's markup (the mini-app package's screen.html) at the marker in index.html:
+ * the served page keeps the static form for SEO and no-JS visitors, and the body hydrates it (PLAN TS-01).
+ * `pre`, so Vite's own HTML processing sees the finished page.
+ */
+function teamsScreen(): Plugin {
+  const screenFile = fileURLToPath(import.meta.resolve("@simeonts/teamsync-random-team-generator-miniapp/screen.html"));
+  return {
+    name: "teamsync-screen-html",
+    transformIndexHtml: { order: "pre", handler: (html) => injectScreen(html, readFileSync(screenFile, "utf8")) },
+  };
+}
+
+/**
  * Makes `vite preview` answer like GitHub Pages: an unknown path gets 404.html with status 404
  * instead of Vite's index.html fallback, so e2e sees production's online behaviour (pwa §4, §9).
  */
@@ -83,6 +98,7 @@ export default defineConfig({
   base: BASE,
   build: { target: "es2024" },
   plugins: [
+    teamsScreen(),
     appHtml(),
     pagesNotFound(),
     VitePWA({

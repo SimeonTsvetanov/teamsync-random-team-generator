@@ -1,11 +1,9 @@
-// Results of the main screen: Generate (names → fair random teams), the team cards and clearing
-// them. Used by view.ts and result-actions.ts.
+// Results of the team screen: Generate (names → fair random teams), the team cards and clearing
+// them. Used by mount.ts and result-actions.ts.
 import { makeTeams, parseNames } from "@simeonts/teamsync-random-team-generator-core";
-import { t } from "../i18n/index.ts";
-import { h } from "../ui/dom.ts";
-import { maybeOfferInstall } from "../ui/install.ts";
-import { withTransition } from "../ui/transition.ts";
-import { postToParent } from "./embed.ts";
+import { h } from "../dom/h.ts";
+import { withTransition } from "../dom/transition.ts";
+import { emitTeamsEvent } from "../host-api.ts";
 import { renderCount, showError } from "./form.ts";
 import type { TeamsScreen } from "./screen.ts";
 
@@ -15,12 +13,12 @@ export interface RenderResultsOptions {
   readonly announce: boolean;
 }
 
-function teamCard(members: readonly string[], index: number): HTMLElement {
+function teamCard(screen: TeamsScreen, members: readonly string[], index: number): HTMLElement {
   const id = `team-${String(index + 1)}`;
   return h("article", { class: "team-card", "aria-labelledby": id },
     h("header", { class: "team-head" },
-      h("h3", { id }, t("app.teamTitle", { n: index + 1 })),
-      h("span", { class: "chip" }, t("app.membersCount", { count: members.length }))),
+      h("h3", { id }, screen.t("teamTitle", { n: index + 1 })),
+      h("span", { class: "chip" }, screen.t("membersCount", { count: members.length }))),
     h("ol", { class: "team-list" }, ...members.map((member) => h("li", {}, member))));
 }
 
@@ -39,7 +37,7 @@ export function renderResults(screen: TeamsScreen, teams: string[][], { announce
   screen.last = teams;
   withTransition(() => {
     workspace.classList.add("has-results");
-    grid.replaceChildren(...teams.map((members, index) => teamCard(members, index)));
+    grid.replaceChildren(...teams.map((members, index) => teamCard(screen, members, index)));
     results.hidden = false;
     // Phones swap to the results screen and hide the focused Generate button: move focus to the
     // results heading instead of letting it drop to <body> (accessibility §3). Inside the
@@ -47,7 +45,7 @@ export function renderResults(screen: TeamsScreen, teams: string[][], { announce
     if (announce && !isFocusVisible()) screen.el.resultsTitle.focus({ preventScroll: true });
   });
   if (!announce) return;
-  status.textContent = t("app.ready", { count: teams.length });
+  status.textContent = screen.t("ready", { count: teams.length });
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   results.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
 }
@@ -63,31 +61,31 @@ export function clearResults(screen: TeamsScreen): void {
 
 /**
  * Splits the names into teams and shows them; a problem (no names, more teams than names) is
- * shown under the form and reported to an embedding page as `teamsync:error`.
+ * shown under the form. The host hears `teams:result` or `teams:error` (the standalone site posts
+ * them to an embedding page and may offer to install the app after a result).
  */
 export function generate(screen: TeamsScreen): void {
   const names = parseNames(screen.el.area.value);
   if (!names.ok) {
-    showError(screen, t(`app.error.${names.error.code}`));
-    postToParent("error", { code: names.error.code });
+    showError(screen, screen.t(`error.${names.error.code}`));
+    emitTeamsEvent(screen.host, "teams:error", { code: names.error.code });
     screen.el.area.focus();
     return;
   }
   const made = makeTeams({ names: names.value, teams: screen.teams });
   if (!made.ok) {
-    showError(screen, t(`app.error.${made.error.code}`, { teams: screen.teams, names: names.value.length }));
-    postToParent("error", { code: made.error.code });
+    showError(screen, screen.t(`error.${made.error.code}`, { teams: screen.teams, names: names.value.length }));
+    emitTeamsEvent(screen.host, "teams:error", { code: made.error.code });
     return;
   }
   showError(screen, null);
   renderResults(screen, made.value, { announce: true });
-  postToParent("result", { teams: made.value });
-  maybeOfferInstall();
+  emitTeamsEvent(screen.host, "teams:result", { teams: made.value });
 }
 
-/** Re-renders the placeholder, count and teams in the current UI language. */
+/** Re-renders the placeholder, count and teams in the current language. */
 export function applyLabels(screen: TeamsScreen): void {
-  screen.el.area.placeholder = t("app.namesPlaceholder");
+  screen.el.area.placeholder = screen.t("namesPlaceholder");
   renderCount(screen);
   if (screen.last) renderResults(screen, screen.last, { announce: false });
 }

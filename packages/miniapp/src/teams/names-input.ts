@@ -1,12 +1,8 @@
 // The names box: live "the followers" expansion, debounced saving, Clear with Undo, chat-list
-// paste clean-up and Android "Share → TeamSync". Wired by view.ts.
+// paste clean-up and text shared from another app. Wired by mount.ts.
 import { expandFollowers, namesFromSharedText } from "@simeonts/teamsync-random-team-generator-core";
-import { t } from "../i18n/index.ts";
-import { onShared } from "../ui/share-target.ts";
-import { showToast, showUndo } from "../ui/toast.ts";
 import { countNames, renderCount, setNames, showError } from "./form.ts";
 import type { TeamsScreen } from "./screen.ts";
-import { saved } from "./state.ts";
 
 /** Typing pauses this long before the list is saved (one write per burst, not per key). */
 const SAVE_DELAY_MS = 300;
@@ -14,6 +10,23 @@ const SAVE_DELAY_MS = 300;
 /** Cancels a pending save, so a cleared list is never written back a moment later. */
 export function cancelPendingSave(screen: TeamsScreen): void {
   clearTimeout(screen.saveTimer);
+}
+
+/**
+ * Shows `message` with Undo for ≥ 10 s (the host's action toasts last that long); Undo restores
+ * and confirms (forge-design ui-patterns §4: reversible → Undo, not a confirmation).
+ */
+function offerUndo(screen: TeamsScreen, message: string, undo: () => void): void {
+  const { shell } = screen.context;
+  shell.toast(message, {
+    action: {
+      label: screen.t("undo"),
+      run: () => {
+        undo();
+        shell.toast(screen.t("undone"));
+      },
+    },
+  });
 }
 
 function onInput(screen: TeamsScreen): void {
@@ -28,7 +41,7 @@ function onInput(screen: TeamsScreen): void {
   showError(screen, null);
   cancelPendingSave(screen);
   screen.saveTimer = setTimeout(() => {
-    saved.setNames(area.value);
+    screen.saved.setNames(area.value);
   }, SAVE_DELAY_MS);
 }
 
@@ -36,8 +49,7 @@ function onClear(screen: TeamsScreen): void {
   const before = screen.el.area.value;
   setNames(screen, "");
   screen.el.area.focus();
-  // Clearing one field is reversible → Undo, not a confirmation (forge-design ui-patterns §4).
-  showUndo(t("app.cleared"), () => {
+  offerUndo(screen, screen.t("cleared"), () => {
     setNames(screen, before);
   });
 }
@@ -53,43 +65,43 @@ function onPaste(screen: TeamsScreen, event: ClipboardEvent): void {
   area.dispatchEvent(new Event("input"));
 }
 
-/** Android "Share → TeamSync" (manifest share_target): the shared list becomes the names. */
-function onSharedText(screen: TeamsScreen, text: string): void {
+/**
+ * Text shared from another app (Android "Share → TeamSync", launch parameter `shared`) becomes the
+ * names; replacing a different list offers Undo, filling an empty box only says so.
+ */
+export function applySharedText(screen: TeamsScreen, text: string): void {
   const incoming = expandFollowers(namesFromSharedText(text));
   if (!incoming) return;
   const before = screen.el.area.value;
   setNames(screen, incoming);
-  const message = t("app.sharedIn", { count: countNames(incoming) });
-  // Replacing a different list is reversible; filling an empty box needs only a note.
+  const message = screen.t("sharedIn", { count: countNames(incoming) });
   if (before.trim() && before !== incoming) {
-    showUndo(message, () => {
+    offerUndo(screen, message, () => {
       setNames(screen, before);
     });
   } else {
-    showToast({ message });
+    screen.context.shell.toast(message);
   }
 }
 
-/** Restores the remembered list (SPEC F7) and wires every way names get into the box. */
+/** Restores the remembered list (SPEC F7) and wires the box; listeners end with `screen.signal`. */
 export function initNamesInput(screen: TeamsScreen): void {
   const { area, clear } = screen.el;
-  area.value = saved.names();
+  const { signal } = screen;
+  area.value = screen.saved.names();
   area.addEventListener("input", () => {
     onInput(screen);
-  });
+  }, { signal });
   clear.addEventListener("click", () => {
     onClear(screen);
-  });
+  }, { signal });
   // Desktop shortcut for the main action (accessibility §6; documented in Help → Features).
   area.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" || !(event.ctrlKey || event.metaKey)) return;
     event.preventDefault();
     screen.el.form.requestSubmit();
-  });
+  }, { signal });
   area.addEventListener("paste", (event) => {
     onPaste(screen, event);
-  });
-  onShared((content) => {
-    onSharedText(screen, content.text || content.title);
-  });
+  }, { signal });
 }

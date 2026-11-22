@@ -1,5 +1,5 @@
 // iframe embedding of the main screen (SPEC modes → embed): talks to the embedding page via postMessage.
-// Used by view.ts and results.ts.
+// Standalone only (Quizzard PLAN §1.5); miniapp/teams.ts connects it to the Teams body's events.
 import * as z from "zod";
 import { MAX_TEAMS, MIN_TEAMS } from "@simeonts/teamsync-random-team-generator-core";
 import { app } from "../config.ts";

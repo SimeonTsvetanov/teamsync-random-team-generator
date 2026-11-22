@@ -1,0 +1,24 @@
+{
+  "name": "@simeonts/teamsync-random-team-generator-miniapp",
+  "version": "1.0.2",
+  "private": true,
+  "description": "TeamSync's team screen behind the Quizzard mini-app contract; mounted by this repo's app/ and by Quizzard.",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./miniapp.d.ts",
+      "default": "./src/index.ts"
+    },
+    "./contract": "./src/contract.ts",
+    "./meta": "./src/meta.ts",
+    "./help": "./src/help.ts",
+    "./host-api": "./src/host-api.ts",
+    "./vite-preset": "./vite-preset.ts",
+    "./screen.html": "./src/screen.html"
+  },
+  "dependencies": {
+    "@simeonts/teamsync-random-team-generator-core": "workspace:^",
+    "lucide": "^1.70.0"
+  }
+}

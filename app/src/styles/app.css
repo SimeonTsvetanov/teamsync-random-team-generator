@@ -22,13 +22,8 @@
 @import "./components/form.css";
 @import "./components/alert.css";
 @import "./components/toast.css";
-/* TeamSync screens: after the shell components, so equal-specificity rules on shared classes
-   (.button, .button-stack) resolve in the app's favour. */
-@import "./components/teams-workspace.css";
-@import "./components/teams-form.css";
-@import "./components/teams-stepper.css";
-@import "./components/teams-generate.css";
-@import "./components/teams-results.css";
 @import "./utilities.css";
 @import "./overrides.css";
-@import "./teams-overrides.css";
+/* The team screen's CSS (components + overrides) comes with the mini-app package that main.ts
+   imports after this file (PLAN TS-01), so in each layer it still follows the shell's rules:
+   equal-specificity rules on shared classes (.button, .button-stack) resolve in its favour. */

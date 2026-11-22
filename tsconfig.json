@@ -8,6 +8,9 @@
       "path": "./packages/mcp"
     },
     {
+      "path": "./packages/miniapp"
+    },
+    {
       "path": "./app"
     },
     {
