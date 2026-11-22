@@ -19,6 +19,6 @@
   },
   "dependencies": {
     "@simeonts/teamsync-random-team-generator-core": "workspace:^",
-    "lucide": "^1.70.0"
+    "lucide": "^1.77.0"
   }
 }
