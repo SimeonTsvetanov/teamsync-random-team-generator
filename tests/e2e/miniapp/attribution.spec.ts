@@ -36,8 +36,14 @@ const generate = (root: Locator) => root.getByRole("button", { name: "Generate t
 const shuffleAgain = (root: Locator) => root.getByRole("button", { name: "Shuffle again" }).click();
 const editNames = async (root: Locator, text: string): Promise<void> => {
   const back = root.locator("[data-results-back]");
-  if (await back.isVisible()) await back.click(); // phones: results are the next screen
-  await root.locator("#names").fill(text);
+  const names = root.locator("#names");
+  // Phones: results are the next screen, reached by a transition. A one-shot look at the Back button
+  // can come before it is there (mobile WebKit in CI, 2026-11-22), so retry until the list is editable.
+  await expect(async () => {
+    if (await back.isVisible()) await back.click();
+    await expect(names).toBeEditable({ timeout: 1000 });
+  }).toPass();
+  await names.fill(text);
 };
 
 test("the copied line counts shuffles of the same people and starts again when they change; Share says the same", async ({ page }) => {
