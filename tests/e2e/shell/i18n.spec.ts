@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { app } from "../../app.config.ts";
+import { app } from "../../../app.config.ts";
 
 // UI languages (forge-app-shell → i18n). English is always the default; extra languages are
 // opt-in via Settings or ?lang=xx and remembered per device. Skipped for English-only apps.

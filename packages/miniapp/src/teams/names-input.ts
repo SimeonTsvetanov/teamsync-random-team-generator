@@ -1,5 +1,6 @@
-// The names box: live "the followers" expansion, debounced saving, Clear with Undo, chat-list
-// paste clean-up and text shared from another app. Wired by mount.ts.
+// The names box: live "the followers" expansion, debounced saving (flushed when the page is hidden
+// or closed and at unmount), Clear with Undo, chat-list paste clean-up and text shared from
+// another app. Wired by mount.ts.
 import { expandFollowers, namesFromSharedText } from "@simeonts/teamsync-random-team-generator-core";
 import { countNames, renderCount, setNames, showError } from "./form.ts";
 import type { TeamsScreen } from "./screen.ts";
@@ -10,6 +11,17 @@ const SAVE_DELAY_MS = 300;
 /** Cancels a pending save, so a cleared list is never written back a moment later. */
 export function cancelPendingSave(screen: TeamsScreen): void {
   clearTimeout(screen.saveTimer);
+  screen.saveTimer = undefined;
+}
+
+/**
+ * Writes a pending save now (once; nothing happens when none is pending), so the last typing
+ * survives leaving the screen, hiding the page or closing it inside the 300 ms pause.
+ */
+export function flushPendingSave(screen: TeamsScreen): void {
+  if (screen.saveTimer === undefined) return;
+  cancelPendingSave(screen);
+  screen.saved.setNames(screen.el.area.value);
 }
 
 /**
@@ -41,7 +53,7 @@ function onInput(screen: TeamsScreen): void {
   showError(screen, null);
   cancelPendingSave(screen);
   screen.saveTimer = setTimeout(() => {
-    screen.saved.setNames(area.value);
+    flushPendingSave(screen);
   }, SAVE_DELAY_MS);
 }
 
@@ -103,5 +115,12 @@ export function initNamesInput(screen: TeamsScreen): void {
   }, { signal });
   area.addEventListener("paste", (event) => {
     onPaste(screen, event);
+  }, { signal });
+  // pagehide, not unload/beforeunload: those disable the back/forward cache (app-rules test).
+  window.addEventListener("pagehide", () => {
+    flushPendingSave(screen);
+  }, { signal });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") flushPendingSave(screen);
   }, { signal });
 }

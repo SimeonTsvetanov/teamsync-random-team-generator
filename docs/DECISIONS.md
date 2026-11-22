@@ -121,3 +121,17 @@ Format: `date · decision · reason`. Newest last.
   `host-api.ts` (launch parameters + events on the mount element); "Clear my data" = unmount + mount.
   (5) `meta.icon` is a host-relative path (`miniapps/teams.svg`); the package ships no icon.
   (6) `jsdom` (dev) for the body's DOM unit tests.
+- **2026-11-22 · TS-02: e2e split, pending save flushed, v1.0.3 prepared** (Quizzard PLAN TS-02, §1.4).
+  `tests/e2e/miniapp/` = the team screen's flows, written to run unchanged inside Quizzard: they open
+  the screen only with `support/entry.ts` (`openApp`, `E2E_MINIAPP_HASH`; launch parameters follow a
+  hash route) and reach toast/confirm/share only through `support/host.ts` (`E2E_HOST`; Quizzard's
+  parts read from its app/src/ui are the forge template's, so both hosts share one entry); a lint
+  block forbids `goto` and app/config imports there. `tests/e2e/shell/` = standalone only. The
+  screen's root is `[data-workspace]` (no new attribute: both hosts and the live 1.0.2 site have it,
+  and the standalone `<main>` also holds the page's hero and FAQ). Three tests that mixed both were
+  split (AC4: the address following the stepper; AC6: Clear my data; WhatsApp: the share target)
+  with every assertion kept. Unmount now writes a pending names save (TS-01 dropped it: the last
+  typing was lost when leaving `#/teams`), and so do `pagehide` and a hidden page; nothing is written
+  after unmount. A host's "clear my data" cannot be undone by it: a save waits ≤ 300 ms and a host
+  clears only after its own confirmation. Version 1.0.3 in every package (publish.yml requires core
+  and mcp = tag; same as 1.0.1 → 1.0.2). `E2E_BASE_URL` runs the suite against a deployed site.

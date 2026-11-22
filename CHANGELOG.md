@@ -4,6 +4,12 @@ All notable user-facing changes. Format: Keep a Changelog · SemVer.
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-11-22
+### Changed
+- TeamSync looks and works the same. Behind the scenes, the team screen is now a separate building block, so it can also run inside Quizzard.
+### Fixed
+- Names typed just before you close the app or switch to another one are no longer lost.
+
 ## [1.0.2] - 2026-11-10
 ### Changed
 - AI agents: the make_teams tool declares that it is read-only, safe to repeat and works offline, so agent apps can run it without extra warnings.
@@ -24,7 +30,8 @@ All notable user-facing changes. Format: Keep a Changelog · SemVer.
 - Links like ?teams=3 open TeamSync with 3 teams selected.
 - AI agents can make teams too, with the local MCP tool make_teams.
 
-[Unreleased]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/SimeonTsvetanov/teamsync-random-team-generator/releases/tag/v1.0.0

@@ -8,7 +8,7 @@ import { SHARED_TEXT_PARAM, onTeamsEvent } from "../host-api.ts";
 import { translateSubtree } from "../i18n/subtree.ts";
 import { createTranslator } from "../i18n/translate.ts";
 import { renderCount, renderStepper, setTeams } from "./form.ts";
-import { applySharedText, cancelPendingSave, initNamesInput } from "./names-input.ts";
+import { applySharedText, flushPendingSave, initNamesInput } from "./names-input.ts";
 import { initResultActions } from "./result-actions.ts";
 import { applyLabels, clearResults, generate } from "./results.ts";
 import { findTeamsElements, type TeamsScreen } from "./screen.ts";
@@ -84,10 +84,12 @@ function start(element: HTMLElement, context: MiniAppContext, { isRendered }: { 
   applyLabels(screen);
   return () => {
     if (controller.signal.aborted) return;
+    // Flushed first, so the last typing survives leaving the screen (TS-02). It cannot undo a
+    // host's "clear my data": a save waits at most 300 ms, and a host clears only after its own
+    // confirmation, by which time that save has run; nothing is written after this point.
+    flushPendingSave(screen);
     controller.abort();
     stopLanguage();
-    // Dropped, not flushed: the host unmounts after "clear my data", and a flush would write it back.
-    cancelPendingSave(screen);
     if (isRendered) element.replaceChildren();
   };
 }
@@ -97,8 +99,8 @@ function start(element: HTMLElement, context: MiniAppContext, { isRendered }: { 
  * @param element - holding the standalone page's screen (hydrated at once) or empty (screen.html is
  * loaded and rendered first, so the result is a promise)
  * @param context - the host's services; launch parameters `teams` and `shared` (host-api.ts)
- * @returns the unmount: removes every listener and the language subscription, drops a pending save
- * and empties `element` only if the screen was rendered here
+ * @returns the unmount: writes a pending save of the names, removes every listener and the language
+ * subscription and empties `element` only if the screen was rendered here
  * @throws {@link Error} `TEAMS_SCREEN_INCOMPLETE` when `element` holds only part of the screen
  */
 export function mountTeams(element: HTMLElement, context: MiniAppContext): Unmount | Promise<Unmount> {

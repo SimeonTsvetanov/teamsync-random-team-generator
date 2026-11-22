@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { app } from "../../app.config.ts";
+import { app } from "../../../app.config.ts";
 
 // App-shell e2e (APP-STANDARD §14): dialogs, theme, storage namespacing, offline, policy + error pages.
 const serious = async (page: Page): Promise<string[]> => {

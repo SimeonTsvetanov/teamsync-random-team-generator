@@ -2,7 +2,7 @@
   "name": "teamsync-random-team-generator",
   "private": true,
   "type": "module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "packageManager": "pnpm@12.18.0",
   "engines": {
     "node": ">=24"
@@ -19,6 +19,8 @@
     "docs:images": "pnpm build && playwright test -c playwright.docs.config.ts --pass-with-no-tests",
     "preview": "pnpm -F app preview",
     "e2e": "playwright test",
+    "e2e:miniapp": "playwright test tests/e2e/miniapp",
+    "e2e:shell": "playwright test tests/e2e/shell",
     "screenshots": "pnpm build && playwright test -c playwright.screenshots.config.ts",
     "format": "prettier --write ."
   },

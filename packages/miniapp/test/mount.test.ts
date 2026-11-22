@@ -95,16 +95,6 @@ describe("hydrate mode (standalone: the page has the markup)", () => {
     expect(query(element, "[data-names-count]").textContent).toBe("");
     expect(element.querySelectorAll("article")).toHaveLength(0);
   });
-
-  it("drops a pending save at unmount, so a cleared list is never written back", async () => {
-    vi.useFakeTimers();
-    const host = fakeHost();
-    const unmount = await mount(element, host);
-    type(element, "Ana\nBoris");
-    unmount();
-    vi.advanceTimersByTime(1000);
-    expect(host.stored.has("names")).toBe(false);
-  });
 });
 
 describe("host services", () => {

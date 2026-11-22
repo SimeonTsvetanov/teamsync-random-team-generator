@@ -68,6 +68,14 @@ export default tseslint.config(
   { files: ["packages/mcp/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/app/**", "**/service/**", "**/packages/core/**", "*-miniapp", "*-miniapp/*"], message: "mcp imports core by its package name only (structure §1–2)." }] }] } },
   // The mini-app body (Quizzard PLAN §1.1): core by name only; never the standalone shell, mcp or service.
   { files: ["packages/miniapp/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/app/**", "**/mcp/**", "**/service/**", "**/packages/**", "*-mcp", "*-mcp/*", "../../../*", "**/app.config*"], message: "the mini-app imports core by its package name and nothing of app/ (structure §1–2)." }] }] } },
+  // Mini-app e2e specs also run inside Quizzard from vendor/teamsync (its PLAN T-11): no standalone
+  // config or source, and every navigation goes through support/entry.ts (E2E_MINIAPP_HASH).
+  { files: ["tests/e2e/miniapp/**"], rules: {
+    "no-restricted-imports": ["error", { patterns: [{ group: ["**/app.config*", "**/app/**", "**/packages/**", "@simeonts/*"], message: "mini-app specs import only @playwright/test, axe and ../support (PLAN TS-02)." }] }],
+    "no-restricted-syntax": ["error",
+      { selector: "ExportDefaultDeclaration", message: "Use a named export (code-quality §2)." },
+      { selector: "CallExpression[callee.property.name='goto']", message: "Open the screen with openApp() from ../support/entry.ts, so it also runs behind Quizzard's #/teams (PLAN TS-02)." }],
+  } },
   { files: ["app/src/**"], rules: { "no-restricted-imports": ["error", { patterns: [{ group: ["**/packages/**", "**/service/**", "*-mcp", "*-mcp/*", "../../../*"], message: "app imports core by its package name; no deep relative chains (structure §1–2)." }] }] } },
   { files: ["**/*.js", "**/*.mjs"], ...tseslint.configs.disableTypeChecked },
   { files: ["**/*.js", "**/*.mjs"], rules: { "@typescript-eslint/explicit-module-boundary-types": "off", "@typescript-eslint/naming-convention": "off" } },

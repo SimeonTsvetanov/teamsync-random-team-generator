@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { app as config, type AppConfig } from "../../app.config.ts";
+import { app as config, type AppConfig } from "../../../app.config.ts";
 
 // PWA e2e (forge-pwa → pwa §2, §4): manifest power features, offline fallback only when offline.
 const app: AppConfig = config;

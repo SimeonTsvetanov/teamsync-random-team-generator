@@ -1,5 +1,5 @@
 // Unit tests for the toast timer (forge-design → accessibility §5): action toasts wait while the
-// person hovers or focuses them. The DOM parts are covered by tests/e2e/shell.spec.ts.
+// person hovers or focuses them. The DOM parts are covered by tests/e2e/shell/shell.spec.ts.
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../i18n/index.ts", () => ({ t: (key: string) => key }));
