@@ -236,8 +236,8 @@ importers:
         specifier: ^0.8.2
         version: 0.8.3
       i18next:
-        specifier: ^26.7.1
-        version: 26.7.1(typescript@6.0.3)
+        specifier: ^27.2.2
+        version: 27.2.2(typescript@6.0.3)
       lucide:
         specifier: ^1.70.0
         version: 1.70.0
@@ -2123,8 +2123,9 @@ packages:
     resolution: {integrity: sha512-UikN5yr7xsCDAq87Or5or0PAlD3HJJOKVzM05az588WnpDJ4Ux7a2A53Qi6gofGg2/EtvF/H4hCi/TXfCW4Y6w==}
     engines: {node: ^22.13.0 || >=24.0.0}
 
-  i18next@26.7.1:
-    resolution: {integrity: sha512-cX+3RRVczel/V2kCMTACckSGSpqgtWYEA6beXNYVms7dOQiHojdPYHD26lT4IKimNeoGWrLvtPgjftbRvmZJVw==}
+  i18next@27.2.2:
+    resolution: {integrity: sha512-1/AJgz/bpE/YL6tqekQlZAzDhkmrUBbgU8+Xon/Lwv6c5WdYuyFZ9mb86OVfR2C2XujUDT7Rz23Ydaq4l981lA==}
+    engines: {node: '>=22'}
     peerDependencies:
       typescript: ^5 || ^6 || ^7
     peerDependenciesMeta:
@@ -5011,7 +5012,7 @@ snapshots:
     transitivePeerDependencies:
       - '@noble/hashes'
 
-  i18next@26.7.1(typescript@6.0.3):
+  i18next@27.2.2(typescript@6.0.3):
     optionalDependencies:
       typescript: 6.0.3
 
