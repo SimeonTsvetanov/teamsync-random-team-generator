@@ -68,7 +68,7 @@ Example call:
 
 - **Same core everywhere.** The app, the embed and `make_teams` all call
   `@simeonts/teamsync-random-team-generator-core` (`parseNames` → `makeTeams`), so limits and error
-  codes are identical. Validation: Zod schemas in `app/src/teams/embed.ts` and `packages/mcp/src/tool.ts`.
+  codes are identical. Validation: Zod schemas in `app/src/miniapp/embed.ts` and `packages/mcp/src/tool.ts`.
 - **Names never go into a URL.** Only `?teams=` is written to the address bar (`replaceState`).
 - **Embed security.** No message listener outside an iframe; origin from `document.referrer`, checked
   with `===` together with `event.source === window.parent`; payload capped at 120,000 characters;

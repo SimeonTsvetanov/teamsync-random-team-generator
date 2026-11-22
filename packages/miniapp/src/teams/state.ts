@@ -2,6 +2,7 @@
 // `teams` launch parameter. Used by the body's modules.
 import { MAX_TEAMS, MIN_TEAMS } from "@simeonts/teamsync-random-team-generator-core";
 import type { MiniAppContext } from "../contract.ts";
+import { TEAMS_PARAM } from "../host-api.ts";
 
 /** What TeamSync remembers on this device (SPEC F7): the last names list and team count. */
 export interface Saved {
@@ -47,8 +48,8 @@ export function clampTeams(teams: number): number {
  * Reads the `teams` launch parameter (SPEC F9: `?teams=N`; names are never in the URL).
  * @returns the number of teams, or null when absent or out of range
  */
-export function teamsFromQuery(query: URLSearchParams, name: string): number | null {
-  const raw = query.get(name);
+export function teamsFromQuery(query: URLSearchParams): number | null {
+  const raw = query.get(TEAMS_PARAM);
   if (raw === null || !/^\d{1,2}$/.test(raw)) return null;
   const teams = Number(raw);
   return teams >= MIN_TEAMS && teams <= MAX_TEAMS ? teams : null;

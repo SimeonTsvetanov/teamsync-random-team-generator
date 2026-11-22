@@ -107,3 +107,17 @@ Format: `date · decision · reason`. Newest last.
   passages carry `lang="en"` in the BG UI; Ctrl/Cmd+Enter generates (Help → Features). The names box
   keeps the default Enter key (no `enterkeyhint="go"`): Enter must add a new line in a one-name-per-line
   list. `tests/a11y-screens.json` = flows for `a11y-check.mjs --screens`. · forge-design accessibility.
+- **2026-11-22 · TS-01: the team screen is the workspace package `packages/miniapp`** (Quizzard PLAN
+  §1.1–§1.5, contract copied verbatim to `src/contract.ts`); `app/` mounts it through the same
+  contract with a standalone context (`app/src/miniapp/`). No user-visible change: same URL, keys,
+  texts, CSS (built file byte-identical), static form in the served HTML. Choices: (1) Help steps,
+  features and FAQ live in `packages/miniapp/src/help.ts` and `app.config.ts` imports them — Quizzard
+  loads Help without the repo's config; generated files unchanged. (2) The body translates its own
+  subtree with its own dictionaries and a small translator, through `data-teams-i18n(-aria-label)` —
+  a host's page-wide `data-i18n` pass must never overwrite it (built HTML differs only in these
+  attribute names). (3) `screen.html` is injected at `<!--teams-screen-->` at build; inside Quizzard
+  it is built without HTML sinks (no DOMParser: Trusted Types) in a lazy chunk. (4) Standalone-only
+  behaviour — `?teams=` address, embed postMessage, share-target, install offer — goes through
+  `host-api.ts` (launch parameters + events on the mount element); "Clear my data" = unmount + mount.
+  (5) `meta.icon` is a host-relative path (`miniapps/teams.svg`); the package ships no icon.
+  (6) `jsdom` (dev) for the body's DOM unit tests.

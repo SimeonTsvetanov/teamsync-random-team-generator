@@ -8,6 +8,7 @@ export interface FakeHost {
   readonly context: MiniAppContext;
   readonly stored: Map<string, unknown>;
   readonly toast: ReturnType<typeof vi.fn<MiniAppContext["shell"]["toast"]>>;
+  readonly notifySaved: ReturnType<typeof vi.fn<() => void>>;
   /** Number of live language subscriptions. */
   languageListeners(): number;
   setLanguage(lang: Lang): void;
@@ -19,6 +20,7 @@ export function fakeHost(query = ""): FakeHost {
   const listeners = new Set<(lang: Lang) => void>();
   const stored = new Map<string, unknown>();
   const toast = vi.fn<MiniAppContext["shell"]["toast"]>();
+  const notifySaved = vi.fn<() => void>();
   const context: MiniAppContext = {
     host: "quizzard",
     language: {
@@ -46,11 +48,11 @@ export function fakeHost(query = ""): FakeHost {
         set: (key, value) => { stored.set(key, value); return true; },
         remove: (key) => { stored.delete(key); },
       },
-      notifySaved: vi.fn(),
+      notifySaved,
     },
   };
   return {
-    context, stored, toast,
+    context, stored, toast, notifySaved,
     languageListeners: () => listeners.size,
     setLanguage: (lang) => {
       language = lang;

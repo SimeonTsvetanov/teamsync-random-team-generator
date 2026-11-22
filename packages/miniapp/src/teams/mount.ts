@@ -4,7 +4,7 @@
 // results.ts, result-actions.ts.
 import type { Lang, MiniAppContext, Unmount } from "../contract.ts";
 import { hydrateIcons, icon } from "../dom/icons.ts";
-import { SHARED_TEXT_PARAM, TEAMS_PARAM, onTeamsEvent } from "../host-api.ts";
+import { SHARED_TEXT_PARAM, onTeamsEvent } from "../host-api.ts";
 import { translateSubtree } from "../i18n/subtree.ts";
 import { createTranslator } from "../i18n/translate.ts";
 import { renderCount, renderStepper, setTeams } from "./form.ts";
@@ -63,7 +63,7 @@ function wire(screen: TeamsScreen): void {
 }
 
 /** Starts the screen that is now in `element`; `isRendered` = this mount put the markup there. */
-function start(element: HTMLElement, context: MiniAppContext, isRendered: boolean): Unmount {
+function start(element: HTMLElement, context: MiniAppContext, { isRendered }: { readonly isRendered: boolean }): Unmount {
   const el = findTeamsElements(element);
   if (el === null) throw new Error("TEAMS_SCREEN_INCOMPLETE: the mount element holds a partial team screen");
   const controller = new AbortController();
@@ -71,7 +71,7 @@ function start(element: HTMLElement, context: MiniAppContext, isRendered: boolea
   const screen: TeamsScreen = {
     el, host: element, context, saved, signal: controller.signal,
     t: createTranslator(context.language.get()),
-    teams: teamsFromQuery(context.query, TEAMS_PARAM) ?? saved.teams(),
+    teams: teamsFromQuery(context.query) ?? saved.teams(),
     last: null,
     saveTimer: undefined,
   };
@@ -102,9 +102,9 @@ function start(element: HTMLElement, context: MiniAppContext, isRendered: boolea
  * @throws {@link Error} `TEAMS_SCREEN_INCOMPLETE` when `element` holds only part of the screen
  */
 export function mountTeams(element: HTMLElement, context: MiniAppContext): Unmount | Promise<Unmount> {
-  if (element.querySelector("[data-workspace]") !== null) return start(element, context, false);
+  if (element.querySelector("[data-workspace]") !== null) return start(element, context, { isRendered: false });
   return import("./render.ts").then(({ renderScreen }) => {
     renderScreen(element);
-    return start(element, context, true);
+    return start(element, context, { isRendered: true });
   });
 }
