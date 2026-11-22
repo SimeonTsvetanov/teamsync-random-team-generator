@@ -38,14 +38,20 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # Browsers cached per Playwright version; the apt step (system libraries) is time-boxed so a
-      # stuck runner mirror fails in minutes instead of hanging the job (TeamSync 2026-11-06).
+      # Browsers cached per Playwright version AND OS release: Playwright's WebKit is built per Ubuntu
+      # release, and `playwright install` keeps a restored folder as it is. With only `runner.os` in
+      # the key, the ubuntu-24.04 build survived the move of `ubuntu-latest` to 26.04 and could not
+      # start (libicudata.so.74 missing; every WebKit test red, TeamSync 2026-11-22).
+      # The apt step (system libraries) is time-boxed so a stuck runner mirror fails in minutes
+      # instead of hanging the job (TeamSync 2026-11-06).
       - id: pw
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+          echo "os=$(. /etc/os-release && echo "$ID-$VERSION_ID")" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+          key: playwright-${{ steps.pw.outputs.os }}-${{ runner.arch }}-${{ steps.pw.outputs.version }}
       - run: pnpm exec playwright install chromium webkit firefox
         timeout-minutes: 10
       - run: pnpm exec playwright install-deps chromium webkit firefox

@@ -135,3 +135,10 @@ Format: `date · decision · reason`. Newest last.
   after unmount. A host's "clear my data" cannot be undone by it: a save waits ≤ 300 ms and a host
   clears only after its own confirmation. Version 1.0.3 in every package (publish.yml requires core
   and mcp = tag; same as 1.0.1 → 1.0.2). `E2E_BASE_URL` runs the suite against a deployed site.
+- **2026-11-22 · CI: the Playwright browser cache key includes the OS release.** The e2e job of 1.0.3
+  (and of 1.0.2 on `main`, 2026-11-17) failed only in `webkit` + `mobile-safari`, 86 times with
+  `libicudata.so.74: cannot open shared object file`: `ubuntu-latest` became ubuntu-26.04, the cache
+  `playwright-Linux-1.65.0` still held the WebKit build for ubuntu-24.04 (ICU 74), and
+  `playwright install` does not replace a restored folder. No test and no app code was involved
+  (Chromium, Firefox and Pixel 7 passed; a run with a fresh cache, Playwright 1.65.1, passed all
+  five). Key is now `playwright-<os id>-<os version>-<arch>-<playwright version>`.
