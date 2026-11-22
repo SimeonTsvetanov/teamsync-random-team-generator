@@ -36,7 +36,7 @@ export const bg: Messages = {
   copyFailed: "Не може да се копира — маркирайте отборите и ги копирайте ръчно.",
   copyHeading: "✨ ОТБОРИТЕ СА ГОТОВИ ✨",
   copyTeam: "🏆 Отбор {{n}} | Членове - {{members}}",
-  attribution: "— Направено с TeamSync · {{url}}",
+  attribution: "— Направено с {{name}} · {{url}}",
   error: {
     NAMES_EMPTY: "Добавете поне две имена, по едно на ред.",
     NAMES_TOO_MANY: "Това са повече от 1000 имена — разделете списъка на по-малки групи.",

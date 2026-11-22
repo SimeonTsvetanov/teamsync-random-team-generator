@@ -55,7 +55,8 @@ test("AC3: Copy gives the team text with the attribution line", async ({ page, c
   const text = await page.evaluate(() => navigator.clipboard.readText());
   expect(text.startsWith("✨ TEAMS GENERATED ✨")).toBe(true);
   expect(text).toContain("🏆 Team 1 | Members - 2");
-  expect(text.trim().endsWith("— Made with TeamSync · https://simeontsvetanov.github.io/teamsync-random-team-generator/")).toBe(true);
+  // The first shuffle of these names: count 1 fused to the name (DECISIONS 2026-11-22).
+  expect(text.trim().endsWith("— Made with TeamSync1 · https://simeontsvetanov.github.io/teamsync-random-team-generator/")).toBe(true);
 });
 
 // The address following the stepper is the standalone page's: shell/teams-standalone.spec.ts.

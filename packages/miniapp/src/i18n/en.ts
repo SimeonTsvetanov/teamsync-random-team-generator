@@ -36,7 +36,7 @@ export const en = {
   copyFailed: "Couldn't copy — select the teams and copy them by hand.",
   copyHeading: "✨ TEAMS GENERATED ✨",
   copyTeam: "🏆 Team {{n}} | Members - {{members}}",
-  attribution: "— Made with TeamSync · {{url}}",
+  attribution: "— Made with {{name}} · {{url}}",
   error: {
     NAMES_EMPTY: "Add at least two names, one per line.",
     NAMES_TOO_MANY: "That's more than 1,000 names — split the list into smaller groups.",

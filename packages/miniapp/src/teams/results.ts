@@ -4,6 +4,7 @@ import { makeTeams, parseNames } from "@simeonts/teamsync-random-team-generator-
 import { h } from "../dom/h.ts";
 import { withTransition } from "../dom/transition.ts";
 import { emitTeamsEvent } from "../host-api.ts";
+import { countShuffle } from "./attribution.ts";
 import { renderCount, showError } from "./form.ts";
 import type { TeamsScreen } from "./screen.ts";
 
@@ -54,6 +55,7 @@ export function renderResults(screen: TeamsScreen, teams: string[][], { announce
 export function clearResults(screen: TeamsScreen): void {
   const { workspace, grid, results } = screen.el;
   screen.last = null;
+  screen.lastShuffleCount = null;
   grid.replaceChildren();
   results.hidden = true;
   workspace.classList.remove("has-results");
@@ -61,7 +63,7 @@ export function clearResults(screen: TeamsScreen): void {
 
 /**
  * Splits the names into teams and shows them; a problem (no names, more teams than names) is
- * shown under the form. The host hears `teams:result` or `teams:error` (the standalone site posts
+ * shown under the form and is not counted as a shuffle. The host hears `teams:result` or `teams:error` (the standalone site posts
  * them to an embedding page and may offer to install the app after a result).
  */
 export function generate(screen: TeamsScreen): void {
@@ -79,6 +81,9 @@ export function generate(screen: TeamsScreen): void {
     return;
   }
   showError(screen, null);
+  // Counted only for teams really made, and kept with them: Copy and Share show the count of the
+  // teams on screen, however often they are pressed (DECISIONS 2026-11-22).
+  screen.lastShuffleCount = screen.attribution.isShuffleCountOn ? countShuffle(screen.saved, names.value) : null;
   renderResults(screen, made.value, { announce: true });
   emitTeamsEvent(screen.host, "teams:result", { teams: made.value });
 }

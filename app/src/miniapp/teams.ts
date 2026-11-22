@@ -1,9 +1,10 @@
 // Mounts the Teams body (packages/miniapp) on the standalone page through the same contract Quizzard
 // uses, and keeps what only this site does around it (Quizzard PLAN §1.5): the `?teams=` address,
 // embed postMessage, Android share-target, the install offer and "Clear my data". Called by main.ts.
+import { parseShuffleCount } from "@simeonts/teamsync-random-team-generator-core";
 import teams from "@simeonts/teamsync-random-team-generator-miniapp";
 import type { Unmount } from "@simeonts/teamsync-random-team-generator-miniapp/contract";
-import { SHARED_TEXT_PARAM, TEAMS_PARAM, emitTeamsEvent, onTeamsEvent } from "@simeonts/teamsync-random-team-generator-miniapp/host-api";
+import { ATTRIBUTION_NAME_PARAM, ATTRIBUTION_URL_PARAM, SHARED_TEXT_PARAM, SHUFFLE_COUNT_PARAM, TEAMS_PARAM, emitTeamsEvent, onTeamsEvent } from "@simeonts/teamsync-random-team-generator-miniapp/host-api";
 import { meta } from "@simeonts/teamsync-random-team-generator-miniapp/meta";
 import { registerPrefCheck } from "../storage/index.ts";
 import { maybeOfferInstall } from "../ui/install.ts";
@@ -18,13 +19,16 @@ function writeTeamsToUrl(count: number): void {
   history.replaceState(null, "", `${location.pathname}?${query.toString()}${location.hash}`);
 }
 
+/** Launch parameters only a host sets: no link can fill someone's list or change the copied text. */
+const HOST_ONLY_PARAMS = [SHARED_TEXT_PARAM, ATTRIBUTION_NAME_PARAM, ATTRIBUTION_URL_PARAM, SHUFFLE_COUNT_PARAM] as const;
+
 /**
  * The body's launch parameters: the address bar's (`?teams=`) plus the text shared into the app.
- * `shared` never comes from the address, so no link can fill someone's list.
+ * The host-only ones never come from the address; this site names itself (TeamSync, the default).
  */
 function launchQuery(sharedText: string | null): URLSearchParams {
   const query = new URLSearchParams(location.search);
-  query.delete(SHARED_TEXT_PARAM);
+  for (const name of HOST_ONLY_PARAMS) query.delete(name);
   if (sharedText) query.set(SHARED_TEXT_PARAM, sharedText);
   return query;
 }
@@ -56,6 +60,7 @@ export function initTeamsScreen(): void {
   // Imported data must have the right types (a broken export can never break the app).
   registerPrefCheck("names", (value) => typeof value === "string" && value.length <= 110_000);
   registerPrefCheck("teams", (value) => Number.isInteger(value));
+  registerPrefCheck("shuffles", (value) => parseShuffleCount(value) !== null);
   let sharedText: string | null = null;
   onShared((content) => { sharedText = content.text || content.title; });
   connectHost(element);

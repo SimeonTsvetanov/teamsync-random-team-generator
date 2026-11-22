@@ -9,7 +9,8 @@ import type { MiniAppMeta } from "./contract.ts";
  *   there (Quizzard: `miniapps/teams.svg`, PLAN T-18) or replaces the field. The standalone site
  *   shows no mini-app icon, so the package ships none and needs no bundler plugin.
  * - `storage` is the standalone site's real area (Quizzard PLAN §1.1 item 8). The body writes only
- *   `names` (the last list; removed when empty) and `teams` (the stepper value) under the prefix.
+ *   `names` (the last list; removed when empty), `teams` (the stepper value) and `shuffles` (a
+ *   fingerprint of the last roster + its shuffle count, no names; DECISIONS 2026-11-22) under the prefix.
  *   The standalone shell keeps its own prefs under the same prefix (`theme`, `lang`,
  *   `last-seen-version`, `install-dismissed-at`, `report-queue`, `persist-offered`, `draft:*`);
  *   there are no keys outside it, no IndexedDB database and no OPFS folder.

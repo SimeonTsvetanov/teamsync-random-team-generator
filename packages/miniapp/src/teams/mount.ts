@@ -9,6 +9,7 @@ import { translateSubtree } from "../i18n/subtree.ts";
 import { createTranslator } from "../i18n/translate.ts";
 import { renderCount, renderStepper, setTeams } from "./form.ts";
 import { applySharedText, flushPendingSave, initNamesInput } from "./names-input.ts";
+import { attributionFromQuery } from "./attribution.ts";
 import { initResultActions } from "./result-actions.ts";
 import { applyLabels, clearResults, generate } from "./results.ts";
 import { findTeamsElements, type TeamsScreen } from "./screen.ts";
@@ -70,9 +71,11 @@ function start(element: HTMLElement, context: MiniAppContext, { isRendered }: { 
   const saved = createSaved(context.storage);
   const screen: TeamsScreen = {
     el, host: element, context, saved, signal: controller.signal,
+    attribution: attributionFromQuery(context.query),
     t: createTranslator(context.language.get()),
     teams: teamsFromQuery(context.query) ?? saved.teams(),
     last: null,
+    lastShuffleCount: null,
     saveTimer: undefined,
   };
   hydrateIcons(element);
@@ -98,7 +101,8 @@ function start(element: HTMLElement, context: MiniAppContext, { isRendered }: { 
  * Mounts the team screen into `element`.
  * @param element - holding the standalone page's screen (hydrated at once) or empty (screen.html is
  * loaded and rendered first, so the result is a promise)
- * @param context - the host's services; launch parameters `teams` and `shared` (host-api.ts)
+ * @param context - the host's services; launch parameters `teams`, `shared`, the attribution and
+ * `shuffle-count` (host-api.ts)
  * @returns the unmount: writes a pending save of the names, removes every listener and the language
  * subscription and empties `element` only if the screen was rendered here
  * @throws {@link Error} `TEAMS_SCREEN_INCOMPLETE` when `element` holds only part of the screen

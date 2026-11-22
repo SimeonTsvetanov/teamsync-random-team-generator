@@ -142,3 +142,38 @@ Format: `date · decision · reason`. Newest last.
   `playwright install` does not replace a restored folder. No test and no app code was involved
   (Chromium, Firefox and Pixel 7 passed; a run with a fresh cache, Playwright 1.65.1, passed all
   five). Key is now `playwright-<os id>-<os version>-<arch>-<playwright version>`.
+- **2026-11-22 · Attribution from the host + shuffle count in copied/shared teams (Moni; v1.0.4).**
+  Owner's request: at quiz nights he suspects people press Shuffle until they land with the people
+  they want, and wants proof before saying anything. *What:* (1) The last line of Copy/Share is
+  `— Made with <name> · <url>`; a host may pass `attribution-name` + `attribution-url` as launch
+  parameters (`host-api.ts`; not in `contract.ts`) — core `parseAttribution` accepts a ≤ 40-character
+  plain name ending in a letter and an https address on a domain (no credentials); anything else →
+  TeamSync + its own URL. Quizzard will pass `Quizzard` + `https://simeontsvetanov.github.io/Quizzard/`.
+  The standalone site strips these (and `shuffle-count`, `shared`) from its address: no link can
+  change the copied text. (2) While the switch is on, the count of shuffles in a row of the same
+  people is fused to the name with no space: `— Made with TeamSync3 · …`, `Quizzard1`. Rules (core
+  `shuffle-count.ts`, pure, property-tested): roster = the parsed names (`parseNames`: trimmed, blank
+  lines out, `the followers` expanded) normalised (NFC, case fold, inner whitespace collapsed), order
+  ignored, a repeated name counted each time (the app keeps duplicates: two people can share a
+  name). Every successful team split counts (+1; first = 1): Generate, Ctrl/⌘+Enter, Shuffle again,
+  the host's/embed `teams:make`; `?teams=` only pre-selects and never generates. A failed try (too
+  few names, empty list) does not count. Same people → +1, also after reordering, case/spacing
+  edits, deleting and retyping a name, another number of teams, Clear (+ Undo), Clear and start over
+  with the same names, a reload or reopening. Another roster (a person added, removed or renamed) →
+  the next split is 1; only the last roster is remembered (A → B → A starts A at 1 again). The count
+  is kept with the teams on screen, so Copy/Share say the number of those teams however often they
+  are pressed; editing names without generating does not change it. Capped at 999. Stored under the
+  mini-app prefix as `shuffles` = `{ fingerprint, count }` — fingerprint = cyrb53 (53-bit, 14 hex) of
+  the normalised sorted roster, never the names; synchronous so the count is final when the teams
+  render (Web Crypto's digest is async and needs a secure context), not a security hash (names are
+  guessable from any hash). Corrupt or missing → starts again at 1. Nothing else in the UI shows it.
+  "Clear my data" in Settings (standalone or Quizzard) removes it with the rest. Privacy policy:
+  the stored item is listed in neutral words (forge browser-storage §9). *Switch:*
+  `SHUFFLE_COUNT_IN_ATTRIBUTION` in `packages/miniapp/src/teams/attribution.ts`, default on; a host
+  overrides it with the launch parameter `shuffle-count=on|off` (Quizzard can turn it off without a
+  TeamSync release). Off = the line is exactly as in 1.0.3 and nothing is counted or stored. *How to
+  turn off:* set the constant to `false` and release, or pass `shuffle-count=off` from the host.
+  *Deliberate behaviour change:* the standalone line now ends `TeamSync<n>`; e2e AC3 expects
+  `TeamSync1` (the only changed assertion). The repository is public, so the constant and these rules
+  are visible to anyone who reads the source. Documented only here (not in CHANGELOG, Help, README,
+  llms.txt or the user docs).

@@ -1,6 +1,6 @@
 <!-- Template from APP-STANDARD §6 (2026-11-05). Not legal advice. One bullet per layer the app really has. -->
 
-**Privacy** — Last updated: 7 November 2026
+**Privacy** — Last updated: 22 November 2026
 
 - **Who is responsible:** TeamSync is made by Simeon Tsvetanov, Bulgaria (contact: {email}).
   The names you type stay on your device and under your control only.
@@ -11,9 +11,10 @@
   and is then covered by that app's own privacy terms. On Android, a list you share *into*
   TeamSync arrives in the address and is removed from it right away.
 - **Stored on your device only:** your settings (theme, language, number of teams), your last
-  names list (so it is still there next time), which tips and prompts you already dismissed, and
-  an unsent problem report draft (its text) are kept in your browser's own storage on this
-  device (local storage). They never leave your device and are not synced anywhere. TeamSync
+  names list (so it is still there next time), a short code made from the last list you made teams
+  from (not the names themselves) with how many times in a row teams were made from it, which tips
+  and prompts you already dismissed, and an unsent problem report draft (its text) are kept in
+  your browser's own storage on this device (local storage). They never leave your device and are not synced anywhere. TeamSync
   does not save anything in IndexedDB or the browser's private file storage (OPFS); Settings →
   Storage only looks there when you export or clear your data. You can see the space used,
   export, or delete your data in **Settings → Storage**, or by clearing this site's data in your

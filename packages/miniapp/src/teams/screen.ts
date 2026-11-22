@@ -2,6 +2,7 @@
 // by the body's modules (mount.ts, form.ts, names-input.ts, results.ts, result-actions.ts).
 import type { MiniAppContext } from "../contract.ts";
 import type { Translate } from "../i18n/translate.ts";
+import type { AttributionSettings } from "./attribution.ts";
 import type { Saved } from "./state.ts";
 
 /** Every node of the screen the body reads or changes, found by its data-* hook. */
@@ -33,6 +34,8 @@ export interface TeamsScreen {
   readonly host: HTMLElement;
   readonly context: MiniAppContext;
   readonly saved: Saved;
+  /** The app copied and shared teams name, and whether the shuffle count goes with it. */
+  readonly attribution: AttributionSettings;
   /** Aborted at unmount: every listener of this mount is added with it. */
   readonly signal: AbortSignal;
   /** Texts in the host's current language; replaced when the language changes. */
@@ -41,6 +44,8 @@ export interface TeamsScreen {
   teams: number;
   /** The teams on screen; null before the first Generate and after a clear. */
   last: string[][] | null;
+  /** The shuffle count of the teams on screen; null when the count is off or no teams are shown. */
+  lastShuffleCount: number | null;
   /** Pending debounced save of the names list (names-input.ts). */
   saveTimer: ReturnType<typeof setTimeout> | undefined;
 }

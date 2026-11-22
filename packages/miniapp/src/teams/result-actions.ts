@@ -3,7 +3,7 @@
 // the host (`context.shell`).
 import { formatTeams, type FormatLabels } from "@simeonts/teamsync-random-team-generator-core";
 import { withTransition } from "../dom/transition.ts";
-import { STANDALONE_URL } from "../meta.ts";
+import { attributionLine } from "./attribution.ts";
 import { renderCount, showError } from "./form.ts";
 import { cancelPendingSave } from "./names-input.ts";
 import { clearResults, generate } from "./results.ts";
@@ -14,7 +14,7 @@ function shareLabels(screen: TeamsScreen): FormatLabels {
   return {
     heading: screen.t("copyHeading"),
     team: (n, members) => screen.t("copyTeam", { n, members }),
-    attribution: screen.t("attribution", { url: STANDALONE_URL }),
+    attribution: attributionLine(screen.t, screen.attribution.attribution, screen.lastShuffleCount),
   };
 }
 

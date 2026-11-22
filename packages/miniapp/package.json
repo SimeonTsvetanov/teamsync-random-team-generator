@@ -1,6 +1,6 @@
 {
   "name": "@simeonts/teamsync-random-team-generator-miniapp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "description": "TeamSync's team screen behind the Quizzard mini-app contract; mounted by this repo's app/ and by Quizzard.",
   "type": "module",

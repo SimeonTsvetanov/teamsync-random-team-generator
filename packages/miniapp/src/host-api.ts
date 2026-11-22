@@ -1,13 +1,29 @@
 // What a host may add around the Teams body beyond the contract: launch parameters it reads from
 // `context.query` and events on the mount element. The standalone site uses them for the `?teams=`
 // address, embed mode (postMessage), Android share-target and its install offer (PLAN §1.5); a host
-// that needs none of it (Quizzard) ignores them.
+// that needs none of it (Quizzard) ignores them. Quizzard may name itself in copied teams.
 
 /** `context.query` key: the number of teams to start with (2–10; else the remembered value). */
 export const TEAMS_PARAM = "teams";
 
 /** `context.query` key: text shared from another app; its names replace the list (with Undo). */
 export const SHARED_TEXT_PARAM = "shared";
+
+/**
+ * `context.query` keys: the app copied and shared teams name in their last line ("— Made with
+ * <name> · <url>"), e.g. `Quizzard` + `https://simeontsvetanov.github.io/Quizzard/`. Both or
+ * neither: a short plain-text name ending in a letter and an https address; anything else gives
+ * TeamSync and its own address. A host sets them itself — never from an address someone could link.
+ */
+export const ATTRIBUTION_NAME_PARAM = "attribution-name";
+/** See {@link ATTRIBUTION_NAME_PARAM}. */
+export const ATTRIBUTION_URL_PARAM = "attribution-url";
+
+/**
+ * `context.query` key: `on` or `off` overrides the package's `SHUFFLE_COUNT_IN_ATTRIBUTION`
+ * (DECISIONS 2026-11-22); any other value keeps it. A host sets it itself, like the attribution.
+ */
+export const SHUFFLE_COUNT_PARAM = "shuffle-count";
 
 /** Every event on the mount element and its `detail`. */
 export interface TeamsEventDetails {

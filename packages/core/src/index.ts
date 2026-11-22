@@ -6,3 +6,5 @@ export type { Result } from "./result.js";
 export { FOLLOWERS, FOLLOWERS_CHEAT, MAX_NAMES, MAX_NAME_LENGTH, expandFollowers, isFollowersLine, namesFromSharedText, parseNames, type NamesErrorCode } from "./names.js";
 export { MAX_TEAMS, MIN_TEAMS, TeamsInput, cryptoRandomInt, makeTeams, shuffle, type RandomInt, type TeamsErrorCode } from "./teams.js";
 export { englishLabels, formatTeams, type FormatLabels } from "./format.js";
+export { MAX_ATTRIBUTION_NAME_LENGTH, MAX_ATTRIBUTION_URL_LENGTH, attributionName, parseAttribution, type Attribution } from "./attribution.js";
+export { MAX_SHUFFLE_COUNT, nextShuffleCount, normalizeRosterName, parseShuffleCount, rosterFingerprint, type ShuffleCount } from "./shuffle-count.js";

@@ -1,6 +1,6 @@
 # STATUS — TeamSync
 
-**Updated:** 2026-11-22 · **Phase:** 4 (live) · v1.0.2 live; v1.0.3 prepared (Quizzard TS-01 + TS-02), not tagged yet
+**Updated:** 2026-11-22 · **Phase:** 4 (live) · v1.0.2 live; v1.0.4 prepared (TS-01 + TS-02 + host attribution), not tagged yet
 
 ## Done
 - Intake (DECISIONS 2026-11-05) · SPEC approved 2026-11-06 · accent + logo approved.
@@ -15,10 +15,12 @@
 - Quizzard TS-02 2026-11-22: e2e split — `tests/e2e/miniapp/` (screen flows, also run by Quizzard behind
   `#/teams` via `support/entry.ts` + `support/host.ts`) and `tests/e2e/shell/` (standalone only); pending
   names save flushed at unmount/pagehide/hidden; all versions 1.0.3.
+- 2026-11-22 (v1.0.4): copied/shared teams name the host's app (launch parameters `attribution-name/-url`,
+  Quizzard next; DECISIONS 2026-11-22 "Attribution from the host"); all versions 1.0.4.
 
 ## Next
 - Dependabot PR (minor/patch group) + 9 build-time alerts; lawyer review items; evals variance (forge).
-- Release v1.0.3 (Moni): merge, then GitHub Release `v1.0.3` on `main` → `publish.yml` publishes npm core+mcp;
+- Release v1.0.4 (Moni): merge, then GitHub Release `v1.0.4` on `main` → `publish.yml` publishes npm core+mcp;
   Pages deploys; then `E2E_BASE_URL=<live URL> pnpm e2e` (both suites) against the live site; Quizzard T-10 pins the tag.
 - T-01–T-09 done: core + MCP (39 unit tests), main screen EN/BG, remember list, ?teams, embed, Copy/Share, texts + legal filled, e2e 62 pass (AC1, AC3–AC7, dark-mode axe).
 
