@@ -23,6 +23,8 @@ describe("parseAttribution", () => {
     ["credentials in the address", { name: "Quizzard", url: "https://user:pw@example.com/" }],
     ["address with spaces", { name: "Quizzard", url: "https://exa mple.com/" }],
     ["no domain", { name: "Quizzard", url: "https://localhost/" }],
+    ["a lone digit as the name", { name: "7", url: "https://example.com/" }],
+    ["a name ending in a digit", { name: "App 2", url: "https://example.com/" }],
   ])("null for %s", (_, value) => {
     expect(parseAttribution(value)).toBeNull();
   });

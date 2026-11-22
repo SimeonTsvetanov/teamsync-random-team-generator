@@ -15,9 +15,10 @@ export const MAX_ATTRIBUTION_URL_LENGTH = 200;
 
 /**
  * Letters, digits, spaces and a few name marks; it starts with a letter or digit and ends with a
- * letter, so a number fused to it ("Quizzard3") always reads as the count.
+ * letter, so a number fused to it ("Quizzard3") always reads as the count. A one-character name
+ * must therefore be a letter (a lone digit passed until CI's property test found it, 2026-11-22).
  */
-const NAME_PATTERN = /^[\p{L}\p{N}](?:[\p{L}\p{M}\p{N} .'’&+!-]*[\p{L}\p{M}])?$/u;
+const NAME_PATTERN = /^(?:\p{L}|[\p{L}\p{N}][\p{L}\p{M}\p{N} .'’&+!-]*[\p{L}\p{M}])$/u;
 
 const AttributionSchema = z.object({
   name: z.string().trim().max(MAX_ATTRIBUTION_NAME_LENGTH).regex(NAME_PATTERN),
